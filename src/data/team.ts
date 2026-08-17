@@ -1,28 +1,127 @@
 export const club = {
   name: "Driblou Caiu",
   tagline: "Pro Clubs · EA FC 26 · Amistosos & Liga",
+  founded: 2023,
+  platform: "PS5 · Cross-play",
+  formation: "4-3-3",
   discord: "https://discord.gg/",
+  about:
+    "Nascido de um grupo de amigos cansado de clubes sem identidade, o Driblou Caiu joga com marcação alta, saída de bola curta e três pontas rápidas em transição. Treinos toda semana, banco rotativo por mérito e uma regra só: quem não corre pra trás, não joga.",
+  pillars: [
+    {
+      title: "Pressão alta",
+      description: "Recomposição em até 6 segundos após perda de bola, sufocando a saída rival.",
+    },
+    {
+      title: "Meio criativo",
+      description: "Triângulos curtos entre VOL, MC e MEI para furar linhas com um toque a mais.",
+    },
+    {
+      title: "Ponta em velocidade",
+      description: "PE e PD abertos no limite da linha para explorar espaço nas costas da zaga.",
+    },
+  ],
+  achievements: [
+    { title: "Campeã", detail: "Copa de Verão 2025", year: "2025" },
+    { title: "Melhor ataque", detail: "Liga Amistosa 2025", year: "2025" },
+    { title: "Vice-campeã", detail: "Liga Amistosa 2024", year: "2024" },
+  ],
+  nextMatch: {
+    opponent: "Meta Squad",
+    competition: "Liga Amistosa",
+    date: "2026-08-22T20:30:00-03:00",
+    venue: "Casa",
+  },
 };
 
 export type Player = {
   name: string;
+  number: number;
   position: string;
   overall: number;
+  captain?: boolean;
   stats: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number };
 };
 
 export const squad: Player[] = [
-  { name: "Caio", position: "GOL", overall: 88, stats: { pac: 62, sho: 40, pas: 71, dri: 55, def: 88, phy: 84 } },
-  { name: "Bruno", position: "ZAG", overall: 85, stats: { pac: 74, sho: 48, pas: 70, dri: 63, def: 87, phy: 86 } },
-  { name: "Léo", position: "ZAG", overall: 83, stats: { pac: 78, sho: 45, pas: 68, dri: 66, def: 84, phy: 82 } },
-  { name: "Rafa", position: "LE", overall: 84, stats: { pac: 91, sho: 62, pas: 79, dri: 82, def: 76, phy: 71 } },
-  { name: "Tiago", position: "LD", overall: 82, stats: { pac: 90, sho: 58, pas: 77, dri: 80, def: 75, phy: 70 } },
-  { name: "Vitor", position: "VOL", overall: 86, stats: { pac: 75, sho: 72, pas: 86, dri: 81, def: 80, phy: 83 } },
-  { name: "Igor", position: "MC", overall: 87, stats: { pac: 79, sho: 78, pas: 89, dri: 88, def: 62, phy: 72 } },
-  { name: "Nando", position: "MEI", overall: 89, stats: { pac: 84, sho: 84, pas: 90, dri: 91, def: 48, phy: 68 } },
-  { name: "Duda", position: "PE", overall: 86, stats: { pac: 94, sho: 82, pas: 78, dri: 90, def: 40, phy: 64 } },
-  { name: "Kaká", position: "PD", overall: 85, stats: { pac: 93, sho: 80, pas: 76, dri: 89, def: 38, phy: 66 } },
-  { name: "Zeca", position: "ATA", overall: 90, stats: { pac: 89, sho: 92, pas: 74, dri: 87, def: 42, phy: 81 } },
+  {
+    name: "Caio",
+    number: 1,
+    position: "GOL",
+    overall: 88,
+    stats: { pac: 62, sho: 40, pas: 71, dri: 55, def: 88, phy: 84 },
+  },
+  {
+    name: "Bruno",
+    number: 4,
+    position: "ZAG",
+    overall: 85,
+    captain: true,
+    stats: { pac: 74, sho: 48, pas: 70, dri: 63, def: 87, phy: 86 },
+  },
+  {
+    name: "Léo",
+    number: 5,
+    position: "ZAG",
+    overall: 83,
+    stats: { pac: 78, sho: 45, pas: 68, dri: 66, def: 84, phy: 82 },
+  },
+  {
+    name: "Rafa",
+    number: 6,
+    position: "LE",
+    overall: 84,
+    stats: { pac: 91, sho: 62, pas: 79, dri: 82, def: 76, phy: 71 },
+  },
+  {
+    name: "Tiago",
+    number: 2,
+    position: "LD",
+    overall: 82,
+    stats: { pac: 90, sho: 58, pas: 77, dri: 80, def: 75, phy: 70 },
+  },
+  {
+    name: "Vitor",
+    number: 8,
+    position: "VOL",
+    overall: 86,
+    stats: { pac: 75, sho: 72, pas: 86, dri: 81, def: 80, phy: 83 },
+  },
+  {
+    name: "Igor",
+    number: 15,
+    position: "MC",
+    overall: 87,
+    stats: { pac: 79, sho: 78, pas: 89, dri: 88, def: 62, phy: 72 },
+  },
+  {
+    name: "Nando",
+    number: 10,
+    position: "MEI",
+    overall: 89,
+    stats: { pac: 84, sho: 84, pas: 90, dri: 91, def: 48, phy: 68 },
+  },
+  {
+    name: "Duda",
+    number: 11,
+    position: "PE",
+    overall: 86,
+    stats: { pac: 94, sho: 82, pas: 78, dri: 90, def: 40, phy: 64 },
+  },
+  {
+    name: "Kaká",
+    number: 7,
+    position: "PD",
+    overall: 85,
+    stats: { pac: 93, sho: 80, pas: 76, dri: 89, def: 38, phy: 66 },
+  },
+  {
+    name: "Zeca",
+    number: 9,
+    position: "ATA",
+    overall: 90,
+    stats: { pac: 89, sho: 92, pas: 74, dri: 87, def: 42, phy: 81 },
+  },
 ];
 
 export const teamStats = [
