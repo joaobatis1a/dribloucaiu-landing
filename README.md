@@ -1,24 +1,29 @@
-# Pro Clubs Showcase
+# Driblou Caiu — Pro Clubs Showcase
 
-Quero fazer uma landingpage do meu time de pro clubs no eafc 26, ou seja, um site com a total estetica do jogo, cores e tal, que seja diferenciado e dinÂmico
+Landing page do time **Driblou Caiu**, de Pro Clubs no EA FC 26: estética do jogo, cores e identidade do clube em um site dinâmico.
 
-This project was built with [Lovable](https://lovable.dev).
+## Stack
 
-## Build with Lovable
+- [TanStack Start](https://tanstack.com/start) (React 19 + SSR)
+- [TanStack Router](https://tanstack.com/router)
+- Tailwind CSS 4
+- Radix UI / shadcn-style components
+- Vite 8
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/03b0e602-755e-45ed-a237-d061d7015521).
+## Desenvolvimento
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requer [Bun](https://bun.sh) (ou Node.js + npm).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+bun run dev
+```
+
+Outros comandos:
+
+```sh
+bun run build     # build de produção
+bun run preview   # preview do build
+bun run lint      # eslint
+bun run format    # prettier
 ```
