@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { Menu } from "lucide-react";
+import { Instagram, Menu, MessageCircle } from "lucide-react";
 import crest from "@/assets/crest.png";
 import { club } from "@/data/team";
+import { TikTokIcon } from "@/components/icons/TikTokIcon";
 import {
   Sheet,
   SheetClose,
@@ -12,17 +13,44 @@ import {
 } from "@/components/ui/sheet";
 
 const LINKS = [
-  { href: "#sobre", label: "Clube" },
-  { href: "#esquema", label: "Esquema" },
-  { href: "#elenco", label: "Elenco" },
-  { href: "#resultados", label: "Resultados" },
-  { href: "#tabela", label: "Tabela" },
+  { href: "#sobre", label: "Clube", id: "sobre" },
+  { href: "#esquema", label: "Esquema", id: "esquema" },
+  { href: "#elenco", label: "Elenco", id: "elenco" },
+  { href: "#resultados", label: "Resultados", id: "resultados" },
+  { href: "#tabela", label: "Tabela", id: "tabela" },
+  { href: "#redes", label: "Redes", id: "redes" },
 ];
+
+function useActiveSection() {
+  const [active, setActive] = useState<string>("");
+
+  useEffect(() => {
+    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (sections.length === 0) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        }
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
+    );
+    sections.forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  }, []);
+
+  return active;
+}
 
 export function Navbar() {
   const [solid, setSolid] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+  const active = useActiveSection();
+  const navRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 24);
@@ -39,35 +67,93 @@ export function Navbar() {
           : "border-b border-transparent bg-transparent"
       }`}
     >
+      <div
+        className={`hidden overflow-hidden transition-[max-height,opacity] duration-300 md:block ${
+          solid ? "max-h-0 opacity-0" : "max-h-8 opacity-100"
+        }`}
+      >
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          <span>
+            Fundado em {club.founded} · {club.platform} · Esquema {club.formation}
+          </span>
+          <div className="flex items-center gap-3">
+            <a
+              href={club.social.instagram.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Instagram"
+              className="transition-colors hover:text-accent"
+            >
+              <Instagram className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href={club.social.tiktok.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="TikTok"
+              className="transition-colors hover:text-accent"
+            >
+              <TikTokIcon className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </div>
+      </div>
+
       <motion.div
         className="h-[2px] origin-left bg-gradient-to-r from-primary via-accent to-primary"
         style={{ scaleX: progress }}
       />
+
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <a href="#top" className="flex items-center gap-2.5">
-          <img src={crest} alt="" width={816} height={816} className="h-8 w-8" />
-          <span className="font-display text-lg uppercase tracking-wide text-foreground">
-            {club.name}
-          </span>
+        <a href="#top" className="group flex items-center gap-2.5">
+          <img
+            src={crest}
+            alt=""
+            width={816}
+            height={816}
+            className="h-9 w-9 transition-transform duration-300 group-hover:scale-110"
+          />
+          <div className="leading-none">
+            <span className="font-display text-lg uppercase tracking-wide text-foreground">
+              {club.name}
+            </span>
+            <span className="hidden text-[9px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:block">
+              Pro Clubs
+            </span>
+          </div>
         </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul ref={navRef} className="relative hidden items-center gap-1 md:flex">
           {LINKS.map((link) => (
-            <li key={link.href}>
+            <li key={link.href} className="relative">
               <a
                 href={link.href}
-                className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-accent"
+                className={`relative z-10 block px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-colors ${
+                  active === link.id
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {link.label}
               </a>
+              {active === link.id ? (
+                <motion.span
+                  layoutId="nav-active-pill"
+                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  className="absolute inset-0 rounded-md bg-accent/10"
+                />
+              ) : null}
             </li>
           ))}
         </ul>
 
         <a
           href={club.discord}
-          className="hidden rounded-md bg-primary px-5 py-2 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 md:inline-flex"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="hidden items-center gap-2 rounded-md bg-primary px-5 py-2 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)] md:inline-flex"
         >
+          <MessageCircle className="h-4 w-4" />
           Discord
         </a>
 
@@ -81,9 +167,12 @@ export function Navbar() {
               <Menu className="h-5 w-5" />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="border-border bg-background">
-            <SheetTitle className="font-display uppercase tracking-wide">{club.name}</SheetTitle>
-            <ul className="mt-8 flex flex-col gap-1">
+          <SheetContent side="right" className="flex flex-col border-border bg-background">
+            <div className="flex items-center gap-2.5">
+              <img src={crest} alt="" width={816} height={816} className="h-9 w-9" />
+              <SheetTitle className="font-display uppercase tracking-wide">{club.name}</SheetTitle>
+            </div>
+            <ul className="mt-6 flex flex-col gap-1">
               {LINKS.map((link) => (
                 <li key={link.href}>
                   <SheetClose asChild>
@@ -99,10 +188,33 @@ export function Navbar() {
             </ul>
             <a
               href={club.discord}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-primary px-5 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground"
             >
+              <MessageCircle className="h-4 w-4" />
               Entrar no Discord
             </a>
+            <div className="mt-auto flex items-center justify-center gap-6 border-t border-border pt-6">
+              <a
+                href={club.social.instagram.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="Instagram"
+                className="text-muted-foreground transition-colors hover:text-accent"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href={club.social.tiktok.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="TikTok"
+                className="text-muted-foreground transition-colors hover:text-accent"
+              >
+                <TikTokIcon className="h-5 w-5" />
+              </a>
+            </div>
           </SheetContent>
         </Sheet>
       </nav>

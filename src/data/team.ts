@@ -5,6 +5,10 @@ export const club = {
   platform: "PS5 · Cross-play",
   formation: "4-3-3",
   discord: "https://discord.gg/",
+  social: {
+    tiktok: { handle: "@dribloucaiu", url: "https://www.tiktok.com/@dribloucaiu" },
+    instagram: { handle: "@dribloucaiu", url: "https://www.instagram.com/dribloucaiu" },
+  },
   about:
     "Nascido de um grupo de amigos cansado de clubes sem identidade, o Driblou Caiu joga com marcação alta, saída de bola curta e três pontas rápidas em transição. Treinos toda semana, banco rotativo por mérito e uma regra só: quem não corre pra trás, não joga.",
   pillars: [
