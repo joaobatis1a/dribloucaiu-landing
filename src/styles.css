@@ -157,3 +157,47 @@
     color: var(--color-foreground);
   }
 }
+
+@theme {
+  --font-display: "Anton", "Barlow Condensed", sans-serif;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility hud-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility hud-scan {
+  background-image: repeating-linear-gradient(
+    0deg,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 0px,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+@utility skew-band {
+  transform: skewY(-2deg);
+}
+
+@keyframes hud-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@utility animate-hud-pulse {
+  animation: hud-pulse 5s ease-in-out infinite;
+}
+
+@utility animate-ticker {
+  animation: ticker 22s linear infinite;
+}
