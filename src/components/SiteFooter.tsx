@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { ArrowUp, MessageCircle } from "lucide-react";
+import { ArrowUp, Instagram, MessageCircle } from "lucide-react";
 import crest from "@/assets/crest.png";
 import { club } from "@/data/team";
+import { TikTokIcon } from "@/components/icons/TikTokIcon";
 
 const NAV_LINKS = [
   { href: "#sobre", label: "Clube" },
@@ -9,6 +10,7 @@ const NAV_LINKS = [
   { href: "#elenco", label: "Elenco" },
   { href: "#resultados", label: "Resultados" },
   { href: "#tabela", label: "Tabela" },
+  { href: "#redes", label: "Redes" },
 ];
 
 export function SiteFooter() {
@@ -60,6 +62,26 @@ export function SiteFooter() {
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">
             Clube de torcedores para EA FC 26 Pro Clubs. Não afiliado à Electronic Arts.
           </p>
+          <div className="mt-4 flex items-center gap-4">
+            <a
+              href={club.social.instagram.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Instagram"
+              className="text-muted-foreground transition-colors hover:text-accent"
+            >
+              <Instagram className="h-4.5 w-4.5" />
+            </a>
+            <a
+              href={club.social.tiktok.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="TikTok"
+              className="text-muted-foreground transition-colors hover:text-accent"
+            >
+              <TikTokIcon className="h-4.5 w-4.5" />
+            </a>
+          </div>
         </div>
 
         <div>

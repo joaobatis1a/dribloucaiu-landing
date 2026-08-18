@@ -8,6 +8,7 @@ import { Squad } from "@/components/Squad";
 import { NextMatch } from "@/components/NextMatch";
 import { Results } from "@/components/Results";
 import { LeagueTable } from "@/components/LeagueTable";
+import { SocialLinks } from "@/components/SocialLinks";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export const Route = createFileRoute("/")({
@@ -43,6 +44,7 @@ function Index() {
       <NextMatch />
       <Results />
       <LeagueTable />
+      <SocialLinks />
       <SiteFooter />
     </main>
   );
