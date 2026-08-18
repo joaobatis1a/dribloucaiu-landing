@@ -1,21 +1,21 @@
 import { useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { club, squad } from "@/data/team";
-import { formationLayout } from "@/lib/formation";
+import { AnimatePresence, motion, type PanInfo } from "framer-motion";
+import { GripHorizontal, RotateCcw } from "lucide-react";
+import { club, squad, type Player } from "@/data/team";
+import {
+  formationIds,
+  formations,
+  roleOrder,
+  slotsToPositions,
+  slotRoles,
+  type FormationId,
+} from "@/lib/formations";
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
 import { SectionTitle } from "@/components/SectionTitle";
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
-};
+const EASE = [0.16, 1, 0.3, 1] as const;
 
-const dot = {
-  hidden: { opacity: 0, scale: 0.3 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
-};
-
-const statLabels: Array<[keyof (typeof squad)[number]["stats"], string]> = [
+const statLabels: Array<[keyof Player["stats"], string]> = [
   ["pac", "RIT"],
   ["sho", "FIN"],
   ["pas", "PAS"],
@@ -24,20 +24,17 @@ const statLabels: Array<[keyof (typeof squad)[number]["stats"], string]> = [
   ["phy", "FÍS"],
 ];
 
-const lines: Array<{ label: string; codes: string[] }> = [
-  { label: "Ataque", codes: ["PE", "ATA", "PD"] },
-  { label: "Meio-campo", codes: ["MC", "VOL", "MEI"] },
-  { label: "Defesa", codes: ["LE", "ZAG", "LD"] },
-  { label: "Gol", codes: ["GOL"] },
-];
+function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
+}
 
-type LaidOutPlayer = ReturnType<typeof formationLayout>[number];
+type Position = { x: number; y: number };
 
-function PlayerPopover({ player }: { player: LaidOutPlayer }) {
+function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
   const tier = ratingTier(player.overall);
   const style = ratingTierStyles[tier];
-  const anchorX = player.x > 62 ? "right" : player.x < 38 ? "left" : "center";
-  const anchorY = player.y < 50 ? "below" : "above";
+  const anchorX = pos.x > 62 ? "right" : pos.x < 38 ? "left" : "center";
+  const anchorY = pos.y < 50 ? "below" : "above";
 
   return (
     <motion.div
@@ -45,10 +42,7 @@ function PlayerPopover({ player }: { player: LaidOutPlayer }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.85 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
-      style={{
-        left: `${player.x}%`,
-        top: `${player.y}%`,
-      }}
+      style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
       className={`pointer-events-none absolute z-20 w-48 rounded-lg border border-border bg-gradient-to-b p-3.5 shadow-2xl backdrop-blur-sm ${style.card} ${
         anchorX === "right" ? "-translate-x-[calc(100%+14px)]" : anchorX === "left" ? "translate-x-[14px]" : "-translate-x-1/2"
       } ${anchorY === "below" ? "translate-y-[14px]" : "-translate-y-[calc(100%+14px)]"}`}
@@ -86,132 +80,173 @@ function PlayerPopover({ player }: { player: LaidOutPlayer }) {
 }
 
 export function Formation() {
-  const players = formationLayout(squad);
+  const [formationId, setFormationId] = useState<FormationId>("4-3-3");
+  const [positions, setPositions] = useState<Record<string, Position>>(() =>
+    slotsToPositions(formations["4-3-3"].slots),
+  );
+  const roles = slotRoles(formations[formationId].slots);
   const [activeName, setActiveName] = useState<string | null>(null);
-  const active = players.find((p) => p.name === activeName) ?? null;
+  const [draggingName, setDraggingName] = useState<string | null>(null);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const px = useMotionValue(0.5);
-  const py = useMotionValue(0.5);
-  const spx = useSpring(px, { stiffness: 120, damping: 20 });
-  const spy = useSpring(py, { stiffness: 120, damping: 20 });
-  const tiltX = useTransform(spy, [0, 1], [20, 8]);
-  const tiltY = useTransform(spx, [0, 1], [-8, 8]);
+  const pitchRef = useRef<HTMLDivElement>(null);
 
-  function handleTilt(e: React.PointerEvent<HTMLDivElement>) {
-    const rect = wrapperRef.current?.getBoundingClientRect();
+  function selectFormation(id: FormationId) {
+    setFormationId(id);
+    setPositions(slotsToPositions(formations[id].slots));
+    setActiveName(null);
+  }
+
+  function resetLayout() {
+    setPositions(slotsToPositions(formations[formationId].slots));
+  }
+
+  function handleDragEnd(name: string, info: PanInfo) {
+    const rect = pitchRef.current?.getBoundingClientRect();
+    setDraggingName(null);
     if (!rect) return;
-    px.set((e.clientX - rect.left) / rect.width);
-    py.set((e.clientY - rect.top) / rect.height);
+    const x = clamp(((info.point.x - rect.left) / rect.width) * 100, 4, 96);
+    const y = clamp(((info.point.y - rect.top) / rect.height) * 100, 4, 96);
+    setPositions((prev) => ({ ...prev, [name]: { x, y } }));
   }
 
-  function handleTiltReset() {
-    px.set(0.5);
-    py.set(0.5);
-  }
+  const active = activeName ? squad.find((p) => p.name === activeName) ?? null : null;
+  const activePos = activeName ? positions[activeName] : undefined;
 
   return (
     <section id="esquema" className="border-y border-border bg-card/30">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-        <SectionTitle kicker="Como jogamos" title={`Esquema ${club.formation}`} />
-        <p className="mt-4 max-w-2xl text-sm text-muted-foreground md:text-base">{club.about}</p>
+        <SectionTitle kicker="Como jogamos" title={`Esquema ${formations[formationId].label}`} />
+        <p className="mt-4 max-w-2xl text-sm text-muted-foreground md:text-base">
+          {formations[formationId].blurb}
+        </p>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <div
-            ref={wrapperRef}
-            onPointerMove={handleTilt}
-            onPointerLeave={() => {
-              handleTiltReset();
-              setActiveName(null);
-            }}
-            className="[perspective:1600px]"
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          {formationIds.map((id) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => selectFormation(id)}
+              className={`rounded-full border px-4 py-1.5 font-display text-sm uppercase tracking-wide transition-colors ${
+                formationId === id
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border text-muted-foreground hover:border-accent hover:text-accent"
+              }`}
+            >
+              {formations[id].label}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={resetLayout}
+            className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-dashed border-border px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:border-accent hover:text-accent"
           >
-            <div className="relative aspect-[4/5] w-full sm:aspect-[3/4]">
-              <motion.div
-                variants={container}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-100px" }}
-                style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}
-                className="absolute inset-0 origin-top"
+            <RotateCcw className="h-3.5 w-3.5" />
+            Resetar posições
+          </button>
+        </div>
+
+        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <div>
+            <div
+              ref={pitchRef}
+              className="pitch-stripes relative aspect-[4/5] w-full touch-none overflow-hidden rounded-2xl border border-border shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] sm:aspect-[3/4]"
+            >
+              <div
+                className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"
+                aria-hidden
+              />
+              <div
+                className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"
+                aria-hidden
+              />
+              <div
+                className="animate-float-y absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl opacity-80"
+                style={{ animationDuration: "8s" }}
               >
+                ⚽
+              </div>
+
+              <div className="absolute inset-3 rounded-lg" style={{ border: "1px solid var(--pitch-line)" }}>
                 <div
-                  className="pitch-stripes absolute inset-0 overflow-hidden rounded-2xl border border-border shadow-[0_50px_90px_-30px_rgba(0,0,0,0.85)]"
-                  aria-hidden
-                >
-                  <div
-                    className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"
-                    aria-hidden
-                  />
-                  <div
-                    className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"
-                    aria-hidden
-                  />
-                  <div
-                    className="animate-float-y absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl opacity-80"
-                    style={{ animationDuration: "8s" }}
-                  >
-                    ⚽
-                  </div>
+                  className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                  style={{ border: "1px solid var(--pitch-line)" }}
+                />
+                <div
+                  className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
+                  style={{ background: "var(--pitch-line)" }}
+                />
+                <div className="absolute inset-x-[22%] bottom-0 h-[14%]" style={{ border: "1px solid var(--pitch-line)" }} />
+                <div className="absolute inset-x-[22%] top-0 h-[14%]" style={{ border: "1px solid var(--pitch-line)" }} />
+              </div>
 
-                  <div className="absolute inset-3 rounded-lg" style={{ border: "1px solid var(--pitch-line)" }}>
-                    <div
-                      className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                      style={{ border: "1px solid var(--pitch-line)" }}
-                    />
-                    <div
-                      className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
-                      style={{ background: "var(--pitch-line)" }}
-                    />
-                    <div className="absolute inset-x-[22%] bottom-0 h-[14%]" style={{ border: "1px solid var(--pitch-line)" }} />
-                    <div className="absolute inset-x-[22%] top-0 h-[14%]" style={{ border: "1px solid var(--pitch-line)" }} />
-                  </div>
-                </div>
-
-                {players.map((p) => {
+              <div key={formationId} className="contents">
+                {squad.map((p, i) => {
+                  const pos = positions[p.name];
+                  if (!pos) return null;
                   const isActive = activeName === p.name;
+                  const isDragging = draggingName === p.name;
                   return (
-                    <motion.button
+                    <div
                       key={p.name}
-                      type="button"
-                      variants={dot}
-                      onMouseEnter={() => setActiveName(p.name)}
-                      onFocus={() => setActiveName(p.name)}
-                      onClick={() => setActiveName(p.name)}
-                      style={{ left: `${p.x}%`, top: `${p.y}%`, x: "-50%", y: "-50%", translateZ: 30 }}
-                      className="absolute z-10 outline-none"
+                      style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
+                      className={`absolute z-10 ${isDragging ? "z-30" : ""}`}
                     >
-                      <span
-                        className={`relative flex h-9 w-9 items-center justify-center rounded-full border font-display text-xs shadow-lg transition-colors sm:h-11 sm:w-11 sm:text-sm ${
-                          isActive
-                            ? "border-accent bg-accent text-accent-foreground"
-                            : "border-white/30 bg-primary text-primary-foreground"
-                        }`}
+                      <motion.button
+                        key={`${pos.x.toFixed(0)}-${pos.y.toFixed(0)}`}
+                        type="button"
+                        initial={{ opacity: 0, scale: 0.3 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.45, delay: 0.1 + i * 0.05, ease: EASE }}
+                        drag
+                        dragConstraints={pitchRef}
+                        dragElastic={0.08}
+                        dragMomentum={false}
+                        whileDrag={{ scale: 1.15, zIndex: 30 }}
+                        onDragStart={() => setDraggingName(p.name)}
+                        onDragEnd={(_e, info) => handleDragEnd(p.name, info)}
+                        onMouseEnter={() => !draggingName && setActiveName(p.name)}
+                        onFocus={() => setActiveName(p.name)}
+                        onClick={() => setActiveName(p.name)}
+                        className="block cursor-grab touch-none outline-none active:cursor-grabbing"
                       >
-                        {p.number}
-                        {p.captain ? (
-                          <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background bg-accent text-[8px] font-bold text-accent-foreground">
-                            C
-                          </span>
-                        ) : null}
-                      </span>
-                    </motion.button>
+                        <span
+                          className={`relative flex h-9 w-9 items-center justify-center rounded-full border font-display text-xs shadow-lg transition-colors sm:h-11 sm:w-11 sm:text-sm ${
+                            isActive
+                              ? "border-accent bg-accent text-accent-foreground"
+                              : "border-white/30 bg-primary text-primary-foreground"
+                          }`}
+                        >
+                          {p.number}
+                          {p.captain ? (
+                            <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background bg-accent text-[8px] font-bold text-accent-foreground">
+                              C
+                            </span>
+                          ) : null}
+                        </span>
+                      </motion.button>
+                    </div>
                   );
                 })}
-              </motion.div>
+              </div>
 
-              <AnimatePresence>{active ? <PlayerPopover player={active} /> : null}</AnimatePresence>
+              <AnimatePresence>
+                {active && activePos && !draggingName ? <PlayerPopover player={active} pos={activePos} /> : null}
+              </AnimatePresence>
             </div>
+            <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <GripHorizontal className="h-3.5 w-3.5" />
+              Arraste os jogadores pra reorganizar o time do seu jeito.
+            </p>
           </div>
 
           <div className="flex flex-col gap-6">
-            {lines.map((line) => {
-              const linePlayers = squad.filter((p) => line.codes.includes(p.position));
+            {roleOrder.map(({ role, label }) => {
+              const linePlayers = squad.filter((p) => roles[p.name] === role);
               if (linePlayers.length === 0) return null;
               return (
-                <div key={line.label}>
+                <div key={label}>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
-                    {line.label}
+                    {label}
                   </p>
                   <ul className="mt-2 space-y-1.5">
                     {linePlayers.map((p) => (
