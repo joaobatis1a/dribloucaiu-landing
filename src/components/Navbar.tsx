@@ -105,21 +105,19 @@ export function Navbar() {
       />
 
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <a href="#top" className="group flex items-center gap-2.5">
+        <a href="#top" className="group flex items-center gap-3">
           <img
             src={crest}
             alt=""
-            width={816}
-            height={816}
-            className="h-9 w-9 transition-transform duration-300 group-hover:scale-110"
+            width={800}
+            height={800}
+            className="h-11 w-11 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 sm:h-12 sm:w-12"
           />
           <div className="leading-none">
-            <span className="font-display text-lg uppercase tracking-wide text-foreground">
+            <span className="font-display text-xl uppercase tracking-wide text-foreground sm:text-2xl">
               {club.name}
             </span>
-            <span className="hidden text-[9px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:block">
-              Pro Clubs
-            </span>
+            <span className="mt-1 block h-[3px] w-8 bg-gradient-to-r from-primary to-accent" />
           </div>
         </a>
 
@@ -138,9 +136,9 @@ export function Navbar() {
               </a>
               {active === link.id ? (
                 <motion.span
-                  layoutId="nav-active-pill"
+                  layoutId="nav-active-tick"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  className="absolute inset-0 rounded-md bg-accent/10"
+                  className="absolute inset-x-2 -bottom-0.5 h-[3px] -skew-x-12 bg-accent"
                 />
               ) : null}
             </li>
@@ -151,10 +149,12 @@ export function Navbar() {
           href={club.discord}
           target="_blank"
           rel="noreferrer noopener"
-          className="hidden items-center gap-2 rounded-md bg-primary px-5 py-2 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)] md:inline-flex"
+          className="hidden -skew-x-6 items-center gap-2 border-2 border-primary bg-primary px-5 py-2 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:bg-transparent hover:text-primary [box-shadow:var(--shadow-red)] md:inline-flex"
         >
-          <MessageCircle className="h-4 w-4" />
-          Discord
+          <span className="flex skew-x-6 items-center gap-2">
+            <MessageCircle className="h-4 w-4" />
+            Discord
+          </span>
         </a>
 
         <Sheet>
@@ -169,7 +169,7 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="flex flex-col border-border bg-background">
             <div className="flex items-center gap-2.5">
-              <img src={crest} alt="" width={816} height={816} className="h-9 w-9" />
+              <img src={crest} alt="" width={800} height={800} className="h-11 w-11" />
               <SheetTitle className="font-display uppercase tracking-wide">{club.name}</SheetTitle>
             </div>
             <ul className="mt-6 flex flex-col gap-1">

@@ -1,8 +1,8 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
-import { ArrowUp } from "lucide-react";
 import { useState } from "react";
+import crest from "@/assets/crest.png";
 
-const RADIUS = 19;
+const RADIUS = 22;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function ScrollToTop() {
@@ -24,16 +24,16 @@ export function ScrollToTop() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 16 }}
           whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.94 }}
+          whileTap={{ scale: 0.92 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           aria-label="Voltar ao topo"
-          className="group fixed bottom-6 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card/90 text-foreground shadow-xl backdrop-blur-md transition-colors hover:border-accent hover:text-accent sm:bottom-8 sm:right-8"
+          className="group fixed bottom-6 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full border border-border bg-card/90 shadow-xl backdrop-blur-md [box-shadow:var(--shadow-red)] sm:bottom-8 sm:right-8"
         >
-          <svg viewBox="0 0 44 44" className="absolute inset-0 h-full w-full -rotate-90" aria-hidden>
-            <circle cx="22" cy="22" r={RADIUS} className="stroke-border" strokeWidth="2" fill="none" />
+          <svg viewBox="0 0 50 50" className="absolute inset-0 h-full w-full -rotate-90" aria-hidden>
+            <circle cx="25" cy="25" r={RADIUS} className="stroke-border" strokeWidth="2" fill="none" />
             <motion.circle
-              cx="22"
-              cy="22"
+              cx="25"
+              cy="25"
               r={RADIUS}
               stroke="var(--accent)"
               strokeWidth="2"
@@ -45,7 +45,13 @@ export function ScrollToTop() {
               }}
             />
           </svg>
-          <ArrowUp className="h-4.5 w-4.5 transition-transform group-hover:-translate-y-0.5" />
+          <motion.img
+            src={crest}
+            alt=""
+            width={800}
+            height={800}
+            className="h-9 w-9 transition-transform duration-300 group-hover:-rotate-[18deg]"
+          />
         </motion.button>
       ) : null}
     </AnimatePresence>
