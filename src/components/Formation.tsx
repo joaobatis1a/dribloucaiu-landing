@@ -1,5 +1,12 @@
-import { useRef, useState } from "react";
-import { AnimatePresence, motion, type PanInfo } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useSpring,
+  useTransform,
+  type PanInfo,
+} from "framer-motion";
 import { GripHorizontal, RotateCcw } from "lucide-react";
 import { club, squad, type Player } from "@/data/team";
 import {
@@ -28,7 +35,16 @@ function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v));
 }
 
+const CHEM_RING_R = 17;
+const CHEM_RING_C = 2 * Math.PI * CHEM_RING_R;
+
 type Position = { x: number; y: number };
+
+function chemistryTier(percent: number) {
+  if (percent >= 92) return { label: "Redondinho", text: "text-accent", ring: "var(--accent)" };
+  if (percent >= 72) return { label: "Ajustando", text: "text-[color:var(--gold)]", ring: "var(--gold)" };
+  return { label: "Fora de posição", text: "text-primary", ring: "var(--primary)" };
+}
 
 function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
   const tier = ratingTier(player.overall);
@@ -112,6 +128,32 @@ export function Formation() {
   const active = activeName ? squad.find((p) => p.name === activeName) ?? null : null;
   const activePos = activeName ? positions[activeName] : undefined;
 
+  const teamOverall = useMemo(
+    () => Math.round(squad.reduce((sum, p) => sum + p.overall, 0) / squad.length),
+    [],
+  );
+
+  const chemistry = useMemo(() => {
+    const slots = formations[formationId].slots;
+    let total = 0;
+    for (const slot of slots) {
+      const pos = positions[slot.name];
+      if (!pos) continue;
+      const dist = Math.hypot(pos.x - slot.x, pos.y - slot.y);
+      total += clamp(100 - dist * 1.8, 0, 100);
+    }
+    return Math.round(total / slots.length);
+  }, [positions, formationId]);
+
+  const chemSpring = useSpring(100, { stiffness: 120, damping: 22 });
+  const [chemDisplay, setChemDisplay] = useState(100);
+  const chemFraction = useTransform(chemSpring, (v) => v / 100);
+  useEffect(() => {
+    chemSpring.set(chemistry);
+  }, [chemistry, chemSpring]);
+  useMotionValueEvent(chemSpring, "change", (v) => setChemDisplay(Math.round(v)));
+  const tier = chemistryTier(chemDisplay);
+
   return (
     <section id="esquema" className="border-y border-border bg-card/30">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
@@ -164,6 +206,51 @@ export function Formation() {
                 style={{ animationDuration: "8s" }}
               >
                 ⚽
+              </div>
+
+              <div className="absolute left-3 top-3 z-20 flex items-center gap-3 rounded-xl border border-border bg-background/75 px-3 py-2.5 backdrop-blur-md sm:left-4 sm:top-4 sm:gap-4 sm:px-4 sm:py-3">
+                <div className="flex flex-col items-center leading-none">
+                  <span className="font-display text-xl text-foreground sm:text-2xl">{teamOverall}</span>
+                  <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                    Força
+                  </span>
+                </div>
+                <span className="h-8 w-px bg-border" aria-hidden />
+                <div className="flex items-center gap-2">
+                  <div className="relative h-9 w-9 shrink-0 sm:h-10 sm:w-10">
+                    <svg viewBox="0 0 40 40" className="h-full w-full -rotate-90">
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r={CHEM_RING_R}
+                        strokeWidth="3"
+                        fill="none"
+                        className="stroke-border"
+                      />
+                      <motion.circle
+                        cx="20"
+                        cy="20"
+                        r={CHEM_RING_R}
+                        strokeWidth="3"
+                        fill="none"
+                        strokeLinecap="round"
+                        stroke={tier.ring}
+                        style={{ pathLength: chemFraction, strokeDasharray: CHEM_RING_C }}
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center font-display text-[10px] text-foreground sm:text-xs">
+                      {chemDisplay}%
+                    </span>
+                  </div>
+                  <div className="flex flex-col leading-none">
+                    <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                      Sincronia
+                    </span>
+                    <span className={`mt-1 text-[10px] font-semibold uppercase tracking-wide ${tier.text}`}>
+                      {tier.label}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div className="absolute inset-3 rounded-lg" style={{ border: "1px solid var(--pitch-line)" }}>
@@ -235,7 +322,8 @@ export function Formation() {
             </div>
             <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <GripHorizontal className="h-3.5 w-3.5" />
-              Arraste os jogadores pra reorganizar o time do seu jeito.
+              Arraste os jogadores pra reorganizar o time — quanto mais longe da posição
+              ideal, mais a sincronia do esquema cai.
             </p>
           </div>
 
