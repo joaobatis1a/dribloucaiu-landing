@@ -13,7 +13,7 @@ export function Squad() {
         Onze titular e reservas do Driblou Caiu.
       </p>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" style={{ perspective: 1200 }}>
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" style={{ perspective: 1200 }}>
         {squad.map((player, i) => (
           <motion.div
             key={player.name}

@@ -271,7 +271,7 @@ export function Formation() {
 
   return (
     <section id="esquema" className="border-y border-border bg-card/30">
-      <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
         <SectionTitle kicker="Como jogamos" title={`Esquema ${formations[formationId].label}`} />
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground md:text-base">
           {formations[formationId].blurb}
@@ -303,7 +303,7 @@ export function Formation() {
         </div>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <div>
+          <div className="mx-auto w-full max-w-md lg:max-w-lg">
             <div
               ref={pitchRef}
               className="pitch-stripes relative aspect-[4/5] w-full touch-none overflow-hidden rounded-2xl border border-border shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] sm:aspect-[3/4]"
