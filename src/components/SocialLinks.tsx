@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Instagram, Play } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -13,7 +13,7 @@ const platforms = [
     url: club.social.tiktok.url,
     description: "Golaços, bastidores de treino e os melhores momentos dos jogos em vídeo curto.",
     Icon: TikTokIcon,
-    gradient: "linear-gradient(135deg, #25F4EE, #000000 45%, #FE2C55)",
+    accent: "#25F4EE",
     cta: "Seguir no TikTok",
   },
   {
@@ -22,7 +22,7 @@ const platforms = [
     url: club.social.instagram.url,
     description: "Fotos oficiais, escalação dos jogos e anúncios do clube em primeira mão.",
     Icon: Instagram,
-    gradient: "linear-gradient(135deg, #FEDA75, #FA7E1E, #D62976, #962FBF, #4F5BD5)",
+    accent: "#D62976",
     cta: "Seguir no Instagram",
   },
 ];
@@ -46,41 +46,37 @@ export function SocialLinks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
-            whileHover={{ y: -4 }}
-            className="group relative overflow-hidden rounded-2xl border border-border bg-card p-7"
+            className="group relative isolate flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-7"
           >
             <span
               aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-[0.08] transition-opacity duration-300 group-hover:opacity-[0.16]"
-              style={{ background: p.gradient }}
+              className="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-50 transition-transform duration-300 group-hover:scale-x-100"
+              style={{ background: p.accent }}
             />
-            <span
-              aria-hidden
-              className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              style={{ boxShadow: `0 0 0 1px color-mix(in oklab, white 25%, transparent)` }}
-            />
+            <div className="grain pointer-events-none absolute inset-0 opacity-[0.035]" aria-hidden />
 
-            <div className="relative flex items-start justify-between">
+            <div className="relative flex items-center justify-between">
               <span
-                className="flex h-14 w-14 items-center justify-center rounded-xl text-white shadow-lg"
-                style={{ background: p.gradient }}
+                className="flex h-11 w-11 items-center justify-center rounded-full border text-foreground transition-colors"
+                style={{ borderColor: `color-mix(in oklab, ${p.accent} 45%, var(--border))` }}
               >
-                <p.Icon className="h-7 w-7" />
+                <p.Icon className="h-5 w-5" style={{ color: p.accent }} />
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-all group-hover:border-accent group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                <Play className="h-3.5 w-3.5 -rotate-45 fill-current" />
+              <span className="font-display text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                {p.name}
               </span>
             </div>
 
-            <h3 className="relative mt-6 font-display text-2xl uppercase tracking-wide text-foreground">
-              {p.name}
-            </h3>
-            <p className="relative text-sm font-semibold text-accent">{p.handle}</p>
-            <p className="relative mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              {p.description}
-            </p>
+            <div className="relative mt-10">
+              <p className="font-display text-4xl uppercase leading-none tracking-tight text-foreground sm:text-5xl">
+                {p.handle}
+              </p>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                {p.description}
+              </p>
+            </div>
 
-            <span className="relative mt-6 inline-flex items-center gap-2 font-display text-sm uppercase tracking-wider text-foreground">
+            <span className="relative mt-8 inline-flex items-center gap-2 font-display text-sm uppercase tracking-wider text-foreground">
               {p.cta}
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </span>

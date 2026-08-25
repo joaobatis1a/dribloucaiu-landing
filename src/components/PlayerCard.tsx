@@ -16,23 +16,16 @@ const statLabels: Array<[keyof Player["stats"], string]> = [
 
 export function PlayerCard({ player }: { player: Player }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [sweepKey, setSweepKey] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
   const spx = useSpring(px, { stiffness: 220, damping: 22 });
   const spy = useSpring(py, { stiffness: 220, damping: 22 });
-  const tiltX = useTransform(spy, [0, 1], [8, -8]);
-  const tiltYDelta = useTransform(spx, [0, 1], [-8, 8]);
+  const tiltX = useTransform(spy, [0, 1], [6, -6]);
+  const tiltYDelta = useTransform(spx, [0, 1], [-6, 6]);
   const glowX = useTransform(spx, (v) => `${v * 100}%`);
   const glowY = useTransform(spy, (v) => `${v * 100}%`);
-  const holoBg = useTransform([spx, spy], ([x, y]: number[]) => {
-    const angle = 90 + ((x ?? 0.5) - 0.5) * 140;
-    const h1 = 200 + ((y ?? 0.5) - 0.5) * 120;
-    const h2 = h1 + 80;
-    return `linear-gradient(${angle}deg, transparent 15%, hsl(${h1} 90% 65%) 40%, hsl(${h2} 90% 65%) 55%, transparent 80%)`;
-  });
 
   const flipTarget = useMotionValue(0);
   const flipSpring = useSpring(flipTarget, { stiffness: 260, damping: 28 });
@@ -65,7 +58,6 @@ export function PlayerCard({ player }: { player: Player }) {
       ref={ref}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
-      onPointerEnter={() => setSweepKey((k) => k + 1)}
       className="group relative h-[21rem]"
       style={{ perspective: 1200 }}
     >
@@ -83,18 +75,8 @@ export function PlayerCard({ player }: { player: Player }) {
             className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             style={{
               boxShadow: style.glow,
-              background: `radial-gradient(280px circle at ${glowX} ${glowY}, color-mix(in oklab, var(--accent) 16%, transparent), transparent 70%)`,
+              background: `radial-gradient(280px circle at ${glowX} ${glowY}, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%)`,
             }}
-          />
-          <motion.span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-xl opacity-0 mix-blend-color-dodge transition-opacity duration-300 group-hover:opacity-[0.18]"
-            style={{ background: holoBg }}
-          />
-          <span
-            key={sweepKey}
-            aria-hidden
-            className="shimmer-sweep pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent"
           />
           <span
             aria-hidden

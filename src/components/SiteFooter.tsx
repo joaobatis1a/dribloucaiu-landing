@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUp, Instagram, MessageCircle } from "lucide-react";
+import { Instagram, MessageCircle } from "lucide-react";
 import crest from "@/assets/crest.png";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
@@ -16,37 +16,26 @@ const NAV_LINKS = [
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-border bg-card/30">
-      <div className="hud-grid absolute inset-0 -z-10 opacity-20" aria-hidden />
+      <div className="grain pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden />
 
-      <div className="mx-auto max-w-6xl px-6 pt-16">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative flex flex-col items-center gap-5 overflow-hidden rounded-2xl border border-border px-8 py-12 text-center [background:var(--gradient-hero)]"
-        >
-          <div className="hud-scan absolute inset-0 -z-10 opacity-40" aria-hidden />
-          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent">
-            Recrutamento aberto
-          </p>
-          <h2 className="max-w-xl font-display text-4xl uppercase leading-[0.95] tracking-tight text-foreground sm:text-5xl">
-            Quer jogar com a gente?
-          </h2>
-          <p className="max-w-md text-sm text-muted-foreground">
-            Peneiras toda semana, banco por mérito. Entra no Discord e chama a diretoria.
-          </p>
-          <a
-            href={club.discord}
-            className="mt-2 inline-flex items-center gap-2 rounded-md bg-primary px-8 py-3.5 font-display text-lg uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)]"
-          >
-            <MessageCircle className="h-5 w-5" aria-hidden />
-            Entrar no Discord
-          </a>
-        </motion.div>
-      </div>
+      <a
+        href={club.discord}
+        target="_blank"
+        rel="noreferrer noopener"
+        className="skew-band group relative block overflow-hidden border-y border-border bg-primary py-3"
+      >
+        <div className="animate-ticker flex w-max gap-10 whitespace-nowrap font-display text-lg uppercase tracking-[0.3em] text-primary-foreground transition-[gap] group-hover:[animation-play-state:paused]">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <span key={i} className="flex items-center gap-3">
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              Quer jogar com a gente? Entra no Discord
+              <span className="text-primary-foreground/50">·</span>
+            </span>
+          ))}
+        </div>
+      </a>
 
-      <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 md:grid-cols-4">
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
         <div className="sm:col-span-2 md:col-span-1">
           <div className="flex items-center gap-3">
             <img src={crest} alt="" loading="lazy" width={816} height={816} className="h-11 w-11" />
@@ -62,30 +51,30 @@ export function SiteFooter() {
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">
             Clube de torcedores para EA FC 26 Pro Clubs. Não afiliado à Electronic Arts.
           </p>
-          <div className="mt-4 flex items-center gap-4">
+          <div className="mt-5 flex items-center gap-3">
             <a
               href={club.social.instagram.url}
               target="_blank"
               rel="noreferrer noopener"
               aria-label="Instagram"
-              className="text-muted-foreground transition-colors hover:text-accent"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-accent hover:text-accent"
             >
-              <Instagram className="h-4.5 w-4.5" />
+              <Instagram className="h-4 w-4" />
             </a>
             <a
               href={club.social.tiktok.url}
               target="_blank"
               rel="noreferrer noopener"
               aria-label="TikTok"
-              className="text-muted-foreground transition-colors hover:text-accent"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-accent hover:text-accent"
             >
-              <TikTokIcon className="h-4.5 w-4.5" />
+              <TikTokIcon className="h-4 w-4" />
             </a>
           </div>
         </div>
 
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="dotted-rule pb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
             Navegação
           </p>
           <ul className="mt-4 space-y-2.5">
@@ -103,7 +92,7 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="dotted-rule pb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
             Clube
           </p>
           <ul className="mt-4 space-y-2.5 text-sm text-foreground/80">
@@ -114,7 +103,7 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="dotted-rule pb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
             Próximo jogo
           </p>
           <a href="#proximo-jogo" className="group mt-4 block text-sm text-foreground/80">
@@ -129,13 +118,17 @@ export function SiteFooter() {
       </div>
 
       <div className="relative select-none overflow-hidden">
-        <p
+        <motion.p
           aria-hidden
-          className="pointer-events-none -mb-8 text-center font-display uppercase leading-none text-foreground/[0.04]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2 }}
+          className="pointer-events-none -mb-8 text-center font-display uppercase leading-none text-foreground/[0.035]"
           style={{ fontSize: "clamp(4rem, 18vw, 13rem)" }}
         >
           Driblou Caiu
-        </p>
+        </motion.p>
       </div>
 
       <div className="relative border-t border-border">
@@ -143,12 +136,7 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {club.name}. Feito por torcedores.
           </p>
-          <a
-            href="#top"
-            className="inline-flex items-center gap-1.5 text-foreground/70 transition-colors hover:text-accent"
-          >
-            Voltar ao topo <ArrowUp className="h-3.5 w-3.5" aria-hidden />
-          </a>
+          <p className="text-foreground/50">EA FC 26 · Pro Clubs</p>
         </div>
       </div>
     </footer>
