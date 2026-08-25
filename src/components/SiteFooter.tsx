@@ -13,6 +13,12 @@ const NAV_LINKS = [
   { href: "#redes", label: "Redes" },
 ];
 
+const FACTS = [
+  `Fundado em ${club.founded}`,
+  club.platform,
+  `Esquema ${club.formation}`,
+];
+
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-border bg-card/30">
@@ -35,23 +41,24 @@ export function SiteFooter() {
         </div>
       </a>
 
-      <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
-        <div className="sm:col-span-2 md:col-span-1">
-          <div className="flex items-center gap-3">
-            <img src={crest} alt="" loading="lazy" width={816} height={816} className="h-11 w-11" />
+      <div className="relative mx-auto grid max-w-6xl gap-0 px-6 py-16 lg:grid-cols-[1.1fr_auto_1fr] lg:gap-10">
+        <div>
+          <div className="flex items-center gap-3.5">
+            <img src={crest} alt="" loading="lazy" width={816} height={816} className="h-14 w-14" />
             <div>
-              <p className="font-display text-lg uppercase tracking-wide text-foreground">
+              <p className="font-display text-3xl uppercase leading-none tracking-wide text-foreground">
                 {club.name}
               </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
                 {club.tagline}
               </p>
             </div>
           </div>
-          <p className="mt-4 max-w-xs text-sm text-muted-foreground">
-            Clube de torcedores para EA FC 26 Pro Clubs. Não afiliado à Electronic Arts.
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            Clube de torcedores para EA FC 26 Pro Clubs. Não afiliado à Electronic Arts — feito
+            por quem joga, pra quem acompanha.
           </p>
-          <div className="mt-5 flex items-center gap-3">
+          <div className="mt-6 flex items-center gap-3">
             <a
               href={club.social.instagram.url}
               target="_blank"
@@ -73,47 +80,48 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div>
-          <p className="dotted-rule pb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-            Navegação
-          </p>
-          <ul className="mt-4 space-y-2.5">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="text-sm text-foreground/80 transition-colors hover:text-accent"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <div
+          className="my-10 hidden w-px lg:block"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, var(--border) 0, var(--border) 6px, transparent 6px, transparent 14px)",
+          }}
+          aria-hidden
+        />
 
-        <div>
-          <p className="dotted-rule pb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-            Clube
-          </p>
-          <ul className="mt-4 space-y-2.5 text-sm text-foreground/80">
-            <li>Fundado em {club.founded}</li>
-            <li>{club.platform}</li>
-            <li>Esquema {club.formation}</li>
-          </ul>
-        </div>
-
-        <div>
-          <p className="dotted-rule pb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-            Próximo jogo
-          </p>
-          <a href="#proximo-jogo" className="group mt-4 block text-sm text-foreground/80">
-            <span className="block font-display text-base uppercase tracking-wide text-foreground transition-colors group-hover:text-accent">
+        <div className="mt-10 lg:mt-0">
+          <a
+            href="#proximo-jogo"
+            className="group block rounded-xl border border-dashed border-border p-5 transition-colors hover:border-accent"
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
+              Próximo jogo
+            </p>
+            <p className="mt-2 font-display text-2xl uppercase leading-none tracking-wide text-foreground transition-colors group-hover:text-accent">
               vs {club.nextMatch.opponent}
-            </span>
-            <span className="text-xs text-muted-foreground">
+            </p>
+            <p className="mt-1.5 text-xs uppercase tracking-[0.15em] text-muted-foreground">
               {club.nextMatch.competition} · {club.nextMatch.venue}
-            </span>
+            </p>
           </a>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:border-accent hover:text-accent"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+            {FACTS.map((fact) => (
+              <span key={fact}>{fact}</span>
+            ))}
+          </div>
         </div>
       </div>
 
