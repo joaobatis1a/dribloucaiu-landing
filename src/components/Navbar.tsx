@@ -16,8 +16,7 @@ const LINKS = [
   { href: "#sobre", label: "Clube", id: "sobre" },
   { href: "#esquema", label: "Esquema", id: "esquema" },
   { href: "#elenco", label: "Elenco", id: "elenco" },
-  { href: "#resultados", label: "Resultados", id: "resultados" },
-  { href: "#tabela", label: "Tabela", id: "tabela" },
+  { href: "#temporada", label: "Temporada", id: "temporada" },
   { href: "#redes", label: "Redes", id: "redes" },
 ];
 

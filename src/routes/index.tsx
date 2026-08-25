@@ -6,8 +6,7 @@ import { About } from "@/components/About";
 import { Formation } from "@/components/Formation";
 import { Squad } from "@/components/Squad";
 import { NextMatch } from "@/components/NextMatch";
-import { Results } from "@/components/Results";
-import { LeagueTable } from "@/components/LeagueTable";
+import { Season } from "@/components/Season";
 import { SocialLinks } from "@/components/SocialLinks";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -43,8 +42,7 @@ function Index() {
       <Formation />
       <Squad />
       <NextMatch />
-      <Results />
-      <LeagueTable />
+      <Season />
       <SocialLinks />
       <SiteFooter />
       <ScrollToTop />
