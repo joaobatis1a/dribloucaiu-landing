@@ -20,8 +20,16 @@ export function Season() {
   const form = results.map((m) => matchOutcome(m.goalsFor, m.goalsAgainst));
 
   return (
-    <section id="temporada" className="border-y border-border bg-card/30">
-      <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+    <section id="temporada" className="relative overflow-hidden border-y border-border bg-card/30">
+      <div
+        className="pointer-events-none absolute -left-24 top-0 h-80 w-80 rounded-full bg-primary/15 blur-[130px]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-accent/10 blur-[130px]"
+        aria-hidden
+      />
+      <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
         <SectionTitle kicker="Campanha" title="Onde a gente está" />
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[auto_1fr] lg:items-center lg:gap-16">
@@ -76,9 +84,14 @@ export function Season() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.07, ease: EASE }}
-                whileHover={{ y: -3 }}
-                className="relative flex w-56 shrink-0 snap-start overflow-hidden rounded-xl border border-border bg-card"
+                whileHover={{ y: -4 }}
+                className="relative flex w-56 shrink-0 snap-start overflow-hidden rounded-xl border border-border bg-card shadow-[0_20px_50px_-30px_rgba(0,0,0,0.85)] transition-shadow duration-300 hover:border-accent/40"
               >
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 top-0 h-10 opacity-[0.06]"
+                  style={{ background: "linear-gradient(180deg, white, transparent)" }}
+                />
                 <span className={`w-1.5 shrink-0 ${style.className}`} aria-hidden />
                 <div className="flex-1 p-4">
                   <p className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -110,7 +123,7 @@ export function Season() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: EASE }}
-          className="mt-14 overflow-hidden rounded-xl border border-border bg-card"
+          className="mt-14 overflow-hidden rounded-xl border border-border bg-card shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)]"
         >
           <p className="dotted-rule px-4 pb-3 pt-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
             Tabela da liga

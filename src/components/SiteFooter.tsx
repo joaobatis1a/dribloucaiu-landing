@@ -22,6 +22,10 @@ export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-border bg-card/30">
       <div className="grain pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden />
+      <div
+        className="pointer-events-none absolute left-1/2 top-40 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]"
+        aria-hidden
+      />
 
       <a
         href={club.discord}
@@ -91,7 +95,7 @@ export function SiteFooter() {
         <div className="mt-10 lg:mt-0">
           <a
             href="#proximo-jogo"
-            className="group block rounded-xl border border-dashed border-border p-5 transition-colors hover:border-accent"
+            className="group block rounded-xl border border-dashed border-border bg-card/40 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.85)] backdrop-blur-sm transition-colors hover:border-accent"
           >
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
               Próximo jogo

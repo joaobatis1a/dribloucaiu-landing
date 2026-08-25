@@ -46,7 +46,8 @@ export function SocialLinks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
-            className="group relative isolate flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-7"
+            whileHover={{ y: -3 }}
+            className="group relative isolate flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)] transition-colors duration-300 hover:border-border/80"
           >
             <span
               aria-hidden

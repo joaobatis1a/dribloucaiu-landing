@@ -29,8 +29,16 @@ export function PlayerRow({ player, index }: { player: Player; index: number }) 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, delay: index * 0.04, ease: EASE }}
-      className="group relative border-b border-border last:border-0"
+      className="group relative overflow-hidden rounded-2xl border-b border-border last:border-0"
     >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background:
+            "radial-gradient(320px circle at 0% 50%, color-mix(in oklab, var(--accent) 8%, transparent), transparent 70%)",
+        }}
+      />
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -46,9 +54,14 @@ export function PlayerRow({ player, index }: { player: Player; index: number }) 
         <div className="relative shrink-0">
           <PlayerAvatar photo={player.photo} ring={style.ring} size="md" />
           <span
-            className={`absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-gradient-to-b font-display text-[11px] leading-none ${style.card} ${style.rating}`}
+            className={`absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border-2 border-background bg-gradient-to-b font-display text-[11px] leading-none ${style.card} ${style.rating}`}
           >
-            {player.overall}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-60"
+              style={{ background: "linear-gradient(115deg, transparent 30%, color-mix(in oklab, white 55%, transparent) 48%, transparent 62%)" }}
+            />
+            <span className="relative">{player.overall}</span>
           </span>
         </div>
 
@@ -90,7 +103,7 @@ export function PlayerRow({ player, index }: { player: Player; index: number }) 
             transition={{ duration: 0.35, ease: EASE }}
             className="overflow-hidden"
           >
-            <div className="grid gap-6 pb-6 sm:grid-cols-[1fr_14rem]">
+            <div className="mb-5 grid gap-6 rounded-xl border border-border bg-card/50 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.85)] backdrop-blur-sm sm:grid-cols-[1fr_14rem]">
               <dl className="grid grid-cols-3 gap-x-4 gap-y-3 content-start sm:grid-cols-6">
                 {statLabels.map(([key, label]) => (
                   <div key={key}>

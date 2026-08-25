@@ -71,9 +71,14 @@ function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
         <div className="relative shrink-0">
           <PlayerAvatar photo={player.photo} ring={style.ring} size="sm" />
           <span
-            className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-card bg-gradient-to-b font-display text-[9px] leading-none ${style.card} ${style.rating}`}
+            className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border-2 border-card bg-gradient-to-b font-display text-[9px] leading-none ${style.card} ${style.rating}`}
           >
-            {player.overall}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-60"
+              style={{ background: "linear-gradient(115deg, transparent 30%, color-mix(in oklab, white 55%, transparent) 48%, transparent 62%)" }}
+            />
+            <span className="relative">{player.overall}</span>
           </span>
         </div>
         <div className="min-w-0">

@@ -26,6 +26,14 @@ export function PlayerAvatar({
           <path d="M3 40c0-10.5 7.6-16 17-16s17 5.5 17 16" />
         </svg>
       )}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{
+          background:
+            "linear-gradient(125deg, color-mix(in oklab, white 22%, transparent) 0%, transparent 30%, transparent 70%, color-mix(in oklab, black 25%, transparent) 100%)",
+        }}
+      />
     </div>
   );
 }
