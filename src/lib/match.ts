@@ -51,6 +51,15 @@ export const ratingTierStyles: Record<
   },
 };
 
+export type PositionBucket = "ATA" | "MEI" | "DEF" | "GOL";
+
+export function positionBucket(position: string): PositionBucket {
+  if (position === "GOL") return "GOL";
+  if (position === "ZAG" || position === "LE" || position === "LD") return "DEF";
+  if (position === "VOL" || position === "MC" || position === "MEI") return "MEI";
+  return "ATA";
+}
+
 export const positionNames: Record<string, string> = {
   GOL: "Goleiro",
   ZAG: "Zagueiro",
