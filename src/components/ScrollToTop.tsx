@@ -1,9 +1,25 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
 import { useState } from "react";
-import crest from "@/assets/crest.png";
 
 const RADIUS = 22;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+function SoccerBall({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden>
+      <circle cx="20" cy="20" r="18" fill="white" stroke="#111" strokeWidth="1.4" />
+      <g stroke="#111" strokeWidth="1.2" fill="none" strokeLinejoin="round">
+        <path d="M20 10 25.5 14 23.5 20.3 16.5 20.3 14.5 14Z" fill="#111" />
+        <path d="M20 10 15 4.5" />
+        <path d="M20 10 25 4.5" />
+        <path d="M14.5 14 6.5 13" />
+        <path d="M23.5 20.3 26 28" />
+        <path d="M16.5 20.3 14 28" />
+        <path d="M25.5 14 33.5 13" />
+      </g>
+    </svg>
+  );
+}
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
@@ -45,13 +61,7 @@ export function ScrollToTop() {
               }}
             />
           </svg>
-          <motion.img
-            src={crest}
-            alt=""
-            width={800}
-            height={800}
-            className="h-9 w-9 transition-transform duration-300 group-hover:-rotate-[18deg]"
-          />
+          <SoccerBall className="h-7 w-7 transition-transform duration-500 group-hover:rotate-[220deg]" />
         </motion.button>
       ) : null}
     </AnimatePresence>

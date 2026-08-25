@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
+  useMotionValue,
   useMotionValueEvent,
   useSpring,
   useTransform,
@@ -61,12 +62,21 @@ function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
       animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.12 } }}
       transition={{ type: "spring", stiffness: 420, damping: 24 }}
-      style={{ left: `${pos.x}%`, top: `${pos.y}%`, boxShadow: style.glow }}
-      className={`pointer-events-none absolute z-20 w-52 rounded-xl border bg-card/95 p-4 backdrop-blur-md ${
+      style={{ left: `${pos.x}%`, top: `${pos.y}%`, boxShadow: `${style.glow}, 0 20px 45px -20px rgba(0,0,0,0.8)` }}
+      className={`pointer-events-none absolute z-20 w-56 overflow-hidden rounded-2xl border border-border/60 bg-card/95 p-4 backdrop-blur-md ${
         anchorX === "right" ? "-translate-x-[calc(100%+14px)]" : anchorX === "left" ? "translate-x-[14px]" : "-translate-x-1/2"
       } ${anchorY === "below" ? "translate-y-[14px]" : "-translate-y-[calc(100%+14px)]"}`}
     >
-      <div style={{ borderColor: style.ring }} className="absolute inset-0 rounded-xl border" aria-hidden />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[3px]"
+        style={{ background: style.ring }}
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-25 blur-2xl"
+        style={{ background: style.ring }}
+      />
       <div className="relative flex items-center gap-3">
         <div className="relative shrink-0">
           <PlayerAvatar photo={player.photo} ring={style.ring} size="sm" />
@@ -109,6 +119,85 @@ function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
   );
 }
 
+function PlayerDot({
+  player,
+  pos,
+  index,
+  isActive,
+  isDragging,
+  pitchRef,
+  onDragStart,
+  onDragEnd,
+  onActivate,
+  onDeactivate,
+}: {
+  player: Player;
+  pos: Position;
+  index: number;
+  isActive: boolean;
+  isDragging: boolean;
+  pitchRef: React.RefObject<HTMLDivElement | null>;
+  onDragStart: () => void;
+  onDragEnd: (info: PanInfo, resetXY: () => void) => void;
+  onActivate: () => void;
+  onDeactivate: () => void;
+}) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  function resetXY() {
+    x.set(0);
+    y.set(0);
+  }
+
+  return (
+    <div
+      style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
+      className={`absolute z-10 ${isDragging ? "z-30" : ""}`}
+    >
+      <motion.button
+        type="button"
+        style={{ x, y }}
+        initial={{ opacity: 0, scale: 0.3 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, delay: 0.1 + index * 0.05, ease: EASE }}
+        drag
+        dragConstraints={pitchRef}
+        dragElastic={0.08}
+        dragMomentum={false}
+        whileHover={{ scale: 1.18 }}
+        whileDrag={{ scale: 1.15, zIndex: 30 }}
+        onDragStart={onDragStart}
+        onDragEnd={(_e, info) => onDragEnd(info, resetXY)}
+        onMouseEnter={() => !isDragging && onActivate()}
+        onMouseLeave={onDeactivate}
+        onFocus={onActivate}
+        onBlur={onDeactivate}
+        onClick={onActivate}
+        className="block cursor-grab touch-none outline-none active:cursor-grabbing"
+      >
+        <span
+          className={`relative flex h-9 w-9 items-center justify-center rounded-full border font-display text-xs shadow-lg transition-colors sm:h-11 sm:w-11 sm:text-sm ${
+            isActive
+              ? "border-accent bg-accent text-accent-foreground"
+              : "border-white/30 bg-primary text-primary-foreground"
+          }`}
+        >
+          {isActive ? (
+            <span className="animate-pulse-dot absolute inset-0 rounded-full" aria-hidden />
+          ) : null}
+          {player.number}
+          {player.captain ? (
+            <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background bg-accent text-[8px] font-bold text-accent-foreground">
+              C
+            </span>
+          ) : null}
+        </span>
+      </motion.button>
+    </div>
+  );
+}
+
 export function Formation() {
   const [formationId, setFormationId] = useState<FormationId>("4-3-3");
   const [positions, setPositions] = useState<Record<string, Position>>(() =>
@@ -130,22 +219,34 @@ export function Formation() {
     setPositions(slotsToPositions(formations[formationId].slots));
   }
 
-  function handleDragEnd(name: string, info: PanInfo) {
+  function activate(name: string) {
+    if (!draggingName) setActiveName(name);
+  }
+
+  function deactivate() {
+    setActiveName(null);
+  }
+
+  function handleDragEnd(name: string, info: PanInfo, resetXY: () => void) {
     const rect = pitchRef.current?.getBoundingClientRect();
     setDraggingName(null);
-    if (!rect) return;
-    const x = clamp(((info.point.x - rect.left) / rect.width) * 100, 4, 96);
-    const y = clamp(((info.point.y - rect.top) / rect.height) * 100, 4, 96);
-    setPositions((prev) => ({ ...prev, [name]: { x, y } }));
+    if (rect) {
+      const dxPct = (info.offset.x / rect.width) * 100;
+      const dyPct = (info.offset.y / rect.height) * 100;
+      setPositions((prev) => {
+        const current = prev[name];
+        if (!current) return prev;
+        return {
+          ...prev,
+          [name]: { x: clamp(current.x + dxPct, 4, 96), y: clamp(current.y + dyPct, 4, 96) },
+        };
+      });
+    }
+    resetXY();
   }
 
   const active = activeName ? squad.find((p) => p.name === activeName) ?? null : null;
   const activePos = activeName ? positions[activeName] : undefined;
-
-  const teamOverall = useMemo(
-    () => Math.round(squad.reduce((sum, p) => sum + p.overall, 0) / squad.length),
-    [],
-  );
 
   const chemistry = useMemo(() => {
     const slots = formations[formationId].slots;
@@ -229,48 +330,32 @@ export function Formation() {
                 ⚽
               </div>
 
-              <div className="absolute left-3 top-3 z-20 flex items-center gap-3 rounded-xl border border-border bg-background/75 px-3 py-2.5 backdrop-blur-md sm:left-4 sm:top-4 sm:gap-4 sm:px-4 sm:py-3">
-                <div className="flex flex-col items-center leading-none">
-                  <span className="font-display text-xl text-foreground sm:text-2xl">{teamOverall}</span>
-                  <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    Força
+              <div className="absolute left-3 top-3 z-20 flex items-center gap-2.5 rounded-xl border border-border bg-background/75 px-3 py-2 backdrop-blur-md sm:left-4 sm:top-4">
+                <div className="relative h-9 w-9 shrink-0 sm:h-10 sm:w-10">
+                  <svg viewBox="0 0 40 40" className="h-full w-full -rotate-90">
+                    <circle cx="20" cy="20" r={CHEM_RING_R} strokeWidth="3" fill="none" className="stroke-border" />
+                    <motion.circle
+                      cx="20"
+                      cy="20"
+                      r={CHEM_RING_R}
+                      strokeWidth="3"
+                      fill="none"
+                      strokeLinecap="round"
+                      stroke={tier.ring}
+                      style={{ pathLength: chemFraction, strokeDasharray: CHEM_RING_C }}
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center font-display text-[10px] text-foreground sm:text-xs">
+                    {chemDisplay}%
                   </span>
                 </div>
-                <span className="h-8 w-px bg-border" aria-hidden />
-                <div className="flex items-center gap-2">
-                  <div className="relative h-9 w-9 shrink-0 sm:h-10 sm:w-10">
-                    <svg viewBox="0 0 40 40" className="h-full w-full -rotate-90">
-                      <circle
-                        cx="20"
-                        cy="20"
-                        r={CHEM_RING_R}
-                        strokeWidth="3"
-                        fill="none"
-                        className="stroke-border"
-                      />
-                      <motion.circle
-                        cx="20"
-                        cy="20"
-                        r={CHEM_RING_R}
-                        strokeWidth="3"
-                        fill="none"
-                        strokeLinecap="round"
-                        stroke={tier.ring}
-                        style={{ pathLength: chemFraction, strokeDasharray: CHEM_RING_C }}
-                      />
-                    </svg>
-                    <span className="absolute inset-0 flex items-center justify-center font-display text-[10px] text-foreground sm:text-xs">
-                      {chemDisplay}%
-                    </span>
-                  </div>
-                  <div className="flex flex-col leading-none">
-                    <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                      Sincronia
-                    </span>
-                    <span className={`mt-1 text-[10px] font-semibold uppercase tracking-wide ${tier.text}`}>
-                      {tier.label}
-                    </span>
-                  </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                    Sincronia
+                  </span>
+                  <span className={`mt-1 text-[10px] font-semibold uppercase tracking-wide ${tier.text}`}>
+                    {tier.label}
+                  </span>
                 </div>
               </div>
 
@@ -301,49 +386,19 @@ export function Formation() {
                   const isActive = activeName === p.name;
                   const isDragging = draggingName === p.name;
                   return (
-                    <div
+                    <PlayerDot
                       key={p.name}
-                      style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
-                      className={`absolute z-10 ${isDragging ? "z-30" : ""}`}
-                    >
-                      <motion.button
-                        key={`${pos.x.toFixed(0)}-${pos.y.toFixed(0)}`}
-                        type="button"
-                        initial={{ opacity: 0, scale: 0.3 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.45, delay: 0.1 + i * 0.05, ease: EASE }}
-                        drag
-                        dragConstraints={pitchRef}
-                        dragElastic={0.08}
-                        dragMomentum={false}
-                        whileHover={{ scale: 1.18 }}
-                        whileDrag={{ scale: 1.15, zIndex: 30 }}
-                        onDragStart={() => setDraggingName(p.name)}
-                        onDragEnd={(_e, info) => handleDragEnd(p.name, info)}
-                        onMouseEnter={() => !draggingName && setActiveName(p.name)}
-                        onFocus={() => setActiveName(p.name)}
-                        onClick={() => setActiveName(p.name)}
-                        className="block cursor-grab touch-none outline-none active:cursor-grabbing"
-                      >
-                        <span
-                          className={`relative flex h-9 w-9 items-center justify-center rounded-full border font-display text-xs shadow-lg transition-colors sm:h-11 sm:w-11 sm:text-sm ${
-                            isActive
-                              ? "border-accent bg-accent text-accent-foreground"
-                              : "border-white/30 bg-primary text-primary-foreground"
-                          }`}
-                        >
-                          {isActive ? (
-                            <span className="animate-pulse-dot absolute inset-0 rounded-full" aria-hidden />
-                          ) : null}
-                          {p.number}
-                          {p.captain ? (
-                            <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background bg-accent text-[8px] font-bold text-accent-foreground">
-                              C
-                            </span>
-                          ) : null}
-                        </span>
-                      </motion.button>
-                    </div>
+                      player={p}
+                      pos={pos}
+                      index={i}
+                      isActive={isActive}
+                      isDragging={isDragging}
+                      pitchRef={pitchRef}
+                      onDragStart={() => setDraggingName(p.name)}
+                      onDragEnd={(info, resetXY) => handleDragEnd(p.name, info, resetXY)}
+                      onActivate={() => activate(p.name)}
+                      onDeactivate={deactivate}
+                    />
                   );
                 })}
               </div>

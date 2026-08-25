@@ -25,9 +25,12 @@ export function About() {
         src={crest}
         alt=""
         initial={{ opacity: 0, rotate: -8 }}
-        whileInView={{ opacity: 0.06, rotate: -14 }}
+        whileInView={{ opacity: 0.06, rotate: [-14, -11, -14] }}
         viewport={{ once: true }}
-        transition={{ duration: 1.4, ease: EASE }}
+        transition={{
+          opacity: { duration: 1.4, ease: EASE },
+          rotate: { duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1.4 },
+        }}
         className="pointer-events-none absolute -right-24 top-1/2 hidden h-[36rem] w-[36rem] -translate-y-1/2 select-none lg:block"
       />
 
@@ -35,12 +38,14 @@ export function About() {
         <SectionTitle kicker="Identidade" title="Sobre o clube" />
 
         <div className="relative mt-10 max-w-3xl">
-          <span
+          <motion.span
             aria-hidden
-            className="pointer-events-none absolute -left-4 -top-10 select-none font-display text-8xl leading-none text-accent/25"
+            animate={{ opacity: [0.25, 0.45, 0.25] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="pointer-events-none absolute -left-4 -top-10 select-none font-display text-8xl leading-none text-accent"
           >
             “
-          </span>
+          </motion.span>
           <p className="relative text-lg leading-relaxed text-foreground/90 md:text-xl">
             {club.about}
           </p>
@@ -54,6 +59,7 @@ export function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.55, delay: i * 0.1, ease: EASE }}
+              whileHover={{ y: -4 }}
               className="relative py-6 sm:px-8 sm:py-0"
             >
               <span className="font-display text-6xl leading-none text-transparent sm:text-7xl" style={{ WebkitTextStroke: "1.5px color-mix(in oklab, var(--accent) 55%, transparent)" }}>
@@ -107,10 +113,18 @@ export function About() {
             </p>
             <div className="mt-5 flex flex-col gap-4">
               {club.achievements.map((a) => (
-                <div key={`${a.title}-${a.year}`} className="flex items-center gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color-mix(in_oklab,var(--gold)_16%,transparent)]">
+                <motion.div
+                  key={`${a.title}-${a.year}`}
+                  whileHover={{ x: 4 }}
+                  className="group flex items-center gap-4"
+                >
+                  <motion.span
+                    whileHover={{ rotate: -14, scale: 1.08 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 12 }}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color-mix(in_oklab,var(--gold)_16%,transparent)]"
+                  >
                     <Trophy className="h-5 w-5 text-[color:var(--gold)]" aria-hidden />
-                  </span>
+                  </motion.span>
                   <div className="min-w-0">
                     <p className="truncate font-display text-lg uppercase leading-tight tracking-wide text-foreground">
                       {a.title}
@@ -119,7 +133,7 @@ export function About() {
                       {a.detail} · {a.year}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

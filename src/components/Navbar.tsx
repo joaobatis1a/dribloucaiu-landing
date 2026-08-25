@@ -66,38 +66,6 @@ export function Navbar() {
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div
-        className={`hidden overflow-hidden transition-[max-height,opacity] duration-300 md:block ${
-          solid ? "max-h-0 opacity-0" : "max-h-8 opacity-100"
-        }`}
-      >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          <span>
-            Fundado em {club.founded} · {club.platform} · Esquema {club.formation}
-          </span>
-          <div className="flex items-center gap-3">
-            <a
-              href={club.social.instagram.url}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Instagram"
-              className="transition-colors hover:text-accent"
-            >
-              <Instagram className="h-3.5 w-3.5" />
-            </a>
-            <a
-              href={club.social.tiktok.url}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="TikTok"
-              className="transition-colors hover:text-accent"
-            >
-              <TikTokIcon className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        </div>
-      </div>
-
       <motion.div
         className="h-[2px] origin-left bg-gradient-to-r from-primary via-accent to-primary"
         style={{ scaleX: progress }}
@@ -148,12 +116,15 @@ export function Navbar() {
           href={club.discord}
           target="_blank"
           rel="noreferrer noopener"
-          className="hidden -skew-x-6 items-center gap-2 border-2 border-primary bg-primary px-5 py-2 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:bg-transparent hover:text-primary [box-shadow:var(--shadow-red)] md:inline-flex"
+          className="relative hidden items-center gap-2 overflow-hidden rounded-full bg-primary px-5 py-2.5 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)] md:inline-flex"
         >
-          <span className="flex skew-x-6 items-center gap-2">
-            <MessageCircle className="h-4 w-4" />
-            Discord
-          </span>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{ background: "linear-gradient(115deg, transparent 35%, color-mix(in oklab, white 55%, transparent) 50%, transparent 65%)" }}
+          />
+          <MessageCircle className="relative h-4 w-4" />
+          <span className="relative">Discord</span>
         </a>
 
         <Sheet>

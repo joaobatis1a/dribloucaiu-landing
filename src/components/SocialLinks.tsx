@@ -13,7 +13,7 @@ const platforms = [
     url: club.social.tiktok.url,
     description: "Golaços, bastidores de treino e os melhores momentos dos jogos em vídeo curto.",
     Icon: TikTokIcon,
-    accent: "#25F4EE",
+    accent: "var(--accent)",
     cta: "Seguir no TikTok",
   },
   {
@@ -22,7 +22,7 @@ const platforms = [
     url: club.social.instagram.url,
     description: "Fotos oficiais, escalação dos jogos e anúncios do clube em primeira mão.",
     Icon: Instagram,
-    accent: "#D62976",
+    accent: "var(--primary)",
     cta: "Seguir no Instagram",
   },
 ];
