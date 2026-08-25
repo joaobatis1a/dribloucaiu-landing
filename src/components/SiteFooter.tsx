@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { href: "#sobre", label: "Clube" },
   { href: "#esquema", label: "Esquema" },
   { href: "#elenco", label: "Elenco" },
-  { href: "#temporada", label: "Temporada" },
+  { href: "#amistosos", label: "Amistosos" },
   { href: "#redes", label: "Redes" },
 ];
 

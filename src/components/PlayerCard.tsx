@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { RotateCw } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts";
@@ -15,38 +15,14 @@ const statLabels: Array<[keyof Player["stats"], string]> = [
 ];
 
 export function PlayerCard({ player }: { player: Player }) {
-  const ref = useRef<HTMLDivElement>(null);
   const [flipped, setFlipped] = useState(false);
-  const [sweepKey, setSweepKey] = useState(0);
   const tier = ratingTier(player.overall);
   const style = ratingTierStyles[tier];
-  const isIcon = tier === "icon";
   const radarData = statLabels.map(([key, label]) => ({ stat: label, value: player.stats[key] }));
-
-  const px = useMotionValue(0.5);
-  const py = useMotionValue(0.5);
-  const spx = useSpring(px, { stiffness: 220, damping: 22 });
-  const spy = useSpring(py, { stiffness: 220, damping: 22 });
-  const tiltX = useTransform(spy, [0, 1], [6, -6]);
-  const tiltYDelta = useTransform(spx, [0, 1], [-6, 6]);
-  const glowX = useTransform(spx, (v) => `${v * 100}%`);
-  const glowY = useTransform(spy, (v) => `${v * 100}%`);
 
   const flipTarget = useMotionValue(0);
   const flipSpring = useSpring(flipTarget, { stiffness: 260, damping: 28 });
-  const rotateY = useTransform([flipSpring, tiltYDelta], ([f, t]: number[]) => (f ?? 0) + (t ?? 0));
-
-  function handleMove(e: React.PointerEvent<HTMLDivElement>) {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    px.set((e.clientX - rect.left) / rect.width);
-    py.set((e.clientY - rect.top) / rect.height);
-  }
-
-  function handleLeave() {
-    px.set(0.5);
-    py.set(0.5);
-  }
+  const rotateY = useTransform(flipSpring, (v) => v);
 
   function toggleFlip() {
     const next = !flipped;
@@ -55,48 +31,17 @@ export function PlayerCard({ player }: { player: Player }) {
   }
 
   return (
-    <div
-      ref={ref}
-      onPointerMove={handleMove}
-      onPointerLeave={handleLeave}
-      onPointerEnter={() => setSweepKey((k) => k + 1)}
-      className="relative h-[19.5rem]"
-      style={{ perspective: 1200 }}
-    >
+    <div className="relative h-[19.5rem]" style={{ perspective: 1200 }}>
       <motion.div
-        style={{ rotateX: tiltX, rotateY, transformStyle: "preserve-3d" }}
-        className="group relative h-full w-full will-change-transform"
+        style={{ rotateY, transformStyle: "preserve-3d" }}
+        className="group relative h-full w-full transition-transform duration-300 hover:-translate-y-1"
       >
         {/* FRONT */}
         <article
           style={{ backfaceVisibility: "hidden" }}
-          className={`absolute inset-0 overflow-hidden rounded-2xl border bg-gradient-to-b p-3.5 shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)] ${style.card}`}
+          className="absolute inset-0 overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
         >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{ boxShadow: style.glow }}
-          />
-          {isIcon ? (
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 rounded-2xl"
-              animate={{ boxShadow: [style.glow, `${style.glow}, 0 0 30px 4px color-mix(in oklab, var(--accent) 45%, transparent)`, style.glow] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-            />
-          ) : null}
-          <motion.span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{
-              background: `radial-gradient(200px circle at ${glowX} ${glowY}, color-mix(in oklab, white 16%, transparent), transparent 70%)`,
-            }}
-          />
-          <span
-            key={sweepKey}
-            aria-hidden
-            className="shimmer-sweep pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 bg-gradient-to-r from-transparent via-white/12 to-transparent"
-          />
+          <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: style.ring }} aria-hidden />
 
           <button
             type="button"
@@ -148,11 +93,6 @@ export function PlayerCard({ player }: { player: Player }) {
               className="pointer-events-none absolute inset-0"
               style={{ background: "linear-gradient(180deg, transparent 50%, var(--card) 100%)" }}
             />
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-40"
-              style={{ background: "linear-gradient(115deg, transparent 35%, color-mix(in oklab, white 40%, transparent) 48%, transparent 62%)" }}
-            />
           </div>
 
           <h3 className="relative mt-2 text-center font-display text-xl uppercase leading-none tracking-wide text-foreground">
@@ -177,8 +117,10 @@ export function PlayerCard({ player }: { player: Player }) {
         {/* BACK */}
         <article
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          className={`absolute inset-0 flex flex-col overflow-hidden rounded-2xl border bg-gradient-to-b p-3.5 shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)] ${style.card}`}
+          className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
         >
+          <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: style.ring }} aria-hidden />
+
           <button
             type="button"
             onClick={toggleFlip}
@@ -205,7 +147,7 @@ export function PlayerCard({ player }: { player: Player }) {
               <RadarChart data={radarData} outerRadius="68%">
                 <PolarGrid stroke="var(--border)" />
                 <PolarAngleAxis dataKey="stat" tick={{ fill: "var(--muted-foreground)", fontSize: 9 }} />
-                <Radar dataKey="value" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.4} strokeWidth={2} />
+                <Radar dataKey="value" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} strokeWidth={2} />
               </RadarChart>
             </ResponsiveContainer>
           </div>

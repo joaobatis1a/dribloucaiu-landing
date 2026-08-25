@@ -16,7 +16,7 @@ const LINKS = [
   { href: "#sobre", label: "Clube", id: "sobre" },
   { href: "#esquema", label: "Esquema", id: "esquema" },
   { href: "#elenco", label: "Elenco", id: "elenco" },
-  { href: "#temporada", label: "Temporada", id: "temporada" },
+  { href: "#amistosos", label: "Amistosos", id: "amistosos" },
   { href: "#redes", label: "Redes", id: "redes" },
 ];
 
@@ -84,7 +84,7 @@ export function Navbar() {
             <span className="font-display text-xl uppercase tracking-wide text-foreground sm:text-2xl">
               {club.name}
             </span>
-            <span className="mt-1 block h-[3px] w-8 bg-gradient-to-r from-primary to-accent" />
+            <span className="mt-1 block h-[3px] w-8 bg-primary" />
           </div>
         </a>
 
