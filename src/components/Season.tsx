@@ -1,14 +1,19 @@
 import { motion } from "framer-motion";
+import crest from "@/assets/crest.png";
 import { club, leagueTable, results } from "@/data/team";
 import { matchOutcome, outcomeStyles } from "@/lib/match";
 import { SectionTitle } from "@/components/SectionTitle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-function zoneStyle(position: number, total: number) {
-  if (position === 1) return "border-l-2 border-l-[color:var(--gold)]";
-  if (position === total) return "border-l-2 border-l-destructive";
-  return "border-l-2 border-l-transparent";
+function teamInitials(name: string) {
+  const words = name.split(" ").filter((w) => w.length > 2 || w === w.toUpperCase());
+  const pick = words.length >= 2 ? words.slice(0, 2) : [name];
+  return pick
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 export function Season() {
@@ -18,6 +23,7 @@ export function Season() {
   if (!us || !leader) return null;
   const pointsToLeader = leader.points - us.points;
   const form = results.map((m) => matchOutcome(m.goalsFor, m.goalsAgainst));
+  const maxPoints = Math.max(...leagueTable.map((r) => r.points));
 
   return (
     <section id="temporada" className="relative overflow-hidden border-y border-border bg-card/30">
@@ -32,48 +38,55 @@ export function Season() {
       <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
         <SectionTitle kicker="Campanha" title="Onde a gente está" />
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[auto_1fr] lg:items-center lg:gap-16">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: EASE }}
-            className="flex items-end gap-4"
-          >
-            <span className="font-display text-8xl leading-none text-accent sm:text-9xl">{position}º</span>
-            <div className="pb-1.5 sm:pb-3">
-              <p className="font-display text-2xl uppercase leading-none text-foreground sm:text-3xl">
-                {us.points} pts
-              </p>
-              <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                {position === 1 ? "Na liderança" : `${pointsToLeader} pts do líder`} · {us.played} jogos
-              </p>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: EASE }}
+          className="relative mt-10 overflow-hidden rounded-2xl border border-border bg-card/60 shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)] backdrop-blur-sm"
+        >
+          <img
+            src={crest}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute -right-10 -top-10 h-64 w-64 select-none opacity-[0.05]"
+          />
+          <div className="relative grid gap-8 p-6 sm:p-10 lg:grid-cols-[auto_1fr] lg:items-center lg:gap-16">
+            <div className="flex items-end gap-4">
+              <span className="font-display text-8xl leading-none text-accent sm:text-9xl">{position}º</span>
+              <div className="pb-1.5 sm:pb-3">
+                <p className="font-display text-2xl uppercase leading-none text-foreground sm:text-3xl">
+                  {us.points} pts
+                </p>
+                <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  {position === 1 ? "Na liderança" : `${pointsToLeader} pts do líder`} · {us.played} jogos
+                </p>
+              </div>
             </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              Últimos {form.length} jogos
-            </p>
-            <div className="mt-3 flex items-center gap-2">
-              {form.map((o, i) => (
-                <span
-                  key={i}
-                  className={`flex h-10 w-10 items-center justify-center rounded-full font-display text-sm ${outcomeStyles[o].className}`}
-                >
-                  {outcomeStyles[o].label}
-                </span>
-              ))}
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                Últimos {form.length} jogos
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                {form.map((o, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.1 + i * 0.06, ease: EASE }}
+                    className={`flex h-10 w-10 items-center justify-center rounded-full font-display text-sm shadow-lg ${outcomeStyles[o].className}`}
+                  >
+                    {outcomeStyles[o].label}
+                  </motion.span>
+                ))}
+              </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
-        <div className="mt-14 -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3">
+        <div className="mt-8 -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3">
           {results.map((m, i) => {
             const o = matchOutcome(m.goalsFor, m.goalsAgainst);
             const style = outcomeStyles[o];
@@ -89,11 +102,11 @@ export function Season() {
               >
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-10 opacity-[0.06]"
-                  style={{ background: "linear-gradient(180deg, white, transparent)" }}
+                  className="pointer-events-none absolute inset-0 opacity-[0.08]"
+                  style={{ background: `linear-gradient(160deg, ${style.className.includes("accent") ? "var(--accent)" : style.className.includes("primary") ? "var(--primary)" : "var(--foreground)"}, transparent 60%)` }}
                 />
-                <span className={`w-1.5 shrink-0 ${style.className}`} aria-hidden />
-                <div className="flex-1 p-4">
+                <span className={`relative w-1.5 shrink-0 ${style.className}`} aria-hidden />
+                <div className="relative flex-1 p-4">
                   <p className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                     {m.competition} · {m.date}
                   </p>
@@ -123,64 +136,54 @@ export function Season() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: EASE }}
-          className="mt-14 overflow-hidden rounded-xl border border-border bg-card shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)]"
+          className="mt-8 overflow-hidden rounded-xl border border-border bg-card shadow-[0_25px_60px_-35px_rgba(0,0,0,0.9)]"
         >
           <p className="dotted-rule px-4 pb-3 pt-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
             Tabela da liga
           </p>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-sm">
-              <thead>
-                <tr className="border-b border-border text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                  <th className="px-4 py-2.5 text-left font-semibold">#</th>
-                  <th className="px-4 py-2.5 text-left font-semibold">Time</th>
-                  <th className="px-4 py-2.5 text-right font-semibold">J</th>
-                  <th className="px-4 py-2.5 text-right font-semibold">V</th>
-                  <th className="px-4 py-2.5 text-right font-semibold">E</th>
-                  <th className="px-4 py-2.5 text-right font-semibold">D</th>
-                  <th className="px-4 py-2.5 text-right font-semibold">SG</th>
-                  <th className="px-4 py-2.5 text-right font-semibold">Pts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leagueTable.map((row, i) => {
-                  const isUs = row.team === club.name;
-                  const pos = i + 1;
-                  return (
-                    <tr
-                      key={row.team}
-                      className={`border-b border-border/60 last:border-0 ${zoneStyle(pos, leagueTable.length)} ${
-                        isUs ? "bg-accent/10" : "hover:bg-secondary/50"
-                      }`}
-                    >
-                      <td className="px-4 py-2.5 font-display text-base text-muted-foreground">{pos}</td>
-                      <td
-                        className={`px-4 py-2.5 font-display text-base uppercase tracking-wide ${
-                          isUs ? "text-accent" : "text-foreground"
-                        }`}
-                      >
-                        {row.team}
-                        {isUs ? (
-                          <span className="ml-2 rounded-sm bg-accent/20 px-1.5 py-0.5 align-middle text-[9px] tracking-widest text-accent">
-                            NÓS
-                          </span>
-                        ) : null}
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">{row.played}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-foreground">{row.won}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">{row.drawn}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">{row.lost}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
-                        {row.gd > 0 ? `+${row.gd}` : row.gd}
-                      </td>
-                      <td className="px-4 py-2.5 text-right font-display text-lg tabular-nums text-foreground">
-                        {row.points}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="divide-y divide-border/60">
+            {leagueTable.map((row, i) => {
+              const isUs = row.team === club.name;
+              const pos = i + 1;
+              const barWidth = Math.max(6, (row.points / maxPoints) * 100);
+              return (
+                <div
+                  key={row.team}
+                  className={`relative flex items-center gap-3 px-4 py-3 ${isUs ? "bg-accent/10" : ""}`}
+                >
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-0 left-0 opacity-[0.07]"
+                    style={{ width: `${barWidth}%`, background: isUs ? "var(--accent)" : "var(--foreground)" }}
+                  />
+                  <span className="relative w-4 shrink-0 font-display text-sm text-muted-foreground">{pos}</span>
+                  <span
+                    className={`relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border font-display text-[11px] ${
+                      isUs ? "border-accent/50 bg-accent/15 text-accent" : "border-border bg-secondary text-foreground"
+                    }`}
+                  >
+                    {teamInitials(row.team)}
+                  </span>
+                  <span
+                    className={`relative min-w-0 flex-1 truncate font-display text-sm uppercase tracking-wide sm:text-base ${
+                      isUs ? "text-accent" : "text-foreground"
+                    }`}
+                  >
+                    {row.team}
+                  </span>
+                  <span className="relative hidden shrink-0 gap-3 text-xs tabular-nums text-muted-foreground sm:flex">
+                    <span>{row.played}J</span>
+                    <span>{row.won}V</span>
+                    <span>{row.drawn}E</span>
+                    <span>{row.lost}D</span>
+                    <span>{row.gd > 0 ? `+${row.gd}` : row.gd}SG</span>
+                  </span>
+                  <span className="relative shrink-0 font-display text-lg tabular-nums text-foreground">
+                    {row.points}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
