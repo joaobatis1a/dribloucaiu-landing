@@ -10,6 +10,7 @@ import { Results } from "@/components/Results";
 import { LeagueTable } from "@/components/LeagueTable";
 import { SocialLinks } from "@/components/SocialLinks";
 import { SiteFooter } from "@/components/SiteFooter";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,6 +47,7 @@ function Index() {
       <LeagueTable />
       <SocialLinks />
       <SiteFooter />
+      <ScrollToTop />
     </main>
   );
 }
