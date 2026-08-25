@@ -37,14 +37,20 @@ export function NextMatch() {
   });
 
   return (
-    <section id="proximo-jogo" className="relative isolate overflow-hidden border-y border-border">
-      <div className="absolute inset-0 -z-10 bg-card" />
+    <section id="proximo-jogo" className="relative isolate overflow-hidden border-y border-border bg-card">
+      <div className="grain absolute inset-0 -z-10 opacity-[0.04]" aria-hidden />
       <div
-        className="absolute inset-0 -z-10 opacity-70"
-        style={{ background: "var(--gradient-hero)" }}
+        className="absolute -left-16 top-1/2 -z-10 h-72 w-72 -translate-y-1/2 rounded-full bg-primary/15 blur-[120px]"
         aria-hidden
       />
-      <div className="hud-grid absolute inset-0 -z-10 opacity-20" aria-hidden />
+      <div
+        className="absolute -right-16 top-1/2 -z-10 h-72 w-72 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px]"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+        aria-hidden
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
