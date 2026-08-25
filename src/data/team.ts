@@ -44,6 +44,8 @@ export type Player = {
   position: string;
   overall: number;
   captain?: boolean;
+  /** Foto do jogador (opcional). Sem foto, mostra uma silhueta no lugar. */
+  photo?: string;
   stats: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number };
 };
 

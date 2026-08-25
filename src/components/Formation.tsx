@@ -19,6 +19,8 @@ import {
 } from "@/lib/formations";
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
 import { SectionTitle } from "@/components/SectionTitle";
+import { PlayerAvatar } from "@/components/PlayerAvatar";
+import crest from "@/assets/crest.png";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -51,37 +53,44 @@ function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
   const style = ratingTierStyles[tier];
   const anchorX = pos.x > 62 ? "right" : pos.x < 38 ? "left" : "center";
   const anchorY = pos.y < 50 ? "below" : "above";
+  const rotateFrom = anchorX === "right" ? 6 : anchorX === "left" ? -6 : 0;
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.85, y: anchorY === "below" ? -8 : 8 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.85 }}
-      transition={{ duration: 0.18, ease: "easeOut" }}
-      style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-      className={`pointer-events-none absolute z-20 w-48 rounded-lg border border-border bg-gradient-to-b p-3.5 shadow-2xl backdrop-blur-sm ${style.card} ${
+      initial={{ opacity: 0, scale: 0.75, rotate: rotateFrom, y: anchorY === "below" ? -10 : 10 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
+      exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.12 } }}
+      transition={{ type: "spring", stiffness: 420, damping: 24 }}
+      style={{ left: `${pos.x}%`, top: `${pos.y}%`, boxShadow: style.glow }}
+      className={`pointer-events-none absolute z-20 w-52 rounded-xl border bg-card/95 p-4 backdrop-blur-md ${
         anchorX === "right" ? "-translate-x-[calc(100%+14px)]" : anchorX === "left" ? "translate-x-[14px]" : "-translate-x-1/2"
       } ${anchorY === "below" ? "translate-y-[14px]" : "-translate-y-[calc(100%+14px)]"}`}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <div className={`font-display text-3xl leading-none ${style.rating}`}>{player.overall}</div>
-          <div className="mt-0.5 text-[9px] font-medium uppercase tracking-widest text-muted-foreground/70">
-            {style.label}
-          </div>
+      <div style={{ borderColor: style.ring }} className="absolute inset-0 rounded-xl border" aria-hidden />
+      <div className="relative flex items-center gap-3">
+        <div className="relative shrink-0">
+          <PlayerAvatar photo={player.photo} ring={style.ring} size="sm" />
+          <span
+            className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-card bg-gradient-to-b font-display text-[9px] leading-none ${style.card} ${style.rating}`}
+          >
+            {player.overall}
+          </span>
         </div>
-        <span className="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-background/40 font-display text-xs text-foreground">
-          {player.number}
-        </span>
+        <div className="min-w-0">
+          <p className="truncate font-display text-lg uppercase leading-none tracking-wide text-foreground">
+            {player.name}
+          </p>
+          <p className="mt-1 text-[9px] uppercase tracking-widest text-muted-foreground">
+            {style.label} · {positionNames[player.position] ?? player.position}
+          </p>
+        </div>
       </div>
-      <p className="mt-2 font-display text-lg uppercase leading-none tracking-wide text-foreground">
-        {player.name}
-      </p>
-      <p className="mt-0.5 text-[10px] text-muted-foreground">
-        {positionNames[player.position] ?? player.position}
-        {player.captain ? <span className="ml-1.5 font-bold text-accent">· CAPITÃO</span> : null}
-      </p>
-      <dl className="mt-2.5 grid grid-cols-3 gap-x-2 gap-y-1 border-t border-border/60 pt-2">
+      {player.captain ? (
+        <p className="relative mt-2 text-[9px] font-bold uppercase tracking-[0.2em] text-accent">
+          · Capitão ·
+        </p>
+      ) : null}
+      <dl className="relative mt-3 grid grid-cols-3 gap-x-2 gap-y-1.5 border-t border-border/60 pt-2.5">
         {statLabels.map(([key, label]) => (
           <div key={key} className="text-center">
             <dt className="text-[8px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -194,12 +203,19 @@ export function Formation() {
               className="pitch-stripes relative aspect-[4/5] w-full touch-none overflow-hidden rounded-2xl border border-border shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] sm:aspect-[3/4]"
             >
               <div
-                className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"
+                className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-primary/25 blur-3xl"
                 aria-hidden
               />
               <div
-                className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"
+                className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-accent/15 blur-3xl"
                 aria-hidden
+              />
+              <motion.div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-1/3"
+                style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--primary) 22%, transparent), transparent)" }}
+                animate={{ opacity: [0.5, 0.9, 0.5] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               />
               <div
                 className="animate-float-y absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl opacity-80"
@@ -257,7 +273,14 @@ export function Formation() {
                 <div
                   className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full"
                   style={{ border: "1px solid var(--pitch-line)" }}
-                />
+                >
+                  <img
+                    src={crest}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full scale-90 object-contain opacity-[0.14]"
+                  />
+                </div>
                 <div
                   className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
                   style={{ background: "var(--pitch-line)" }}
@@ -288,6 +311,7 @@ export function Formation() {
                         dragConstraints={pitchRef}
                         dragElastic={0.08}
                         dragMomentum={false}
+                        whileHover={{ scale: 1.18 }}
                         whileDrag={{ scale: 1.15, zIndex: 30 }}
                         onDragStart={() => setDraggingName(p.name)}
                         onDragEnd={(_e, info) => handleDragEnd(p.name, info)}
@@ -303,6 +327,9 @@ export function Formation() {
                               : "border-white/30 bg-primary text-primary-foreground"
                           }`}
                         >
+                          {isActive ? (
+                            <span className="animate-pulse-dot absolute inset-0 rounded-full" aria-hidden />
+                          ) : null}
                           {p.number}
                           {p.captain ? (
                             <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background bg-accent text-[8px] font-bold text-accent-foreground">

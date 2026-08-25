@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts";
 import type { Player } from "@/data/team";
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
+import { PlayerAvatar } from "@/components/PlayerAvatar";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -37,15 +38,17 @@ export function PlayerRow({ player, index }: { player: Player; index: number }) 
       >
         <span
           aria-hidden
-          className="pointer-events-none absolute -top-2 left-16 select-none font-display text-6xl leading-none text-white/[0.04] sm:left-20 sm:text-7xl"
+          className="pointer-events-none absolute -top-2 left-14 select-none font-display text-6xl leading-none text-white/[0.04] sm:left-16 sm:text-7xl"
         >
           {String(player.number).padStart(2, "0")}
         </span>
 
-        <div className={`relative flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-lg border bg-gradient-to-b sm:h-14 sm:w-14 ${style.card}`}>
-          <span className={`font-display text-lg leading-none sm:text-xl ${style.rating}`}>{player.overall}</span>
-          <span className="mt-0.5 text-[7px] font-semibold uppercase tracking-widest text-muted-foreground/80">
-            {style.label}
+        <div className="relative shrink-0">
+          <PlayerAvatar photo={player.photo} ring={style.ring} size="md" />
+          <span
+            className={`absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-gradient-to-b font-display text-[11px] leading-none ${style.card} ${style.rating}`}
+          >
+            {player.overall}
           </span>
         </div>
 
@@ -59,7 +62,7 @@ export function PlayerRow({ player, index }: { player: Player; index: number }) 
             ) : null}
           </p>
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            #{player.number} · {positionNames[player.position] ?? player.position}
+            {style.label} · #{player.number} · {positionNames[player.position] ?? player.position}
           </p>
         </div>
 

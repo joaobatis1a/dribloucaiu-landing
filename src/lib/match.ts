@@ -23,31 +23,35 @@ export function ratingTier(overall: number): RatingTier {
 
 export const ratingTierStyles: Record<
   RatingTier,
-  { label: string; card: string; rating: string; glow: string }
+  { label: string; card: string; rating: string; glow: string; ring: string }
 > = {
   icon: {
     label: "Ícone",
     card: "from-[color-mix(in_oklab,var(--accent)_38%,var(--card))] via-card to-card",
     rating: "text-accent",
     glow: "var(--shadow-glow)",
+    ring: "var(--accent)",
   },
   gold: {
     label: "Ouro",
     card: "from-[color-mix(in_oklab,var(--gold)_28%,var(--card))] via-card to-card",
     rating: "text-[color:var(--gold)]",
     glow: "0 18px 45px -22px color-mix(in oklab, var(--gold) 55%, transparent)",
+    ring: "var(--gold)",
   },
   silver: {
     label: "Prata",
     card: "from-[color-mix(in_oklab,var(--steel)_24%,var(--card))] via-card to-card",
     rating: "text-[color:var(--steel)]",
     glow: "0 18px 45px -22px color-mix(in oklab, var(--steel) 45%, transparent)",
+    ring: "var(--steel)",
   },
   bronze: {
     label: "Bronze",
     card: "from-[color-mix(in_oklab,var(--bronze)_28%,var(--card))] via-card to-card",
     rating: "text-[color:var(--bronze)]",
     glow: "0 18px 45px -22px color-mix(in oklab, var(--bronze) 50%, transparent)",
+    ring: "var(--bronze)",
   },
 };
 
