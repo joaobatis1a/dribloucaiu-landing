@@ -49,7 +49,7 @@ export const formations: Record<FormationId, { label: string; blurb: string; slo
     blurb: "Três atrás e dragonjoao10 desce pra virar 5 no meio quando precisa segurar o jogo.",
     slots: [
       { name: "ItzGuiBoy", role: "GOL", x: 50, y: 91 },
-      { name: "Dioginho9222", role: "DEF", x: 50, y: 82 },
+      { name: "Dioginho9222", role: "DEF", x: 50, y: 78 },
       { name: "Xchavozinhodopea", role: "DEF", x: 30, y: 80 },
       { name: "Paix2007", role: "DEF", x: 70, y: 80 },
       { name: "RankThread7162", role: "MEI", x: 50, y: 48 },
@@ -66,7 +66,7 @@ export const formations: Record<FormationId, { label: string; blurb: string; slo
     slots: [
       { name: "ItzGuiBoy", role: "GOL", x: 50, y: 91 },
       { name: "dragonjoao10", role: "DEF", x: 20, y: 76 },
-      { name: "Dioginho9222", role: "DEF", x: 50, y: 82 },
+      { name: "Dioginho9222", role: "DEF", x: 50, y: 78 },
       { name: "Paix2007", role: "DEF", x: 80, y: 76 },
       { name: "Xchavozinhodopea", role: "MEI", x: 35, y: 58 },
       { name: "RankThread7162", role: "MEI", x: 65, y: 58 },
@@ -81,7 +81,7 @@ export const formations: Record<FormationId, { label: string; blurb: string; slo
     blurb: "Três zagueiros e Paix2007 sobe pra formar o ataque de três na hora de pressionar.",
     slots: [
       { name: "ItzGuiBoy", role: "GOL", x: 50, y: 91 },
-      { name: "Dioginho9222", role: "DEF", x: 50, y: 82 },
+      { name: "Dioginho9222", role: "DEF", x: 50, y: 78 },
       { name: "Xchavozinhodopea", role: "DEF", x: 35, y: 80 },
       { name: "dragonjoao10", role: "DEF", x: 65, y: 80 },
       { name: "RankThread7162", role: "MEI", x: 30, y: 52 },
@@ -99,7 +99,7 @@ export const formations: Record<FormationId, { label: string; blurb: string; slo
       { name: "ItzGuiBoy", role: "GOL", x: 50, y: 91 },
       { name: "dragonjoao10", role: "DEF", x: 10, y: 68 },
       { name: "Xchavozinhodopea", role: "DEF", x: 32, y: 80 },
-      { name: "Dioginho9222", role: "DEF", x: 50, y: 83 },
+      { name: "Dioginho9222", role: "DEF", x: 50, y: 78 },
       { name: "RankThread7162", role: "DEF", x: 68, y: 80 },
       { name: "Paix2007", role: "DEF", x: 90, y: 68 },
       { name: "peubezerra07", role: "MEI", x: 35, y: 46 },

@@ -10,7 +10,7 @@ export function Squad() {
     <section id="elenco" className="mx-auto max-w-6xl px-6 py-20 md:py-28">
       <SectionTitle kicker="Squad" title="Elenco" />
       <p className="mt-4 max-w-2xl text-sm text-muted-foreground md:text-base">
-        Onze titular e reservas do Driblou Caiu.
+        Quem veste a camisa do Driblou Caiu.
       </p>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" style={{ perspective: 1200 }}>

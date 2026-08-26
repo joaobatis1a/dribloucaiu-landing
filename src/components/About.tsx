@@ -1,15 +1,9 @@
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
 import crest from "@/assets/crest.png";
 import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-const timeline = [
-  { year: String(club.founded), title: "Fundação", detail: "Um grupo de amigos vira time oficial" },
-  ...[...club.achievements].reverse(),
-];
 
 export function About() {
   return (
@@ -63,38 +57,28 @@ export function About() {
           ))}
         </motion.div>
 
-        <div className="relative mt-16 max-w-2xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
-            A caminhada
-          </p>
-          <div className="relative mt-8 space-y-8 border-l border-border pl-8">
-            {timeline.map((item, i) => (
-              <motion.div
-                key={`${item.title}-${item.year}`}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.12, ease: EASE }}
-                className="relative"
-              >
-                <span className="absolute -left-[2.55rem] top-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card">
-                  {i === 0 ? (
-                    <span className="h-2 w-2 rounded-full bg-primary" />
-                  ) : (
-                    <Trophy className="h-3.5 w-3.5 text-primary" aria-hidden />
-                  )}
-                </span>
-                <span className="font-display text-sm tabular-nums text-muted-foreground">
-                  {item.year}
-                </span>
-                <h3 className="mt-0.5 font-display text-xl uppercase tracking-wide text-foreground">
-                  {item.title}
-                </h3>
-                <p className="mt-0.5 text-sm text-muted-foreground">{item.detail}</p>
-              </motion.div>
-            ))}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, delay: 0.1, ease: EASE }}
+          className="relative mt-16 flex flex-wrap items-end gap-x-12 gap-y-8"
+        >
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
+              Criado em
+            </p>
+            <p className="mt-1 font-display text-6xl leading-none text-foreground">{club.founded}</p>
           </div>
-        </div>
+          <div className="max-w-sm border-l border-border pl-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
+              Lema
+            </p>
+            <p className="mt-1 font-display text-3xl uppercase leading-[1.05] tracking-wide text-foreground">
+              {club.motto}
+            </p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

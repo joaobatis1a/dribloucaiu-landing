@@ -31,7 +31,7 @@ export function PlayerCard({ player }: { player: Player }) {
   }
 
   return (
-    <div className="relative h-[20.5rem]" style={{ perspective: 1200 }}>
+    <div className="relative h-[23rem]" style={{ perspective: 1200 }}>
       <motion.div
         style={{ rotateY, transformStyle: "preserve-3d" }}
         className="group relative h-full w-full transition-transform duration-300 hover:-translate-y-1"
@@ -45,59 +45,21 @@ export function PlayerCard({ player }: { player: Player }) {
             type="button"
             onClick={toggleFlip}
             aria-label="Ver estatísticas em radar"
-            className="absolute bottom-3 right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/50 text-muted-foreground opacity-0 transition-opacity hover:text-accent group-hover:opacity-100"
+            className="absolute bottom-3 right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/60 text-muted-foreground opacity-0 backdrop-blur-sm transition-opacity hover:text-accent group-hover:opacity-100"
           >
             <RotateCw className="h-3 w-3" />
           </button>
 
           <div
-            className="relative overflow-hidden px-3.5 pb-3 pt-3.5"
-            style={{ background: `color-mix(in oklab, ${style.ring} 13%, var(--card))` }}
-          >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute -right-2 -top-3 select-none font-display text-7xl leading-none"
-              style={{ color: `color-mix(in oklab, ${style.ring} 16%, transparent)` }}
-            >
-              {String(player.number).padStart(2, "0")}
-            </span>
-
-            <header className="relative flex items-start justify-between">
-              <div className="leading-none">
-                <div className={`font-display text-3xl ${style.rating}`}>{player.overall}</div>
-                <span
-                  className="mt-1.5 inline-block rounded px-1.5 py-0.5 text-[10px] font-bold tracking-[0.1em] text-accent-foreground"
-                  style={{ background: "var(--accent)" }}
-                >
-                  {player.position}
-                </span>
-                <div className="mt-1 text-[8px] font-medium uppercase tracking-widest text-muted-foreground/80">
-                  {style.label}
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-1.5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background/60 font-display text-xs text-foreground">
-                  {player.number}
-                </span>
-                {player.captain ? (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full border border-accent/50 bg-accent/15 text-[8px] font-bold text-accent">
-                    C
-                  </span>
-                ) : null}
-              </div>
-            </header>
-          </div>
-
-          <div
-            className="relative mx-3.5 mt-2.5 h-[5.5rem] w-[calc(100%-1.75rem)] overflow-hidden rounded-xl"
-            style={{ background: `color-mix(in oklab, ${style.ring} 9%, var(--secondary))` }}
+            className="relative h-[60%] w-full overflow-hidden"
+            style={{ background: `color-mix(in oklab, ${style.ring} 14%, var(--secondary))` }}
           >
             {player.photo ? (
               <img
                 src={player.photo}
                 alt=""
-                className="h-full w-full object-cover"
-                style={{ objectPosition: "50% 22%" }}
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ objectPosition: "50% 14%" }}
               />
             ) : (
               <svg
@@ -110,16 +72,44 @@ export function PlayerCard({ player }: { player: Player }) {
                 <path d="M8 102c0-25 18.5-38 42-38s42 13 42 38" />
               </svg>
             )}
+
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-14"
+              style={{ background: "linear-gradient(to bottom, transparent, var(--card))" }}
+              aria-hidden
+            />
+
+            <header className="relative flex items-start justify-between p-3">
+              <div className="rounded-lg bg-background/70 px-2 py-1.5 leading-none backdrop-blur-sm">
+                <div className={`font-display text-2xl ${style.rating}`}>{player.overall}</div>
+                <span
+                  className="mt-1.5 inline-block rounded px-1.5 py-0.5 text-[9px] font-bold tracking-[0.1em] text-accent-foreground"
+                  style={{ background: "var(--accent)" }}
+                >
+                  {player.position}
+                </span>
+              </div>
+              <div className="flex flex-col items-end gap-1.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background/70 font-display text-xs text-foreground backdrop-blur-sm">
+                  {player.number}
+                </span>
+                {player.captain ? (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full border border-accent/50 bg-accent/85 text-[8px] font-bold text-accent-foreground backdrop-blur-sm">
+                    C
+                  </span>
+                ) : null}
+              </div>
+            </header>
           </div>
 
-          <h3 className="relative mt-2.5 text-center font-display text-xl uppercase leading-none tracking-wide text-foreground">
+          <h3 className="relative mt-1.5 text-center font-display text-lg uppercase leading-none tracking-wide text-foreground">
             {player.name}
           </h3>
-          <p className="relative mt-1 text-center text-[10px] uppercase tracking-widest text-muted-foreground">
+          <p className="relative mt-1 text-center text-[9px] uppercase tracking-widest text-muted-foreground">
             {positionNames[player.position] ?? player.position}
           </p>
 
-          <dl className="relative mt-3 grid grid-cols-3 gap-x-3 gap-y-2 px-3.5 pb-3.5">
+          <dl className="relative mt-2 grid grid-cols-3 gap-x-3 gap-y-1.5 px-3.5 pb-3">
             {statLabels.map(([key, label]) => (
               <div key={key}>
                 <div className="flex items-baseline justify-between text-[9px] font-semibold tracking-widest text-muted-foreground">

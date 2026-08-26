@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, type PanInfo } from "framer-motion";
-import { GripHorizontal, RotateCcw } from "lucide-react";
+import { GripHorizontal, Instagram, RotateCcw, UserPlus } from "lucide-react";
 import { club, squad, type Player } from "@/data/team";
 import {
   formationIds,
@@ -384,10 +384,22 @@ export function Formation() {
             })}
 
             <div className="mt-2 rounded-lg border border-dashed border-border p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-                Fundado em {club.founded}
+              <UserPlus className="h-5 w-5 text-primary" aria-hidden />
+              <p className="mt-2 font-display text-sm uppercase tracking-wide text-foreground">
+                Quer fazer parte do time?
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">{club.platform}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                Manda sua posição pra análise no Instagram do Driblou Caiu.
+              </p>
+              <a
+                href={club.social.instagram.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent transition-colors hover:text-foreground"
+              >
+                <Instagram className="h-3.5 w-3.5" />
+                Chamar no Instagram
+              </a>
             </div>
           </div>
         </div>

@@ -12,7 +12,7 @@ import richardxzs from "@/assets/players/richardxzs.png";
 export const club = {
   name: "Driblou Caiu",
   tagline: "Pro Clubs · EA FC 26 · Amistosos & Liga",
-  founded: 2023,
+  founded: 2026,
   platform: "PS5 · Cross-play",
   formation: "4-3-3",
   discord: "https://discord.gg/",
@@ -23,11 +23,7 @@ export const club = {
   about:
     "O Driblou Caiu nasceu de uma resenha que não parava: um grupo cansado de perder pra time que só compra 90+ e não marca ninguém. Aqui é treino toda semana, banco por mérito e uma regra só: quem não corre pra trás, não joga.",
   rules: ["Sem money team", "Banco por mérito", "Bola no chão", "Treino toda semana"],
-  achievements: [
-    { title: "Campeã", detail: "Copa de Verão 2025", year: "2025" },
-    { title: "Melhor ataque", detail: "Liga Amistosa 2025", year: "2025" },
-    { title: "Vice-campeã", detail: "Liga Amistosa 2024", year: "2024" },
-  ],
+  motto: "Quer ganhar? Faça 5.",
   nextMatch: {
     opponent: "Meta Squad",
     competition: "Liga Amistosa",
