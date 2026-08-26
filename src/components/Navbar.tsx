@@ -80,12 +80,9 @@ export function Navbar() {
             height={800}
             className="h-11 w-11 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 sm:h-12 sm:w-12"
           />
-          <div className="leading-none">
-            <span className="font-display text-xl uppercase tracking-wide text-foreground sm:text-2xl">
-              {club.name}
-            </span>
-            <span className="mt-1 block h-[3px] w-8 bg-primary" />
-          </div>
+          <span className="font-display text-xl uppercase tracking-wide text-foreground sm:text-2xl">
+            {club.name}
+          </span>
         </a>
 
         <ul ref={navRef} className="relative hidden items-center gap-1 md:flex">

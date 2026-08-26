@@ -165,7 +165,7 @@ export function PlayerCard({ player }: { player: Player }) {
               <RadarChart data={radarData} outerRadius="68%">
                 <PolarGrid stroke="var(--border)" />
                 <PolarAngleAxis dataKey="stat" tick={{ fill: "var(--muted-foreground)", fontSize: 9 }} />
-                <Radar dataKey="value" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.4} strokeWidth={2} />
+                <Radar dataKey="value" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} strokeWidth={2} />
               </RadarChart>
             </ResponsiveContainer>
           </div>

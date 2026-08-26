@@ -58,8 +58,8 @@ export function SiteFooter() {
             </div>
           </div>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Clube de torcedores para EA FC 26 Pro Clubs. Não afiliado à Electronic Arts — feito
-            por quem joga, pra quem acompanha.
+            Time de EA FC 26 Pro Clubs, feito por quem joga e pra quem acompanha. Não afiliado à
+            Electronic Arts.
           </p>
           <div className="mt-6 flex items-center gap-3">
             <a

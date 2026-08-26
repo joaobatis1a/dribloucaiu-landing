@@ -14,13 +14,13 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Driblou Caiu — Time de Pro Clubs no EA FC 26" },
+      { title: "Driblou Caiu · Time de Pro Clubs no EA FC 26" },
       {
         name: "description",
         content:
-          "Elenco, esquema tático, estatísticas, resultados e tabela do Driblou Caiu, clube de Pro Clubs do EA FC 26 em amistosos e liga.",
+          "Elenco, esquema tático e amistosos do Driblou Caiu, clube de Pro Clubs do EA FC 26.",
       },
-      { property: "og:title", content: "Driblou Caiu — Pro Clubs EA FC 26" },
+      { property: "og:title", content: "Driblou Caiu · Pro Clubs EA FC 26" },
       {
         property: "og:description",
         content: "Conheça o elenco, o esquema tático, os números e os resultados do Driblou Caiu.",

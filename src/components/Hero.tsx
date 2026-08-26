@@ -79,8 +79,7 @@ export function Hero() {
             className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:text-lg lg:mx-0"
           >
             Clube de Pro Clubs no EA FC 26, fundado em {club.founded}. Marcação alta, saída curta
-            e três pontas em velocidade — uma temporada inteira construída em cima de amistosos e
-            liga.
+            e três pontas em velocidade. Bola no chão, sem money team.
           </motion.p>
 
           <motion.div

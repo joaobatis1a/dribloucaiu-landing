@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Swords } from "lucide-react";
+import { Instagram, Swords } from "lucide-react";
 import crest from "@/assets/crest.png";
 import { club, results } from "@/data/team";
 import { matchOutcome, outcomeStyles } from "@/lib/match";
@@ -24,7 +24,8 @@ export function Friendlies() {
       <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-20">
         <SectionTitle kicker="Amistosos" title="Topa uma bola?" />
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground md:text-base">
-          O Driblou Caiu também joga fora da liga — se seu clube quer trocar uma bola, é só chamar.
+          O Driblou Caiu topa amistoso com qualquer clube. Se o seu time quer entrar em campo
+          contra a gente, é só chamar.
         </p>
 
         {last ? (
@@ -122,18 +123,18 @@ export function Friendlies() {
                 Venha jogar contra a gente
               </p>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Seu clube topa marcar um amistoso? Chama a diretoria no Discord e combina data e
-                horário.
+                Seu clube topa marcar um amistoso? Manda mensagem pro Instagram do Driblou Caiu
+                e combina data e horário.
               </p>
             </div>
             <a
-              href={club.discord}
+              href={club.social.instagram.url}
               target="_blank"
               rel="noreferrer noopener"
               className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)]"
             >
-              <MessageCircle className="h-4 w-4" />
-              Marcar no Discord
+              <Instagram className="h-4 w-4" />
+              Chamar no Instagram
             </a>
           </motion.div>
         </div>

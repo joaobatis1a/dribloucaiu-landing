@@ -10,19 +10,19 @@ export const club = {
     instagram: { handle: "@dribloucaiu", url: "https://www.instagram.com/dribloucaiu" },
   },
   about:
-    "Nascido de um grupo de amigos cansado de clubes sem identidade, o Driblou Caiu joga com marcação alta, saída de bola curta e três pontas rápidas em transição. Treinos toda semana, banco rotativo por mérito e uma regra só: quem não corre pra trás, não joga.",
+    "O Driblou Caiu nasceu de uma resenha que não parava: um grupo cansado de perder pra time que só sabe comprar 90+ e não marca ninguém. Aqui o esquema é simples. Pressão alta, saída curta, três pontas correndo pra cima. Joga quem treina, senta quem não corre. Sem money team.",
   pillars: [
     {
       title: "Pressão alta",
-      description: "Recomposição em até 6 segundos após perda de bola, sufocando a saída rival.",
+      description: "Perdeu a bola, recompõe em 6 segundos. O rival não sai jogando tranquilo.",
     },
     {
       title: "Meio criativo",
-      description: "Triângulos curtos entre VOL, MC e MEI para furar linhas com um toque a mais.",
+      description: "Triângulo curto entre volante, meia e ponta pra furar linha com um toque a mais.",
     },
     {
       title: "Ponta em velocidade",
-      description: "PE e PD abertos no limite da linha para explorar espaço nas costas da zaga.",
+      description: "PE e PD colados na linha, prontos pra pegar o furo nas costas da zaga.",
     },
   ],
   achievements: [

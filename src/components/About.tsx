@@ -97,9 +97,9 @@ export function About() {
                   />
                   <Radar
                     dataKey="value"
-                    stroke="var(--accent)"
-                    fill="var(--accent)"
-                    fillOpacity={0.3}
+                    stroke="var(--primary)"
+                    fill="var(--primary)"
+                    fillOpacity={0.35}
                     strokeWidth={2}
                   />
                 </RadarChart>
