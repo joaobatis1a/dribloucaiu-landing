@@ -182,9 +182,9 @@ function PlayerDot({
 }
 
 export function Formation() {
-  const [formationId, setFormationId] = useState<FormationId>("4-3-3");
+  const [formationId, setFormationId] = useState<FormationId>("3-4-1-2");
   const [positions, setPositions] = useState<Record<string, Position>>(() =>
-    slotsToPositions(formations["4-3-3"].slots),
+    slotsToPositions(formations["3-4-1-2"].slots),
   );
   const roles = slotRoles(formations[formationId].slots);
   const [activeName, setActiveName] = useState<string | null>(null);
