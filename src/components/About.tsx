@@ -1,22 +1,17 @@
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
-import {
-  PolarAngleAxis,
-  PolarGrid,
-  Radar,
-  RadarChart,
-  ResponsiveContainer,
-} from "recharts";
 import crest from "@/assets/crest.png";
 import { club } from "@/data/team";
-import { squadDna } from "@/lib/stats";
 import { SectionTitle } from "@/components/SectionTitle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function About() {
-  const dna = squadDna();
+const timeline = [
+  { year: String(club.founded), title: "Fundação", detail: "Um grupo de amigos vira time oficial" },
+  ...[...club.achievements].reverse(),
+];
 
+export function About() {
   return (
     <section id="sobre" className="relative overflow-hidden border-y border-border py-20 md:py-28">
       <div className="grain pointer-events-none absolute inset-0 opacity-[0.035]" aria-hidden />
@@ -51,93 +46,55 @@ export function About() {
           </p>
         </div>
 
-        <div className="mt-14 grid divide-y divide-dashed divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          {club.pillars.map((pillar, i) => (
-            <motion.div
-              key={pillar.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.55, delay: i * 0.1, ease: EASE }}
-              whileHover={{ y: -4 }}
-              className="relative py-6 sm:px-8 sm:py-0"
-            >
-              <span className="font-display text-6xl leading-none text-transparent sm:text-7xl" style={{ WebkitTextStroke: "1.5px color-mix(in oklab, var(--accent) 55%, transparent)" }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="mt-3 font-display text-xl uppercase tracking-wide text-foreground">
-                {pillar.title}
-              </h3>
-              <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                {pillar.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: EASE }}
-          className="relative mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-[1.1fr_1fr]"
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, ease: EASE }}
+          className="mt-8 flex flex-wrap gap-2.5"
         >
-          <div className="relative bg-card p-6 sm:p-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
-              DNA do time
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">Média de atributos do elenco</p>
-            <div className="mt-2 h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={dna} outerRadius="72%">
-                  <PolarGrid stroke="var(--border)" />
-                  <PolarAngleAxis
-                    dataKey="stat"
-                    tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                  />
-                  <Radar
-                    dataKey="value"
-                    stroke="var(--primary)"
-                    fill="var(--primary)"
-                    fillOpacity={0.35}
-                    strokeWidth={2}
-                  />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="relative bg-card p-6 sm:p-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
-              Sala de troféus
-            </p>
-            <div className="mt-5 flex flex-col gap-4">
-              {club.achievements.map((a) => (
-                <motion.div
-                  key={`${a.title}-${a.year}`}
-                  whileHover={{ x: 4 }}
-                  className="group flex items-center gap-4"
-                >
-                  <motion.span
-                    whileHover={{ rotate: -14, scale: 1.08 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 12 }}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color-mix(in_oklab,var(--gold)_16%,transparent)]"
-                  >
-                    <Trophy className="h-5 w-5 text-[color:var(--gold)]" aria-hidden />
-                  </motion.span>
-                  <div className="min-w-0">
-                    <p className="truncate font-display text-lg uppercase leading-tight tracking-wide text-foreground">
-                      {a.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {a.detail} · {a.year}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          {club.rules.map((rule) => (
+            <span
+              key={rule}
+              className="rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-foreground"
+            >
+              {rule}
+            </span>
+          ))}
         </motion.div>
+
+        <div className="relative mt-16 max-w-2xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
+            A caminhada
+          </p>
+          <div className="relative mt-8 space-y-8 border-l border-border pl-8">
+            {timeline.map((item, i) => (
+              <motion.div
+                key={`${item.title}-${item.year}`}
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: EASE }}
+                className="relative"
+              >
+                <span className="absolute -left-[2.55rem] top-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card">
+                  {i === 0 ? (
+                    <span className="h-2 w-2 rounded-full bg-primary" />
+                  ) : (
+                    <Trophy className="h-3.5 w-3.5 text-primary" aria-hidden />
+                  )}
+                </span>
+                <span className="font-display text-sm tabular-nums text-muted-foreground">
+                  {item.year}
+                </span>
+                <h3 className="mt-0.5 font-display text-xl uppercase tracking-wide text-foreground">
+                  {item.title}
+                </h3>
+                <p className="mt-0.5 text-sm text-muted-foreground">{item.detail}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

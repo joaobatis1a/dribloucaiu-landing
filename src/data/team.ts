@@ -6,25 +6,12 @@ export const club = {
   formation: "4-3-3",
   discord: "https://discord.gg/",
   social: {
-    tiktok: { handle: "@dribloucaiu", url: "https://www.tiktok.com/@dribloucaiu" },
-    instagram: { handle: "@dribloucaiu", url: "https://www.instagram.com/dribloucaiu" },
+    tiktok: { handle: "@dribloucaiufc", url: "https://www.tiktok.com/@dribloucaiufc" },
+    instagram: { handle: "@dribloucaiufc", url: "https://www.instagram.com/dribloucaiufc/" },
   },
   about:
-    "O Driblou Caiu nasceu de uma resenha que não parava: um grupo cansado de perder pra time que só sabe comprar 90+ e não marca ninguém. Aqui o esquema é simples. Pressão alta, saída curta, três pontas correndo pra cima. Joga quem treina, senta quem não corre. Sem money team.",
-  pillars: [
-    {
-      title: "Pressão alta",
-      description: "Perdeu a bola, recompõe em 6 segundos. O rival não sai jogando tranquilo.",
-    },
-    {
-      title: "Meio criativo",
-      description: "Triângulo curto entre volante, meia e ponta pra furar linha com um toque a mais.",
-    },
-    {
-      title: "Ponta em velocidade",
-      description: "PE e PD colados na linha, prontos pra pegar o furo nas costas da zaga.",
-    },
-  ],
+    "O Driblou Caiu nasceu de uma resenha que não parava: um grupo cansado de perder pra time que só compra 90+ e não marca ninguém. Aqui é treino toda semana, banco por mérito e uma regra só: quem não corre pra trás, não joga.",
+  rules: ["Sem money team", "Banco por mérito", "Bola no chão", "Treino toda semana"],
   achievements: [
     { title: "Campeã", detail: "Copa de Verão 2025", year: "2025" },
     { title: "Melhor ataque", detail: "Liga Amistosa 2025", year: "2025" },

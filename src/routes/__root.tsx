@@ -73,13 +73,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Driblou Caiu | Pro Clubs EA FC 26" },
+      { title: "Driblou Caiu FC" },
       {
         name: "description",
         content: "Site oficial do Driblou Caiu, time de Pro Clubs no EA FC 26.",
       },
       { name: "author", content: "Driblou Caiu" },
-      { property: "og:title", content: "Driblou Caiu | Pro Clubs EA FC 26" },
+      { property: "og:title", content: "Driblou Caiu FC" },
       {
         property: "og:description",
         content: "Site oficial do Driblou Caiu, time de Pro Clubs no EA FC 26.",
