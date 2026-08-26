@@ -93,7 +93,12 @@ export function PlayerCard({ player }: { player: Player }) {
             style={{ background: `color-mix(in oklab, ${style.ring} 9%, var(--secondary))` }}
           >
             {player.photo ? (
-              <img src={player.photo} alt="" className="h-full w-full object-cover" />
+              <img
+                src={player.photo}
+                alt=""
+                className="h-full w-full object-cover"
+                style={{ objectPosition: "50% 22%" }}
+              />
             ) : (
               <svg
                 viewBox="0 0 100 100"

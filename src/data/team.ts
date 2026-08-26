@@ -1,3 +1,14 @@
+import itzguiboy from "@/assets/players/itzguiboy.png";
+import dioginho9222 from "@/assets/players/dioginho9222.png";
+import xchavozinhodopea from "@/assets/players/xchavozinhodopea.png";
+import rankthread7162 from "@/assets/players/rankthread7162.png";
+import peubezerra07 from "@/assets/players/peubezerra07.png";
+import ratinggoat9879 from "@/assets/players/ratinggoat9879.png";
+import dragonjoao10 from "@/assets/players/dragonjoao10.png";
+import paix2007 from "@/assets/players/paix2007.png";
+import gommes07 from "@/assets/players/gommes07.png";
+import richardxzs from "@/assets/players/richardxzs.png";
+
 export const club = {
   name: "Driblou Caiu",
   tagline: "Pro Clubs · EA FC 26 · Amistosos & Liga",
@@ -38,82 +49,85 @@ export type Player = {
 
 export const squad: Player[] = [
   {
-    name: "Caio",
+    name: "ItzGuiBoy",
     number: 1,
     position: "GOL",
-    overall: 88,
-    stats: { pac: 62, sho: 40, pas: 71, dri: 55, def: 88, phy: 84 },
+    overall: 82,
+    photo: itzguiboy,
+    stats: { pac: 55, sho: 30, pas: 60, dri: 45, def: 76, phy: 78 },
   },
   {
-    name: "Bruno",
+    name: "Dioginho9222",
     number: 4,
     position: "ZAG",
-    overall: 85,
+    overall: 95,
     captain: true,
-    stats: { pac: 74, sho: 48, pas: 70, dri: 63, def: 87, phy: 86 },
+    photo: dioginho9222,
+    stats: { pac: 70, sho: 46, pas: 65, dri: 58, def: 93, phy: 92 },
   },
   {
-    name: "Léo",
+    name: "Xchavozinhodopea",
     number: 5,
-    position: "ZAG",
-    overall: 83,
-    stats: { pac: 78, sho: 45, pas: 68, dri: 66, def: 84, phy: 82 },
-  },
-  {
-    name: "Rafa",
-    number: 6,
-    position: "LE",
-    overall: 84,
-    stats: { pac: 91, sho: 62, pas: 79, dri: 82, def: 76, phy: 71 },
-  },
-  {
-    name: "Tiago",
-    number: 2,
-    position: "LD",
-    overall: 82,
-    stats: { pac: 90, sho: 58, pas: 77, dri: 80, def: 75, phy: 70 },
-  },
-  {
-    name: "Vitor",
-    number: 8,
     position: "VOL",
-    overall: 86,
-    stats: { pac: 75, sho: 72, pas: 86, dri: 81, def: 80, phy: 83 },
+    overall: 93,
+    photo: xchavozinhodopea,
+    stats: { pac: 74, sho: 65, pas: 92, dri: 80, def: 78, phy: 80 },
   },
   {
-    name: "Igor",
-    number: 15,
+    name: "RankThread7162",
+    number: 8,
     position: "MC",
-    overall: 87,
-    stats: { pac: 79, sho: 78, pas: 89, dri: 88, def: 62, phy: 72 },
+    overall: 91,
+    photo: rankthread7162,
+    stats: { pac: 76, sho: 80, pas: 91, dri: 86, def: 58, phy: 70 },
   },
   {
-    name: "Nando",
+    name: "peubezerra07",
     number: 10,
     position: "MEI",
     overall: 89,
-    stats: { pac: 84, sho: 84, pas: 90, dri: 91, def: 48, phy: 68 },
+    photo: peubezerra07,
+    stats: { pac: 80, sho: 82, pas: 93, dri: 90, def: 42, phy: 62 },
   },
   {
-    name: "Duda",
+    name: "RatingGoat9879",
+    number: 14,
+    position: "MEI",
+    overall: 91,
+    photo: ratinggoat9879,
+    stats: { pac: 82, sho: 84, pas: 90, dri: 89, def: 40, phy: 64 },
+  },
+  {
+    name: "dragonjoao10",
     number: 11,
     position: "PE",
-    overall: 86,
-    stats: { pac: 94, sho: 82, pas: 78, dri: 90, def: 40, phy: 64 },
+    overall: 93,
+    photo: dragonjoao10,
+    stats: { pac: 95, sho: 90, pas: 76, dri: 92, def: 35, phy: 66 },
   },
   {
-    name: "Kaká",
+    name: "Paix2007",
     number: 7,
     position: "PD",
-    overall: 85,
-    stats: { pac: 93, sho: 80, pas: 76, dri: 89, def: 38, phy: 66 },
+    overall: 93,
+    photo: paix2007,
+    stats: { pac: 92, sho: 87, pas: 74, dri: 90, def: 33, phy: 63 },
   },
   {
-    name: "Zeca",
+    name: "Gommes07",
     number: 9,
     position: "ATA",
-    overall: 90,
-    stats: { pac: 89, sho: 92, pas: 74, dri: 87, def: 42, phy: 81 },
+    overall: 96,
+    photo: gommes07,
+    stats: { pac: 84, sho: 93, pas: 68, dri: 85, def: 38, phy: 88 },
+  },
+  {
+    name: "Richardxzs",
+    number: 17,
+    position: "ATA",
+    overall: 98,
+    photo: richardxzs,
+    stats: { pac: 86, sho: 96, pas: 70, dri: 88, def: 36, phy: 90 },
   },
 ];
 
