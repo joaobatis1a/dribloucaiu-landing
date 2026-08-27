@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Instagram, Menu, MessageCircle } from "lucide-react";
-import crest from "@/assets/crest.png";
+import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 import {

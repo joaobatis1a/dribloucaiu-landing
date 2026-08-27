@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Instagram, Swords } from "lucide-react";
-import crest from "@/assets/crest.png";
+import crest from "@/assets/crest.webp";
 import { club, results } from "@/data/team";
 import { matchOutcome, outcomeStyles } from "@/lib/match";
 import { SectionTitle } from "@/components/SectionTitle";

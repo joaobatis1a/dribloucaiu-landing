@@ -1,13 +1,13 @@
-import itzguiboy from "@/assets/players/itzguiboy.png";
-import dioginho9222 from "@/assets/players/dioginho9222.png";
-import xchavozinhodopea from "@/assets/players/xchavozinhodopea.png";
-import rankthread7162 from "@/assets/players/rankthread7162.png";
-import peubezerra07 from "@/assets/players/peubezerra07.png";
-import ratinggoat9879 from "@/assets/players/ratinggoat9879.png";
-import dragonjoao10 from "@/assets/players/dragonjoao10.png";
-import paix2007 from "@/assets/players/paix2007.png";
-import gommes07 from "@/assets/players/gommes07.png";
-import richardxzs from "@/assets/players/richardxzs.png";
+import itzguiboy from "@/assets/players/itzguiboy.webp";
+import dioginho9222 from "@/assets/players/dioginho9222.webp";
+import xchavozinhodopea from "@/assets/players/xchavozinhodopea.webp";
+import rankthread7162 from "@/assets/players/rankthread7162.webp";
+import peubezerra07 from "@/assets/players/peubezerra07.webp";
+import ratinggoat9879 from "@/assets/players/ratinggoat9879.webp";
+import dragonjoao10 from "@/assets/players/dragonjoao10.webp";
+import paix2007 from "@/assets/players/paix2007.webp";
+import gommes07 from "@/assets/players/gommes07.webp";
+import richardxzs from "@/assets/players/richardxzs.webp";
 
 export const club = {
   name: "Driblou Caiu",

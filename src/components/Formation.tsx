@@ -14,7 +14,7 @@ import {
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
 import { SectionTitle } from "@/components/SectionTitle";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
-import crest from "@/assets/crest.png";
+import crest from "@/assets/crest.webp";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 

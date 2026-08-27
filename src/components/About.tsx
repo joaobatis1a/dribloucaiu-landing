@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import crest from "@/assets/crest.png";
+import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
 

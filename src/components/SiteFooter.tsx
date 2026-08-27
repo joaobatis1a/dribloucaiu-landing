@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Instagram, MessageCircle } from "lucide-react";
-import crest from "@/assets/crest.png";
+import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 

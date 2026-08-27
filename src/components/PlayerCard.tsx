@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { RotateCw } from "lucide-react";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts";
 import type { Player } from "@/data/team";
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
+
+// Recharts is a hefty dependency; only fetch it once someone actually flips a card.
+const PlayerRadar = lazy(() => import("@/components/PlayerRadar"));
 
 const statLabels: Array<[keyof Player["stats"], string]> = [
   ["pac", "RIT"],
@@ -16,6 +18,10 @@ const statLabels: Array<[keyof Player["stats"], string]> = [
 
 export function PlayerCard({ player }: { player: Player }) {
   const [flipped, setFlipped] = useState(false);
+  // 3D perspective + preserve-3d create a GPU compositing layer per card; with a full grid of
+  // cards mounted at once this is a known Safari/iOS jank source, so only pay that cost once a
+  // card is actually flipped instead of for every card up front.
+  const [everFlipped, setEverFlipped] = useState(false);
   const tier = ratingTier(player.overall);
   const style = ratingTierStyles[tier];
   const radarData = statLabels.map(([key, label]) => ({ stat: label, value: player.stats[key] }));
@@ -27,13 +33,14 @@ export function PlayerCard({ player }: { player: Player }) {
   function toggleFlip() {
     const next = !flipped;
     setFlipped(next);
+    if (next) setEverFlipped(true);
     flipTarget.set(next ? 180 : 0);
   }
 
   return (
-    <div className="relative h-[23rem]" style={{ perspective: 1200 }}>
+    <div className="relative h-[23rem]" style={everFlipped ? { perspective: 1200 } : undefined}>
       <motion.div
-        style={{ rotateY, transformStyle: "preserve-3d" }}
+        style={{ rotateY, ...(everFlipped ? { transformStyle: "preserve-3d" as const } : {}) }}
         className="group relative h-full w-full transition-transform duration-300 hover:-translate-y-1"
       >
         {/* FRONT */}
@@ -132,49 +139,47 @@ export function PlayerCard({ player }: { player: Player }) {
         </article>
 
         {/* BACK */}
-        <article
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
-        >
-          <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: style.ring }} aria-hidden />
-
-          <button
-            type="button"
-            onClick={toggleFlip}
-            aria-label="Ver carta do jogador"
-            className="absolute bottom-3 right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/50 text-muted-foreground transition-opacity hover:text-accent"
+        {everFlipped ? (
+          <article
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
           >
-            <RotateCw className="h-3 w-3" />
-          </button>
+            <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: style.ring }} aria-hidden />
 
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-display text-lg uppercase leading-none tracking-wide text-foreground">
-                {player.name}
-              </h3>
-              <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                #{player.number} · {positionNames[player.position] ?? player.position}
-              </p>
+            <button
+              type="button"
+              onClick={toggleFlip}
+              aria-label="Ver carta do jogador"
+              className="absolute bottom-3 right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/50 text-muted-foreground transition-opacity hover:text-accent"
+            >
+              <RotateCw className="h-3 w-3" />
+            </button>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-display text-lg uppercase leading-none tracking-wide text-foreground">
+                  {player.name}
+                </h3>
+                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+                  #{player.number} · {positionNames[player.position] ?? player.position}
+                </p>
+              </div>
+              <div className={`font-display text-xl ${style.rating}`}>{player.overall}</div>
             </div>
-            <div className={`font-display text-xl ${style.rating}`}>{player.overall}</div>
-          </div>
 
-          <div className="mt-1 flex-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData} outerRadius="68%">
-                <PolarGrid stroke="var(--border)" />
-                <PolarAngleAxis dataKey="stat" tick={{ fill: "var(--muted-foreground)", fontSize: 9 }} />
-                <Radar dataKey="value" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} strokeWidth={2} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
+            <div className="mt-1 flex-1">
+              <Suspense fallback={null}>
+                <PlayerRadar data={radarData} />
+              </Suspense>
+            </div>
 
-          {player.captain ? (
-            <p className="text-center text-[9px] font-bold uppercase tracking-[0.25em] text-accent">
-              Capitão de equipe
-            </p>
-          ) : null}
-        </article>
+            {player.captain ? (
+              <p className="text-center text-[9px] font-bold uppercase tracking-[0.25em] text-accent">
+                Capitão de equipe
+              </p>
+            ) : null}
+          </article>
+        ) : null}
       </motion.div>
     </div>
   );

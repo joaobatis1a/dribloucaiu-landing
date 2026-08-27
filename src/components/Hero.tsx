@@ -1,6 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import crest from "@/assets/crest.png";
+import crest from "@/assets/crest.webp";
 import { club, teamStats } from "@/data/team";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
