@@ -40,6 +40,8 @@ export type Player = {
   captain?: boolean;
   /** Foto do jogador (opcional). Sem foto, mostra uma silhueta no lugar. */
   photo?: string;
+  /** Ajuste de escala pra compensar fotos com enquadramento mais próximo (1 = sem ajuste). */
+  photoScale?: number;
   stats: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number };
 };
 
@@ -67,6 +69,7 @@ export const squad: Player[] = [
     overall: 93,
     captain: true,
     photo: xchavozinhodopea,
+    photoScale: 0.87,
     stats: { pac: 74, sho: 65, pas: 92, dri: 80, def: 78, phy: 80 },
   },
   {
@@ -75,6 +78,7 @@ export const squad: Player[] = [
     position: "MC",
     overall: 91,
     photo: rankthread7162,
+    photoScale: 0.95,
     stats: { pac: 76, sho: 80, pas: 91, dri: 86, def: 58, phy: 70 },
   },
   {
@@ -91,6 +95,7 @@ export const squad: Player[] = [
     position: "MEI",
     overall: 91,
     photo: ratinggoat9879,
+    photoScale: 0.96,
     stats: { pac: 82, sho: 84, pas: 90, dri: 89, def: 40, phy: 64 },
   },
   {
@@ -107,6 +112,7 @@ export const squad: Player[] = [
     position: "PD",
     overall: 93,
     photo: paix2007,
+    photoScale: 0.94,
     stats: { pac: 92, sho: 87, pas: 74, dri: 90, def: 33, phy: 63 },
   },
   {
@@ -115,6 +121,7 @@ export const squad: Player[] = [
     position: "ATA",
     overall: 96,
     photo: gommes07,
+    photoScale: 0.96,
     stats: { pac: 84, sho: 93, pas: 68, dri: 85, def: 38, phy: 88 },
   },
   {
@@ -123,6 +130,7 @@ export const squad: Player[] = [
     position: "ATA",
     overall: 98,
     photo: richardxzs,
+    photoScale: 0.92,
     stats: { pac: 86, sho: 96, pas: 70, dri: 88, def: 36, phy: 90 },
   },
 ];

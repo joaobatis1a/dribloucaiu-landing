@@ -59,7 +59,11 @@ export function PlayerCard({ player }: { player: Player }) {
                 src={player.photo}
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover"
-                style={{ objectPosition: "50% 14%" }}
+                style={{
+                  objectPosition: "50% 14%",
+                  transform: `scale(${player.photoScale ?? 1})`,
+                  transformOrigin: "50% 0%",
+                }}
               />
             ) : (
               <svg

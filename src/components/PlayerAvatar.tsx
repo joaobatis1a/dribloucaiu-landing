@@ -8,10 +8,12 @@ export function PlayerAvatar({
   photo,
   ring,
   size = "md",
+  scale = 1,
 }: {
   photo?: string | undefined;
   ring: string;
   size?: keyof typeof SIZES;
+  scale?: number;
 }) {
   return (
     <div
@@ -19,7 +21,12 @@ export function PlayerAvatar({
       style={{ borderColor: ring, boxShadow: `0 0 0 3px color-mix(in oklab, ${ring} 14%, transparent)` }}
     >
       {photo ? (
-        <img src={photo} alt="" className="h-full w-full object-cover" style={{ objectPosition: "50% 18%" }} />
+        <img
+          src={photo}
+          alt=""
+          className="h-full w-full object-cover"
+          style={{ objectPosition: "50% 18%", transform: `scale(${scale})`, transformOrigin: "50% 0%" }}
+        />
       ) : (
         <svg viewBox="0 0 40 40" className="absolute -bottom-1 h-full w-full text-foreground/15" fill="currentColor" aria-hidden>
           <circle cx="20" cy="14" r="7.5" />
