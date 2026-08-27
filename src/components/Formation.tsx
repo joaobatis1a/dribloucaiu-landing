@@ -114,6 +114,7 @@ function PlayerDot({
   onDragEnd,
   onActivate,
   onDeactivate,
+  onToggle,
 }: {
   player: Player;
   pos: Position;
@@ -125,6 +126,7 @@ function PlayerDot({
   onDragEnd: (info: PanInfo, resetXY: () => void) => void;
   onActivate: () => void;
   onDeactivate: () => void;
+  onToggle: () => void;
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -157,7 +159,7 @@ function PlayerDot({
         onMouseLeave={onDeactivate}
         onFocus={onActivate}
         onBlur={onDeactivate}
-        onClick={onActivate}
+        onClick={onToggle}
         className="block cursor-grab touch-none outline-none active:cursor-grabbing"
       >
         <span
@@ -239,6 +241,11 @@ export function Formation() {
     setActiveName(null);
   }
 
+  function toggle(name: string) {
+    if (draggingName) return;
+    setActiveName((prev) => (prev === name ? null : name));
+  }
+
   function handleDragEnd(name: string, info: PanInfo, resetXY: () => void) {
     const rect = pitchRef.current?.getBoundingClientRect();
     setDraggingName(null);
@@ -297,7 +304,10 @@ export function Formation() {
           <div className="mx-auto w-full max-w-md lg:max-w-lg">
             <div
               ref={pitchRef}
-              className="pitch-stripes relative aspect-[4/5] w-full touch-none overflow-hidden rounded-2xl border border-border shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] sm:aspect-[3/4]"
+              onClick={(e) => {
+                if (!(e.target as HTMLElement).closest("button, a")) deactivate();
+              }}
+              className="pitch-stripes relative aspect-[4/5] w-full touch-pan-y overflow-hidden rounded-2xl border border-border shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] sm:aspect-[3/4]"
             >
               <div
                 className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-primary/25 blur-3xl"
@@ -364,6 +374,7 @@ export function Formation() {
                       onDragEnd={(info, resetXY) => handleDragEnd(player.name, info, resetXY)}
                       onActivate={() => activate(player.name)}
                       onDeactivate={deactivate}
+                      onToggle={() => toggle(player.name)}
                     />
                   );
                 })}
@@ -400,6 +411,7 @@ export function Formation() {
                           onFocus={() => setActiveName(p.name)}
                           onMouseLeave={() => setActiveName(null)}
                           onBlur={() => setActiveName(null)}
+                          onClick={() => toggle(p.name)}
                           className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-secondary/60"
                         >
                           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary font-display text-[11px] text-foreground">
