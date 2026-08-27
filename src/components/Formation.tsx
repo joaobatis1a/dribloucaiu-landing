@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, type PanInfo } from "framer-motion";
-import { GripHorizontal, Instagram, RotateCcw, UserPlus } from "lucide-react";
+import { GripHorizontal, Instagram, Plus, RotateCcw, UserPlus } from "lucide-react";
 import { club, squad, type Player } from "@/data/team";
 import {
   formationIds,
@@ -9,6 +9,7 @@ import {
   slotsToPositions,
   slotRoles,
   type FormationId,
+  type LineRole,
 } from "@/lib/formations";
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -181,6 +182,34 @@ function PlayerDot({
   );
 }
 
+function EmptySlotDot({ pos, index }: { pos: Position; index: number }) {
+  return (
+    <div
+      style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
+      className="absolute z-10"
+    >
+      <motion.a
+        href={club.social.instagram.url}
+        target="_blank"
+        rel="noreferrer noopener"
+        initial={{ opacity: 0, scale: 0.3 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, delay: 0.1 + index * 0.05, ease: EASE }}
+        whileHover={{ scale: 1.18 }}
+        className="group/empty relative block outline-none"
+        aria-label="Vaga aberta nessa posição — chamar no Instagram"
+      >
+        <span className="relative flex h-9 w-9 items-center justify-center rounded-full border border-dashed border-muted-foreground/50 bg-background/40 text-muted-foreground shadow-lg transition-colors group-hover/empty:border-accent group-hover/empty:text-accent sm:h-11 sm:w-11">
+          <Plus className="h-4 w-4" />
+        </span>
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-card/95 px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground opacity-0 shadow-lg backdrop-blur-sm transition-opacity group-hover/empty:opacity-100">
+          Vaga aberta
+        </span>
+      </motion.a>
+    </div>
+  );
+}
+
 export function Formation() {
   const [formationId, setFormationId] = useState<FormationId>("3-4-1-2");
   const [positions, setPositions] = useState<Record<string, Position>>(() =>
@@ -313,23 +342,27 @@ export function Formation() {
               </div>
 
               <div key={formationId} className="contents">
-                {squad.map((p, i) => {
-                  const pos = positions[p.name];
-                  if (!pos) return null;
-                  const isActive = activeName === p.name;
-                  const isDragging = draggingName === p.name;
+                {formations[formationId].slots.map((slot, i) => {
+                  if (!slot.name) {
+                    return <EmptySlotDot key={`empty-${i}`} pos={{ x: slot.x, y: slot.y }} index={i} />;
+                  }
+                  const player = squad.find((sp) => sp.name === slot.name);
+                  if (!player) return null;
+                  const pos = positions[slot.name] ?? { x: slot.x, y: slot.y };
+                  const isActive = activeName === player.name;
+                  const isDragging = draggingName === player.name;
                   return (
                     <PlayerDot
-                      key={p.name}
-                      player={p}
+                      key={player.name}
+                      player={player}
                       pos={pos}
                       index={i}
                       isActive={isActive}
                       isDragging={isDragging}
                       pitchRef={pitchRef}
-                      onDragStart={() => setDraggingName(p.name)}
-                      onDragEnd={(info, resetXY) => handleDragEnd(p.name, info, resetXY)}
-                      onActivate={() => activate(p.name)}
+                      onDragStart={() => setDraggingName(player.name)}
+                      onDragEnd={(info, resetXY) => handleDragEnd(player.name, info, resetXY)}
+                      onActivate={() => activate(player.name)}
                       onDeactivate={deactivate}
                     />
                   );
@@ -349,7 +382,10 @@ export function Formation() {
           <div className="flex flex-col gap-6">
             {roleOrder.map(({ role, label }) => {
               const linePlayers = squad.filter((p) => roles[p.name] === role);
-              if (linePlayers.length === 0) return null;
+              const emptySlot = formations[formationId].slots.find(
+                (s): s is { name: null; role: LineRole; x: number; y: number } => !s.name && s.role === role,
+              );
+              if (linePlayers.length === 0 && !emptySlot) return null;
               return (
                 <div key={label}>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
@@ -378,6 +414,21 @@ export function Formation() {
                         </button>
                       </li>
                     ))}
+                    {emptySlot ? (
+                      <li>
+                        <a
+                          href={club.social.instagram.url}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="flex w-full items-center gap-3 rounded-md border border-dashed border-border px-2 py-1.5 text-left text-muted-foreground transition-colors hover:border-accent hover:text-accent"
+                        >
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dashed border-current">
+                            <Plus className="h-3 w-3" />
+                          </span>
+                          <span className="truncate text-sm">Vaga aberta</span>
+                        </a>
+                      </li>
+                    ) : null}
                   </ul>
                 </div>
               );
