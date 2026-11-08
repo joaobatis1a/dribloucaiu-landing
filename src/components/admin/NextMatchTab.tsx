@@ -62,6 +62,12 @@ export function NextMatchTab({ site, save }: { site: SiteData; save: Save }) {
           className={input}
         />
       </Field>
+      {local && new Date(`${local}:00-03:00`).getTime() < Date.now() ? (
+        <p className="border-2 border-[var(--tinta)] bg-[var(--tinta)]/10 px-3 py-2 text-sm">
+          Essa data já passou: no site o cartaz vai mostrar “Jogo começou. Placar em breve.”
+          Confira o dia e a hora antes de salvar.
+        </p>
+      ) : null}
       <div className="flex gap-2">
         <button
           className={`${btnPrimary} flex-1`}
