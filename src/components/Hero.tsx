@@ -1,12 +1,10 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import crest from "@/assets/crest.webp";
-import { club, teamStats } from "@/data/team";
+import { club } from "@/data/team";
+import { Scoreboard } from "@/components/Scoreboard";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-const chip1 = teamStats[0]!;
-const chip2 = teamStats[4]!;
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -38,9 +36,12 @@ export function Hero() {
 
       <motion.div
         style={{ opacity: fade }}
-        className="mx-auto grid min-h-[92svh] max-w-[1440px] items-center gap-10 px-6 pb-20 pt-28 lg:grid-cols-12 lg:gap-4 lg:px-10 lg:pb-28"
+        className="mx-auto grid min-h-[88svh] max-w-[1440px] items-center gap-10 px-6 pb-16 pt-24 lg:grid-cols-12 lg:gap-4 lg:px-10 lg:pb-28"
       >
-        <motion.div style={{ y: textY }} className="relative z-10 text-center lg:col-span-7 lg:text-left">
+        <motion.div
+          style={{ y: textY }}
+          className="relative z-10 text-center lg:col-span-7 lg:text-left"
+        >
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,7 +57,7 @@ export function Hero() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-              className="block font-display text-7xl uppercase leading-[0.82] tracking-tight text-foreground sm:text-8xl lg:text-[9rem] xl:text-[10.5rem]"
+              className="block font-display text-7xl uppercase leading-[0.82] tracking-tight text-foreground sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem]"
             >
               Driblou
             </motion.span>
@@ -66,7 +67,7 @@ export function Hero() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.9, delay: 0.3, ease: EASE }}
-              className="block font-display text-7xl uppercase leading-[0.82] tracking-tight text-primary sm:text-8xl lg:text-[9rem] xl:text-[10.5rem]"
+              className="block font-display text-7xl uppercase leading-[0.82] tracking-tight text-primary sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem]"
             >
               Caiu
             </motion.span>
@@ -78,8 +79,8 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.6, ease: EASE }}
             className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:text-lg lg:mx-0"
           >
-            Clube de Pro Clubs no EA FC 26, fundado em {club.founded}. Marcação alta, saída curta
-            e três pontas em velocidade. Bola no chão, sem money team.
+            Clube de Pro Clubs no EA FC 26, fundado em {club.founded}. Marcação alta, saída curta e
+            três pontas em velocidade. Bola no chão, sem money team.
           </motion.p>
 
           <motion.div
@@ -104,6 +105,8 @@ export function Hero() {
               Jogar com a gente
             </a>
           </motion.div>
+
+          <Scoreboard />
         </motion.div>
 
         <div className="relative hidden lg:col-span-5 lg:flex lg:items-center lg:justify-end">
@@ -125,35 +128,6 @@ export function Hero() {
             height={816}
             className="animate-float-y relative h-[26rem] w-[26rem] shrink-0 drop-shadow-[0_35px_65px_rgba(220,38,38,0.5)] xl:-mr-8 xl:h-[30rem] xl:w-[30rem]"
           />
-
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 1, ease: EASE }}
-            className="animate-float-y absolute left-0 top-10 rounded-lg border border-border bg-card/80 px-4 py-2.5 backdrop-blur-sm"
-            style={{ animationDelay: "0.5s" }}
-          >
-            <div className="font-display text-2xl leading-none text-foreground">{chip1.value}</div>
-            <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {chip1.label}
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 1.15, ease: EASE }}
-            className="animate-float-y absolute bottom-6 right-2 rounded-lg border border-accent/40 bg-card/80 px-4 py-2.5 backdrop-blur-sm"
-            style={{ animationDelay: "1.2s" }}
-          >
-            <div className="font-display text-2xl leading-none text-accent">
-              {chip2.value}
-              {chip2.suffix}
-            </div>
-            <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {chip2.label}
-            </div>
-          </motion.div>
         </div>
 
         <motion.img

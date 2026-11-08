@@ -1,5 +1,5 @@
 import { Gamepad2, Percent, Target, Trophy, Zap } from "lucide-react";
-import { teamStats } from "@/data/team";
+import { useSite } from "@/components/site-context";
 import { useCountUp, useReveal } from "@/hooks/use-reveal";
 
 const icons = [Gamepad2, Trophy, Target, Zap, Percent];
@@ -34,7 +34,10 @@ function StatItem({
             "radial-gradient(140px circle at 50% 0%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%)",
         }}
       />
-      <Icon className="relative h-4 w-4 text-primary/70 transition-colors group-hover:text-accent" aria-hidden />
+      <Icon
+        className="relative h-4 w-4 text-primary/70 transition-colors group-hover:text-accent"
+        aria-hidden
+      />
       <div className="relative font-display text-5xl leading-none tabular-nums text-foreground md:text-6xl">
         {shownValue}
         <span className="text-primary">{suffix}</span>
@@ -47,8 +50,19 @@ function StatItem({
 }
 
 export function TeamStats() {
+  const { team } = useSite();
+  const teamStats = [
+    { label: "Jogos", value: team.played, suffix: "" },
+    { label: "Vitórias", value: team.won, suffix: "" },
+    { label: "Gols marcados", value: team.gf, suffix: "" },
+    { label: "Saldo de gols", value: team.gd, suffix: "" },
+    { label: "Aproveitamento", value: team.rate, suffix: "%" },
+  ];
   return (
-    <section id="numeros" className="relative overflow-hidden border-b border-border bg-background py-14">
+    <section
+      id="numeros"
+      className="relative overflow-hidden border-b border-border bg-background py-14"
+    >
       <div
         className="pointer-events-none absolute left-1/2 top-0 h-64 w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[120px]"
         aria-hidden

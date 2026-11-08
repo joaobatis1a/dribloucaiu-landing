@@ -1,7 +1,8 @@
 import { lazy, Suspense, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { RotateCw } from "lucide-react";
-import type { Player } from "@/data/team";
+import type { SitePlayer } from "@/components/site-context";
+import type { Player } from "@/lib/site-schema";
 import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
 
 // Recharts is a hefty dependency; only fetch it once someone actually flips a card.
@@ -16,7 +17,7 @@ const statLabels: Array<[keyof Player["stats"], string]> = [
   ["phy", "FÍS"],
 ];
 
-export function PlayerCard({ player }: { player: Player }) {
+export function PlayerCard({ player }: { player: SitePlayer }) {
   const [flipped, setFlipped] = useState(false);
   // 3D perspective + preserve-3d create a GPU compositing layer per card; with a full grid of
   // cards mounted at once this is a known Safari/iOS jank source, so only pay that cost once a
@@ -120,6 +121,18 @@ export function PlayerCard({ player }: { player: Player }) {
             {positionNames[player.position] ?? player.position}
           </p>
 
+          {player.totals.goals + player.totals.assists > 0 ? (
+            <p className="relative mt-1.5 flex justify-center gap-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              <span>
+                <b className="font-display text-sm text-foreground">{player.totals.goals}</b> gols
+              </span>
+              <span>
+                <b className="font-display text-sm text-foreground">{player.totals.assists}</b>{" "}
+                assist.
+              </span>
+            </p>
+          ) : null}
+
           <dl className="relative mt-2 grid grid-cols-3 gap-x-3 gap-y-1.5 px-3.5 pb-3">
             {statLabels.map(([key, label]) => (
               <div key={key}>
@@ -144,7 +157,11 @@ export function PlayerCard({ player }: { player: Player }) {
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
             className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
           >
-            <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: style.ring }} aria-hidden />
+            <span
+              className="absolute inset-x-0 top-0 h-[3px]"
+              style={{ background: style.ring }}
+              aria-hidden
+            />
 
             <button
               type="button"

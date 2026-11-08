@@ -16,7 +16,7 @@ const LINKS = [
   { href: "#sobre", label: "Clube", id: "sobre" },
   { href: "#esquema", label: "Esquema", id: "esquema" },
   { href: "#elenco", label: "Elenco", id: "elenco" },
-  { href: "#amistosos", label: "Amistosos", id: "amistosos" },
+  { href: "#jogos", label: "Jogos", id: "jogos" },
   { href: "#redes", label: "Redes", id: "redes" },
 ];
 

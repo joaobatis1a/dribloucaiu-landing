@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { squad } from "@/data/team";
+import { useSite } from "@/components/site-context";
 import { PlayerCard } from "@/components/PlayerCard";
 import { SectionTitle } from "@/components/SectionTitle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Squad() {
+  const { players: squad } = useSite();
   return (
     <section id="elenco" className="mx-auto max-w-6xl px-6 py-20 md:py-28">
       <SectionTitle kicker="Squad" title="Elenco" />
@@ -16,7 +17,7 @@ export function Squad() {
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {squad.map((player, i) => (
           <motion.div
-            key={player.name}
+            key={player.id}
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}

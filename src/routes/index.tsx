@@ -6,7 +6,9 @@ import { About } from "@/components/About";
 import { Formation } from "@/components/Formation";
 import { Squad } from "@/components/Squad";
 import { NextMatch } from "@/components/NextMatch";
-import { Friendlies } from "@/components/Friendlies";
+import { MatchCenter } from "@/components/MatchCenter";
+import { SiteProvider } from "@/components/site-context";
+import { getSite } from "@/lib/site.functions";
 import { SocialLinks } from "@/components/SocialLinks";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -29,23 +31,27 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: () => getSite(),
   component: Index,
 });
 
 function Index() {
+  const site = Route.useLoaderData();
   return (
-    <main className="min-h-screen bg-background font-sans">
-      <Navbar />
-      <Hero />
-      <TeamStats />
-      <About />
-      <Formation />
-      <Squad />
-      <NextMatch />
-      <Friendlies />
-      <SocialLinks />
-      <SiteFooter />
-      <ScrollToTop />
-    </main>
+    <SiteProvider site={site}>
+      <main className="min-h-screen bg-background font-sans">
+        <Navbar />
+        <Hero />
+        <TeamStats />
+        <About />
+        <Formation />
+        <Squad />
+        <NextMatch />
+        <MatchCenter />
+        <SocialLinks />
+        <SiteFooter />
+        <ScrollToTop />
+      </main>
+    </SiteProvider>
   );
 }

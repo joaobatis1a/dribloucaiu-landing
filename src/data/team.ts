@@ -9,6 +9,23 @@ import paix2007 from "@/assets/players/paix2007.webp";
 import gommes07 from "@/assets/players/gommes07.webp";
 import richardxzs from "@/assets/players/richardxzs.webp";
 
+import type { Player, SiteData } from "@/lib/site-schema";
+
+/** Fotos embutidas no site. Fotos enviadas pelo painel admin têm prioridade (player.photo). */
+export const bundledPhotos: Record<string, string> = {
+  "gui-araujo": itzguiboy,
+  dioginho: dioginho9222,
+  chatuba: xchavozinhodopea,
+  rankthread: rankthread7162,
+  "peu-xrc": peubezerra07,
+  ratingoat: ratinggoat9879,
+  osmo: dragonjoao10,
+  paix2007: paix2007,
+  gommes07: gommes07,
+  elmamaria: richardxzs,
+};
+
+/** Identidade fixa do clube. O que muda a cada jogo vive no banco (ver defaultSite). */
 export const club = {
   name: "Driblou Caiu",
   tagline: "Pro Clubs · EA FC 26 · Amistosos & Liga",
@@ -24,156 +41,110 @@ export const club = {
     "O Driblou Caiu nasceu de uma resenha que não parava: um grupo cansado de perder pra time que só compra 90+ e não marca ninguém. Aqui é treino toda semana, banco por mérito e uma regra só: quem não corre pra trás, não joga.",
   rules: ["Sem money team", "Banco por mérito", "Bola no chão", "Treino toda semana"],
   motto: "Quer ganhar? Faça 5.",
+};
+
+const P = (
+  id: string,
+  name: string,
+  number: number,
+  position: Player["position"],
+  overall: number,
+  pac: number,
+  sho: number,
+  pas: number,
+  dri: number,
+  def: number,
+  phy: number,
+  extra: Partial<Player> = {},
+): Player => ({
+  id,
+  name,
+  number,
+  position,
+  overall,
+  stats: { pac, sho, pas, dri, def, phy },
+  ...extra,
+});
+
+/** Conteúdo inicial: vale enquanto ninguém salvou nada pelo painel. */
+export const defaultSite: SiteData = {
+  updatedAt: "2026-08-17T00:00:00.000Z",
   nextMatch: {
     opponent: "Meta Squad",
-    competition: "Liga Amistosa",
+    competition: "Liga",
     date: "2026-08-22T20:30:00-03:00",
     venue: "Casa",
   },
+  players: [
+    P("gui-araujo", "Gui Araújo", 11, "PD", 95, 95, 91, 79, 91, 34, 68),
+    P("dioginho", "Dioginho9222", 4, "ZAG", 95, 70, 46, 65, 58, 93, 92),
+    P("chatuba", "Chatuba", 9, "VOL", 93, 74, 65, 92, 80, 78, 80, {
+      captain: true,
+      photoScale: 0.87,
+    }),
+    P("rankthread", "RankThread7162", 8, "MC", 91, 76, 80, 91, 86, 58, 70, { photoScale: 0.95 }),
+    P("peu-xrc", "PEU XRC", 69, "MEI", 89, 80, 82, 93, 90, 42, 62),
+    P("ratingoat", "Ratingoat", 10, "MEI", 91, 82, 84, 90, 89, 40, 64, { photoScale: 0.96 }),
+    P("osmo", "Osmo", 72, "PE", 93, 95, 90, 76, 92, 35, 66),
+    P("paix2007", "Paix2007", 7, "PD", 93, 92, 87, 74, 90, 33, 63, { photoScale: 0.94 }),
+    P("gommes07", "Gommes07.", 7, "ATA", 96, 84, 93, 68, 85, 38, 88, { photoScale: 0.96 }),
+    P("elmamaria", "Elmamaria pika", 2, "ATA", 98, 86, 96, 70, 88, 36, 90, { photoScale: 0.92 }),
+  ],
+  matches: [
+    {
+      id: "m5",
+      opponent: "Ala Fantasma FC",
+      goalsFor: 4,
+      goalsAgainst: 1,
+      competition: "Liga",
+      date: "2026-08-14",
+      scorers: [],
+    },
+    {
+      id: "m4",
+      opponent: "Rebaixados United",
+      goalsFor: 3,
+      goalsAgainst: 3,
+      competition: "Amistoso",
+      date: "2026-08-12",
+      scorers: [],
+    },
+    {
+      id: "m3",
+      opponent: "Tira o Pé SC",
+      goalsFor: 2,
+      goalsAgainst: 0,
+      competition: "Liga",
+      date: "2026-08-09",
+      scorers: [],
+    },
+    {
+      id: "m2",
+      opponent: "Meta Squad",
+      goalsFor: 1,
+      goalsAgainst: 2,
+      competition: "Liga",
+      date: "2026-08-05",
+      scorers: [],
+    },
+    {
+      id: "m1",
+      opponent: "Canela Seca FC",
+      goalsFor: 6,
+      goalsAgainst: 2,
+      competition: "Amistoso",
+      date: "2026-08-02",
+      scorers: [],
+    },
+  ],
+  table: [
+    { team: "Meta Squad", played: 18, won: 14, drawn: 2, lost: 2, gd: 38, points: 44 },
+    { team: "Driblou Caiu", played: 18, won: 13, drawn: 3, lost: 2, gd: 35, points: 42 },
+    { team: "Tira o Pé SC", played: 18, won: 11, drawn: 3, lost: 4, gd: 21, points: 36 },
+    { team: "Ala Fantasma FC", played: 18, won: 8, drawn: 4, lost: 6, gd: 7, points: 28 },
+    { team: "Rebaixados United", played: 18, won: 5, drawn: 5, lost: 8, gd: -9, points: 20 },
+    { team: "Canela Seca FC", played: 18, won: 2, drawn: 3, lost: 13, gd: -31, points: 9 },
+  ],
+  // Soma com as 5 partidas acima e dá os números que o site mostrava antes (42 jogos, 31 V, 128 gols, saldo +74).
+  baseline: { played: 37, won: 28, drawn: 4, lost: 5, gf: 112, ga: 46 },
 };
-
-export type Player = {
-  name: string;
-  number: number;
-  position: string;
-  overall: number;
-  captain?: boolean;
-  /** Foto do jogador (opcional). Sem foto, mostra uma silhueta no lugar. */
-  photo?: string;
-  /** Ajuste de escala pra compensar fotos com enquadramento mais próximo (1 = sem ajuste). */
-  photoScale?: number;
-  stats: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number };
-};
-
-export const squad: Player[] = [
-  {
-    name: "Gui Araújo",
-    number: 11,
-    position: "PD",
-    overall: 95,
-    photo: itzguiboy,
-    stats: { pac: 95, sho: 91, pas: 79, dri: 91, def: 34, phy: 68 },
-  },
-  {
-    name: "Dioginho9222",
-    number: 4,
-    position: "ZAG",
-    overall: 95,
-    photo: dioginho9222,
-    stats: { pac: 70, sho: 46, pas: 65, dri: 58, def: 93, phy: 92 },
-  },
-  {
-    name: "Chatuba",
-    number: 9,
-    position: "VOL",
-    overall: 93,
-    captain: true,
-    photo: xchavozinhodopea,
-    photoScale: 0.87,
-    stats: { pac: 74, sho: 65, pas: 92, dri: 80, def: 78, phy: 80 },
-  },
-  {
-    name: "RankThread7162",
-    number: 8,
-    position: "MC",
-    overall: 91,
-    photo: rankthread7162,
-    photoScale: 0.95,
-    stats: { pac: 76, sho: 80, pas: 91, dri: 86, def: 58, phy: 70 },
-  },
-  {
-    name: "PEU XRC",
-    number: 69,
-    position: "MEI",
-    overall: 89,
-    photo: peubezerra07,
-    stats: { pac: 80, sho: 82, pas: 93, dri: 90, def: 42, phy: 62 },
-  },
-  {
-    name: "Ratingoat",
-    number: 10,
-    position: "MEI",
-    overall: 91,
-    photo: ratinggoat9879,
-    photoScale: 0.96,
-    stats: { pac: 82, sho: 84, pas: 90, dri: 89, def: 40, phy: 64 },
-  },
-  {
-    name: "Osmo",
-    number: 72,
-    position: "PE",
-    overall: 93,
-    photo: dragonjoao10,
-    stats: { pac: 95, sho: 90, pas: 76, dri: 92, def: 35, phy: 66 },
-  },
-  {
-    name: "Paix2007",
-    number: 7,
-    position: "PD",
-    overall: 93,
-    photo: paix2007,
-    photoScale: 0.94,
-    stats: { pac: 92, sho: 87, pas: 74, dri: 90, def: 33, phy: 63 },
-  },
-  {
-    name: "Gommes07.",
-    number: 7,
-    position: "ATA",
-    overall: 96,
-    photo: gommes07,
-    photoScale: 0.96,
-    stats: { pac: 84, sho: 93, pas: 68, dri: 85, def: 38, phy: 88 },
-  },
-  {
-    name: "Elmamaria pika",
-    number: 2,
-    position: "ATA",
-    overall: 98,
-    photo: richardxzs,
-    photoScale: 0.92,
-    stats: { pac: 86, sho: 96, pas: 70, dri: 88, def: 36, phy: 90 },
-  },
-];
-
-export const teamStats = [
-  { label: "Jogos", value: 42, suffix: "" },
-  { label: "Vitórias", value: 31, suffix: "" },
-  { label: "Gols marcados", value: 128, suffix: "" },
-  { label: "Saldo de gols", value: 74, suffix: "" },
-  { label: "Aproveitamento", value: 78, suffix: "%" },
-];
-
-export type Match = {
-  opponent: string;
-  goalsFor: number;
-  goalsAgainst: number;
-  competition: "Liga" | "Amistoso";
-  date: string;
-};
-
-export const results: Match[] = [
-  { opponent: "Ala Fantasma FC", goalsFor: 4, goalsAgainst: 1, competition: "Liga", date: "14 AGO" },
-  { opponent: "Rebaixados United", goalsFor: 3, goalsAgainst: 3, competition: "Amistoso", date: "12 AGO" },
-  { opponent: "Tira o Pé SC", goalsFor: 2, goalsAgainst: 0, competition: "Liga", date: "09 AGO" },
-  { opponent: "Meta Squad", goalsFor: 1, goalsAgainst: 2, competition: "Liga", date: "05 AGO" },
-  { opponent: "Canela Seca FC", goalsFor: 6, goalsAgainst: 2, competition: "Amistoso", date: "02 AGO" },
-];
-
-export type TableRow = {
-  team: string;
-  played: number;
-  won: number;
-  drawn: number;
-  lost: number;
-  gd: number;
-  points: number;
-};
-
-export const leagueTable: TableRow[] = [
-  { team: "Meta Squad", played: 18, won: 14, drawn: 2, lost: 2, gd: 38, points: 44 },
-  { team: "Driblou Caiu", played: 18, won: 13, drawn: 3, lost: 2, gd: 35, points: 42 },
-  { team: "Tira o Pé SC", played: 18, won: 11, drawn: 3, lost: 4, gd: 21, points: 36 },
-  { team: "Ala Fantasma FC", played: 18, won: 8, drawn: 4, lost: 6, gd: 7, points: 28 },
-  { team: "Rebaixados United", played: 18, won: 5, drawn: 5, lost: 8, gd: -9, points: 20 },
-  { team: "Canela Seca FC", played: 18, won: 2, drawn: 3, lost: 13, gd: -31, points: 9 },
-];

@@ -2,23 +2,22 @@ import { motion } from "framer-motion";
 import { Instagram, MessageCircle } from "lucide-react";
 import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
+import { useSite } from "@/components/site-context";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 
 const NAV_LINKS = [
   { href: "#sobre", label: "Clube" },
   { href: "#esquema", label: "Esquema" },
   { href: "#elenco", label: "Elenco" },
-  { href: "#amistosos", label: "Amistosos" },
+  { href: "#jogos", label: "Jogos" },
   { href: "#redes", label: "Redes" },
 ];
 
-const FACTS = [
-  `Fundado em ${club.founded}`,
-  club.platform,
-  `Esquema ${club.formation}`,
-];
+const FACTS = [`Fundado em ${club.founded}`, club.platform, `Esquema ${club.formation}`];
 
 export function SiteFooter() {
+  const { site } = useSite();
+  const next = site.nextMatch;
   return (
     <footer className="relative overflow-hidden border-t border-border bg-card/30">
       <div className="grain pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden />
@@ -93,20 +92,22 @@ export function SiteFooter() {
         />
 
         <div className="mt-10 lg:mt-0">
-          <a
-            href="#proximo-jogo"
-            className="group block rounded-xl border border-dashed border-border bg-card/40 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.85)] backdrop-blur-sm transition-colors hover:border-accent"
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
-              Próximo jogo
-            </p>
-            <p className="mt-2 font-display text-2xl uppercase leading-none tracking-wide text-foreground transition-colors group-hover:text-accent">
-              vs {club.nextMatch.opponent}
-            </p>
-            <p className="mt-1.5 text-xs uppercase tracking-[0.15em] text-muted-foreground">
-              {club.nextMatch.competition} · {club.nextMatch.venue}
-            </p>
-          </a>
+          {next ? (
+            <a
+              href="#proximo-jogo"
+              className="group block rounded-xl border border-dashed border-border bg-card/40 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.85)] backdrop-blur-sm transition-colors hover:border-accent"
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
+                Próximo jogo
+              </p>
+              <p className="mt-2 font-display text-2xl uppercase leading-none tracking-wide text-foreground transition-colors group-hover:text-accent">
+                vs {next.opponent}
+              </p>
+              <p className="mt-1.5 text-xs uppercase tracking-[0.15em] text-muted-foreground">
+                {next.competition} · {next.venue}
+              </p>
+            </a>
+          ) : null}
 
           <div className="mt-6 flex flex-wrap gap-2">
             {NAV_LINKS.map((link) => (

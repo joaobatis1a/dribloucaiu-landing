@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { club } from "@/data/team";
+import { useSite } from "@/components/site-context";
 import { useCountdown } from "@/hooks/use-countdown";
 
 function pad(n: number) {
@@ -26,8 +26,11 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 }
 
 export function NextMatch() {
-  const t = useCountdown(club.nextMatch.date);
-  const matchDate = new Date(club.nextMatch.date);
+  const { site } = useSite();
+  const next = site.nextMatch;
+  const t = useCountdown(next?.date ?? "2000-01-01T00:00:00Z");
+  if (!next) return null;
+  const matchDate = new Date(next.date);
   const formatted = matchDate.toLocaleString("pt-BR", {
     day: "2-digit",
     month: "short",
@@ -37,7 +40,10 @@ export function NextMatch() {
   });
 
   return (
-    <section id="proximo-jogo" className="relative isolate overflow-hidden border-y border-border bg-card">
+    <section
+      id="proximo-jogo"
+      className="relative isolate overflow-hidden border-y border-border bg-card"
+    >
       <div className="grain absolute inset-0 -z-10 opacity-[0.04]" aria-hidden />
       <div
         className="absolute -left-16 top-1/2 -z-10 h-72 w-72 -translate-y-1/2 rounded-full bg-primary/15 blur-[120px]"
@@ -68,10 +74,10 @@ export function NextMatch() {
             Próximo jogo
           </p>
           <h2 className="mt-3 font-display text-4xl uppercase leading-[0.9] tracking-tight text-foreground sm:text-5xl">
-            Driblou Caiu <span className="text-muted-foreground">vs</span> {club.nextMatch.opponent}
+            Driblou Caiu <span className="text-muted-foreground">vs</span> {next.opponent}
           </h2>
           <p className="mt-2 text-sm uppercase tracking-[0.2em] text-muted-foreground">
-            {club.nextMatch.competition} · {club.nextMatch.venue} · {formatted}
+            {next.competition} · {next.venue} · {formatted}
           </p>
         </div>
 

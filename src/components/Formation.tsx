@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, type PanInfo } from "framer-motion";
 import { GripHorizontal, Instagram, Plus, RotateCcw, UserPlus } from "lucide-react";
-import { club, squad, type Player } from "@/data/team";
+import { club } from "@/data/team";
+import type { Player } from "@/lib/site-schema";
+import { useSite } from "@/components/site-context";
 import {
   formationIds,
   formations,
@@ -213,6 +215,7 @@ function EmptySlotDot({ pos, index }: { pos: Position; index: number }) {
 }
 
 export function Formation() {
+  const { players: squad } = useSite();
   const [formationId, setFormationId] = useState<FormationId>("3-4-1-2");
   const [positions, setPositions] = useState<Record<string, Position>>(() =>
     slotsToPositions(formations["3-4-1-2"].slots),

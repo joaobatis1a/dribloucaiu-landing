@@ -25,6 +25,18 @@ Landing page em single-page, construída com React 19 + TanStack Start (SSR), co
 - **Amistosos**, último resultado, histórico de jogos e convite pra marcar partida
 - **Redes**, links pro Instagram, TikTok e Discord do clube
 
+## Painel admin (atualizar o site sem mexer no código)
+
+Em `/admin` (protegido por senha) dá pra registrar partidas com placar, gols e assistências por jogador, definir o próximo jogo, editar o elenco (stats e foto), a tabela da liga e o histórico. Artilharia, aproveitamento e contadores do site são calculados sozinhos a partir das partidas.
+
+Os dados ficam num Redis (Upstash) acessado por REST. Configuração na Vercel:
+
+1. **Storage → Marketplace → Upstash Redis** e conecte ao projeto (cria `KV_REST_API_URL` e `KV_REST_API_TOKEN`).
+2. **Settings → Environment Variables**: crie `ADMIN_PASSWORD` com a senha do painel (e, opcionalmente, `ADMIN_SECRET`, um texto aleatório longo que assina a sessão).
+3. Faça um novo deploy.
+
+Sem Redis o site continua funcionando com os dados iniciais (`src/data/team.ts`), só não dá pra salvar. Em desenvolvimento (`bun run dev`) os dados vão para `.data/db.json` e a senha padrão é `driblou`.
+
 ## Stack
 
 - **[TanStack Start](https://tanstack.com/start)**, React 19 + SSR
