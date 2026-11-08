@@ -3,7 +3,6 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "fr
 import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { Scoreboard } from "@/components/Scoreboard";
-import { VelocityMarquee } from "@/components/motion/VelocityMarquee";
 import { EASE_OUT } from "@/components/motion/Reveal";
 
 /** Palavra carimbada em estêncil: cada letra cai do alto e assenta com mola. */
@@ -116,25 +115,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="paint-stripes h-3" aria-hidden />
-      <VelocityMarquee baseVelocity={2.2} className="bg-[var(--piche)] py-3 text-[var(--cal)]">
-        {[
-          "Driblou Caiu",
-          "Bola no chão",
-          "Pro Clubs",
-          "Banco por mérito",
-          "EA FC 26",
-          "Sem money team",
-        ].map((t) => (
-          <span
-            key={t}
-            className="flex items-center font-stencil text-3xl font-black uppercase sm:text-4xl"
-          >
-            <span className="px-6">{t}</span>
-            <span className="h-3 w-3 rotate-45 bg-[var(--tinta)]" />
-          </span>
-        ))}
-      </VelocityMarquee>
+      <div className="paint-stripes h-4" aria-hidden />
     </header>
   );
 }

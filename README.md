@@ -16,13 +16,13 @@ Site oficial do **Driblou Caiu**, clube de Pro Clubs no **EA FC 26**: elenco, es
 
 A identidade parte do escudo e do lugar de onde o futebol do time vem: a várzea. O site é o muro do campo: nome pintado em estêncil (Big Shoulders Stencil), placar de chapinhas penduradas no prego, regras da casa em placas pintadas, próximo jogo num lambe-lambe amarelo, resultados numa súmula em máquina de escrever (Courier Prime) e um rodapé com um muro pichável, onde o visitante arrasta e picha com spray. A paleta usa só as cores do jogo: cal, vermelho do escudo, preto piche, amarelo cartão e verde gramado.
 
-O movimento é parte da identidade: rolagem suave com inércia ([Lenis](https://lenis.darkroom.engineering/)), letras do nome carimbadas uma a uma, faixas que aceleram com a velocidade da rolagem, manifesto que acende palavra por palavra e escalação que entra do meio-campo. Tudo respeita a preferência de movimento reduzido do sistema.
+O movimento é parte da identidade: rolagem suave com inércia ([Lenis](https://lenis.darkroom.engineering/)), letras do nome carimbadas uma a uma, parallax no topo, manifesto que acende palavra por palavra e escalação que entra do meio-campo. Tudo respeita a preferência de movimento reduzido do sistema.
 
 ## Seções
 
 - **Início**: nome carimbado no muro, escudo e placar de chapa com o último jogo e a forma recente
 - **Números**: jogos, vitórias, gols, saldo e aproveitamento, calculados a partir das partidas
-- **Clube**: manifesto, selo giratório, regras da casa em placas e o lema numa faixa
+- **Clube**: manifesto, selo giratório, regras da casa em placas e o lema pintado numa faixa vermelha
 - **Esquema**: os 11 slots numerados no campo, com o nome de quem estiver escalado
 - **Elenco**: lista de chamada por setor, com a foto seguindo o cursor e a ficha de atributos. Sem jogadores, mostra "elenco em reformulação"
 - **Próximo jogo**: lambe-lambe com data, adversário e contagem regressiva
@@ -98,7 +98,7 @@ src/
 │   ├── Squad.tsx                    # lista de chamada do elenco
 │   ├── NextMatch.tsx, MatchCenter.tsx
 │   ├── SiteFooter.tsx, SprayWall.tsx # rodapé com o muro pichável
-│   ├── motion/                      # Lenis, faixas por velocidade e revelações
+│   ├── motion/                      # Lenis e revelações no scroll
 │   └── admin/                       # abas do painel (Vestiário)
 ├── data/team.ts                     # identidade do clube e conteúdo inicial
 ├── lib/

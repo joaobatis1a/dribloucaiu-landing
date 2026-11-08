@@ -3,8 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
-import { ScrollLitText } from "@/components/motion/Reveal";
-import { VelocityMarquee } from "@/components/motion/VelocityMarquee";
+import { RevealWords, ScrollLitText } from "@/components/motion/Reveal";
 
 /** Placas pintadas no muro, cada uma com uma pegada diferente. */
 const SIGN_STYLES = [
@@ -102,17 +101,15 @@ export function About() {
         </ul>
       </div>
 
-      <VelocityMarquee baseVelocity={-1.6} className="bg-[var(--tinta)] py-4 text-white">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="flex items-center font-stencil text-[clamp(3rem,8vw,6rem)] font-black uppercase leading-none"
-          >
-            <span className="px-8">{club.motto}</span>
-            <img src={crest} alt="" className="h-14 w-14 sm:h-20 sm:w-20" />
-          </span>
-        ))}
-      </VelocityMarquee>
+      {/* O lema pintado de ponta a ponta numa faixa vermelha. */}
+      <div className="bg-[var(--tinta)] text-white">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-4 py-8 sm:px-6 md:py-10">
+          <p className="font-stencil text-[clamp(2.8rem,8vw,6.5rem)] font-black uppercase leading-[0.85]">
+            <RevealWords text={club.motto} stagger={0.08} />
+          </p>
+          <img src={crest} alt="" className="hidden h-24 w-24 shrink-0 sm:block md:h-32 md:w-32" />
+        </div>
+      </div>
     </section>
   );
 }

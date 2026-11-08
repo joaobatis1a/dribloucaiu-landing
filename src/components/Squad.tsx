@@ -11,7 +11,6 @@ import { Instagram } from "lucide-react";
 import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
 import { useSite, type SitePlayer } from "@/components/site-context";
-import { VelocityMarquee } from "@/components/motion/VelocityMarquee";
 import { EASE_OUT } from "@/components/motion/Reveal";
 import { positionBucket, positionNames, type PositionBucket } from "@/lib/match";
 import type { Player } from "@/lib/site-schema";
@@ -53,21 +52,15 @@ function Rebuilding() {
         ))}
       </div>
 
+      {/* Fita de obra atravessando a página (parada). */}
       <div className="relative -mx-4 my-10 sm:-mx-6">
-        <VelocityMarquee
-          baseVelocity={2}
-          className="-rotate-2 border-y-4 border-[var(--piche)] bg-[var(--cartao)] py-3 text-[var(--piche)]"
-        >
-          {["Elenco em reformulação", "Novos nomes em breve", "Peneira aberta"].map((t) => (
-            <span
-              key={t}
-              className="flex items-center font-display text-3xl font-black uppercase sm:text-4xl"
-            >
-              <span className="px-6">{t}</span>
-              <span className="h-6 w-10 -skew-x-[30deg] bg-[var(--piche)]" />
-            </span>
-          ))}
-        </VelocityMarquee>
+        <div className="flex -rotate-2 items-stretch border-y-4 border-[var(--piche)] bg-[var(--cartao)] text-[var(--piche)]">
+          <span className="w-16 shrink-0 bg-[repeating-linear-gradient(-45deg,var(--piche)_0_12px,transparent_12px_24px)] sm:w-40" />
+          <p className="flex-1 px-4 py-3 text-center font-display text-2xl font-black uppercase leading-tight sm:text-4xl">
+            Elenco em reformulação · Peneira aberta
+          </p>
+          <span className="w-16 shrink-0 bg-[repeating-linear-gradient(-45deg,var(--piche)_0_12px,transparent_12px_24px)] sm:w-40" />
+        </div>
       </div>
 
       <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
