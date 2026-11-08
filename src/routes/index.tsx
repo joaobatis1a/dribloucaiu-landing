@@ -12,6 +12,7 @@ import { getSite } from "@/lib/site.functions";
 import { SocialLinks } from "@/components/SocialLinks";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,8 +40,10 @@ function Index() {
   const site = Route.useLoaderData();
   return (
     <SiteProvider site={site}>
-      <main className="min-h-screen bg-background font-sans">
-        <Navbar />
+      <SmoothScroll />
+      <Navbar />
+      {/* O conteúdo fica por cima do rodapé, que é revelado por baixo como uma cortina. */}
+      <main className="relative z-10 min-h-screen bg-background font-sans shadow-[0_40px_60px_-30px_rgba(0,0,0,0.65)]">
         <Hero />
         <TeamStats />
         <About />
@@ -49,9 +52,9 @@ function Index() {
         <NextMatch />
         <MatchCenter />
         <SocialLinks />
-        <SiteFooter />
-        <ScrollToTop />
       </main>
+      <SiteFooter />
+      <ScrollToTop />
     </SiteProvider>
   );
 }

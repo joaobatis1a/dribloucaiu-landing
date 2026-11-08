@@ -1,5 +1,4 @@
 import { createContext, useContext, useMemo, type ReactNode } from "react";
-import { bundledPhotos } from "@/data/team";
 import type { Match, Player, SiteData } from "@/lib/site-schema";
 import { playerTotals, sortedMatches, teamTotals, type PlayerTotals } from "@/lib/site-derive";
 
@@ -23,7 +22,6 @@ export function SiteProvider({ site, children }: { site: SiteData; children: Rea
       team: teamTotals(site),
       players: site.players.map((p) => ({
         ...p,
-        photo: p.photo ?? bundledPhotos[p.id],
         totals: totals[p.id] ?? { games: 0, goals: 0, assists: 0, motm: 0 },
       })),
     };

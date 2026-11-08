@@ -14,22 +14,25 @@ Site oficial do **Driblou Caiu**, clube de Pro Clubs no **EA FC 26**: elenco, es
 
 ## Sobre o projeto
 
-A identidade parte do escudo e do lugar de onde o futebol do time vem: a várzea. O site é o muro do campo, com o nome pintado em estêncil (Big Shoulders Stencil), o último resultado num placar de chapinhas penduradas no prego, o elenco como página de álbum de figurinhas, o próximo jogo como cartaz lambe-lambe amarelo e os resultados numa súmula em máquina de escrever (Courier Prime). A paleta usa só as cores do jogo: cal, vermelho do escudo, preto piche, amarelo cartão e verde gramado.
+A identidade parte do escudo e do lugar de onde o futebol do time vem: a várzea. O site é o muro do campo: nome pintado em estêncil (Big Shoulders Stencil), placar de chapinhas penduradas no prego, regras da casa em placas pintadas, próximo jogo num lambe-lambe amarelo, resultados numa súmula em máquina de escrever (Courier Prime) e um rodapé com um muro pichável, onde o visitante arrasta e picha com spray. A paleta usa só as cores do jogo: cal, vermelho do escudo, preto piche, amarelo cartão e verde gramado.
+
+O movimento é parte da identidade: rolagem suave com inércia ([Lenis](https://lenis.darkroom.engineering/)), letras do nome carimbadas uma a uma, faixas que aceleram com a velocidade da rolagem, manifesto que acende palavra por palavra e escalação que entra do meio-campo. Tudo respeita a preferência de movimento reduzido do sistema.
 
 ## Seções
 
-- **Início**: nome pintado no muro, escudo e placar de chapa com o último jogo e a forma recente
+- **Início**: nome carimbado no muro, escudo e placar de chapa com o último jogo e a forma recente
 - **Números**: jogos, vitórias, gols, saldo e aproveitamento, calculados a partir das partidas
-- **Clube**: manifesto, regras da casa e lema
-- **Esquema**: campo tático interativo, com 8 formações e jogadores arrastáveis
-- **Elenco**: álbum de figurinhas; toque na figurinha para ver a ficha do jogador
+- **Clube**: manifesto, selo giratório, regras da casa em placas e o lema numa faixa
+- **Esquema**: os 11 slots numerados no campo, com o nome de quem estiver escalado
+- **Elenco**: lista de chamada por setor, com a foto seguindo o cursor e a ficha de atributos. Sem jogadores, mostra "elenco em reformulação"
 - **Próximo jogo**: lambe-lambe com data, adversário e contagem regressiva
 - **Jogos**: súmula com resultados (gols, assistências e craque do jogo), tabela da liga e artilharia
 - **Redes**: Instagram e TikTok do clube
+- **Rodapé**: muro pichável, links e próximo jogo
 
 ## Painel admin (atualizar o site sem mexer no código)
 
-Em `/admin` (protegido por senha) dá pra registrar partidas com placar, gols e assistências por jogador, definir o próximo jogo, editar o elenco (stats e foto), a tabela da liga e o histórico. Artilharia, aproveitamento e contadores do site são calculados sozinhos a partir das partidas.
+Em `/admin` (o "Vestiário", protegido por senha) dá pra registrar partidas com placar, gols e assistências por jogador, definir o próximo jogo, montar a **escalação** (escolher o esquema, arrastar os 11 slots no campo e definir camisa e jogador de cada um), adicionar, editar e remover jogadores do **elenco** (foto, atributos, capitão), editar a tabela da liga e o histórico. Artilharia, aproveitamento e contadores do site são calculados sozinhos a partir das partidas.
 
 Os dados ficam num Redis (Upstash) acessado por REST. Configuração na Vercel:
 
@@ -39,22 +42,17 @@ Os dados ficam num Redis (Upstash) acessado por REST. Configuração na Vercel:
 
 Sem Redis o site continua funcionando com os dados iniciais (`src/data/team.ts`), só não dá pra salvar. Em desenvolvimento (`bun run dev`) os dados vão para `.data/db.json` e a senha padrão é `driblou`.
 
-## Fotos do elenco
+## Elenco
 
-As fotos embutidas vêm de prints da carta de cada jogador no jogo. `scripts/crop-stickers.mjs` recorta cabeça e tronco no formato de figurinha, a partir dos prints em `scripts/player-sources/`:
-
-```bash
-node scripts/crop-stickers.mjs scripts/player-sources src/assets/players
-```
-
-Uma foto enviada pelo painel admin substitui a embutida.
+O elenco começa vazio (em reformulação) e é montado pelo painel. As fotos enviadas lá ficam guardadas no banco junto com os dados.
 
 ## Stack
 
 - **[TanStack Start](https://tanstack.com/start)**, React 19 + SSR
 - **[TanStack Router](https://tanstack.com/router)**, roteamento
 - **[Tailwind CSS 4](https://tailwindcss.com/)**, estilização utilitária
-- **[Framer Motion](https://www.framer.com/motion/)**, animações e drag-and-drop do esquema tático
+- **[Framer Motion](https://www.framer.com/motion/)**, animações, parallax e o editor de escalação arrastável
+- **[Lenis](https://lenis.darkroom.engineering/)**, rolagem suave
 - **[Radix UI](https://www.radix-ui.com/)**, componentes acessíveis
 - **[Vite 8](https://vite.dev/)** + **[Nitro](https://nitro.build/)**, build e servidor
 - **[Bun](https://bun.sh/)**, runtime e gerenciador de pacotes
@@ -94,24 +92,22 @@ O projeto já está configurado pra rodar tanto na Vercel quanto no Cloudflare (
 ```
 src/
 ├── components/
-│   ├── Hero.tsx
-│   ├── TeamStats.tsx
-│   ├── About.tsx
-│   ├── Formation.tsx       # esquema tático interativo
-│   ├── Squad.tsx           # grade do elenco
-│   ├── PlayerCard.tsx      # card individual do jogador
-│   ├── Friendlies.tsx      # amistosos
-│   ├── SocialLinks.tsx
-│   ├── Navbar.tsx
-│   ├── SiteFooter.tsx
-│   └── ScrollToTop.tsx
-├── data/
-│   └── team.ts             # elenco, resultados e dados do clube
+│   ├── Hero.tsx, Scoreboard.tsx     # muro com o nome e o placar de chapa
+│   ├── About.tsx                    # manifesto, selo e placas das regras
+│   ├── Formation.tsx, Pitch.tsx     # escalação (o Pitch também é o editor do painel)
+│   ├── Squad.tsx                    # lista de chamada do elenco
+│   ├── NextMatch.tsx, MatchCenter.tsx
+│   ├── SiteFooter.tsx, SprayWall.tsx # rodapé com o muro pichável
+│   ├── motion/                      # Lenis, faixas por velocidade e revelações
+│   └── admin/                       # abas do painel (Vestiário)
+├── data/team.ts                     # identidade do clube e conteúdo inicial
 ├── lib/
-│   ├── formations.ts       # posições de cada esquema tático
-│   └── match.ts            # raridade dos cards e helpers de partida
-├── assets/players/          # fotos dos jogadores
-└── routes/                  # rotas do TanStack Router
+│   ├── site-schema.ts               # formato dos dados (zod)
+│   ├── site.functions.ts            # server functions (leitura, login, salvar)
+│   ├── formations.ts                # posições padrão de cada esquema
+│   └── site-derive.ts               # números, artilharia e ordenação
+├── server/                          # Redis/arquivo, sessão do painel
+└── routes/                          # /, /admin e /api/photo/$id
 ```
 
 ## Autor

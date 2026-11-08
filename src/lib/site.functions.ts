@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
   baselineSchema,
+  lineupSchema,
   matchSchema,
   nextMatchSchema,
   playerSchema,
@@ -70,6 +71,7 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("deletePlayer"), id: z.string() }),
   z.object({ type: z.literal("saveTable"), table: z.array(tableRowSchema) }),
   z.object({ type: z.literal("saveBaseline"), baseline: baselineSchema }),
+  z.object({ type: z.literal("saveLineup"), lineup: lineupSchema }),
 ]);
 
 export const adminSave = createServerFn({ method: "POST" })
@@ -118,12 +120,19 @@ export const adminSave = createServerFn({ method: "POST" })
       }
       case "deletePlayer":
         site.players = site.players.filter((p) => p.id !== data.id);
+        // tira o jogador da escalação também
+        site.lineup.slots = site.lineup.slots.map(({ playerId, ...slot }) =>
+          playerId === data.id ? slot : { ...slot, ...(playerId ? { playerId } : {}) },
+        );
         break;
       case "saveTable":
         site.table = data.table;
         break;
       case "saveBaseline":
         site.baseline = data.baseline;
+        break;
+      case "saveLineup":
+        site.lineup = data.lineup;
         break;
     }
     return saveSite(site);

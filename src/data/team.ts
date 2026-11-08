@@ -1,29 +1,4 @@
-import itzguiboy from "@/assets/players/itzguiboy.webp";
-import dioginho9222 from "@/assets/players/dioginho9222.webp";
-import xchavozinhodopea from "@/assets/players/xchavozinhodopea.webp";
-import rankthread7162 from "@/assets/players/rankthread7162.webp";
-import peubezerra07 from "@/assets/players/peubezerra07.webp";
-import ratinggoat9879 from "@/assets/players/ratinggoat9879.webp";
-import dragonjoao10 from "@/assets/players/dragonjoao10.webp";
-import paix2007 from "@/assets/players/paix2007.webp";
-import gommes07 from "@/assets/players/gommes07.webp";
-import richardxzs from "@/assets/players/richardxzs.webp";
-
-import type { Player, SiteData } from "@/lib/site-schema";
-
-/** Fotos embutidas no site. Fotos enviadas pelo painel admin têm prioridade (player.photo). */
-export const bundledPhotos: Record<string, string> = {
-  "gui-araujo": itzguiboy,
-  dioginho: dioginho9222,
-  chatuba: xchavozinhodopea,
-  rankthread: rankthread7162,
-  "peu-xrc": peubezerra07,
-  ratingoat: ratinggoat9879,
-  osmo: dragonjoao10,
-  paix2007: paix2007,
-  gommes07: gommes07,
-  elmamaria: richardxzs,
-};
+import { presetLineup, type SiteData } from "@/lib/site-schema";
 
 /** Identidade fixa do clube. O que muda a cada jogo vive no banco (ver defaultSite). */
 export const club = {
@@ -43,29 +18,6 @@ export const club = {
   motto: "Quer ganhar? Faça 5.",
 };
 
-const P = (
-  id: string,
-  name: string,
-  number: number,
-  position: Player["position"],
-  overall: number,
-  pac: number,
-  sho: number,
-  pas: number,
-  dri: number,
-  def: number,
-  phy: number,
-  extra: Partial<Player> = {},
-): Player => ({
-  id,
-  name,
-  number,
-  position,
-  overall,
-  stats: { pac, sho, pas, dri, def, phy },
-  ...extra,
-});
-
 /** Conteúdo inicial: vale enquanto ninguém salvou nada pelo painel. */
 export const defaultSite: SiteData = {
   updatedAt: "2026-08-17T00:00:00.000Z",
@@ -75,20 +27,8 @@ export const defaultSite: SiteData = {
     date: "2026-08-22T20:30:00-03:00",
     venue: "Casa",
   },
-  players: [
-    P("gui-araujo", "Gui Araújo", 11, "PD", 95, 95, 91, 79, 91, 34, 68),
-    P("dioginho", "Dioginho9222", 4, "ZAG", 95, 70, 46, 65, 58, 93, 92),
-    P("chatuba", "Chatuba", 9, "VOL", 93, 74, 65, 92, 80, 78, 80, {
-      captain: true,
-    }),
-    P("rankthread", "RankThread7162", 8, "MC", 91, 76, 80, 91, 86, 58, 70),
-    P("peu-xrc", "PEU XRC", 69, "MEI", 89, 80, 82, 93, 90, 42, 62),
-    P("ratingoat", "Ratingoat", 10, "MEI", 91, 82, 84, 90, 89, 40, 64),
-    P("osmo", "Osmo", 72, "PE", 93, 95, 90, 76, 92, 35, 66),
-    P("paix2007", "Paix2007", 7, "PD", 93, 92, 87, 74, 90, 33, 63),
-    P("gommes07", "Gommes07.", 7, "ATA", 96, 84, 93, 68, 85, 38, 88),
-    P("elmamaria", "Elmamaria pika", 2, "ATA", 98, 86, 96, 70, 88, 36, 90),
-  ],
+  // Elenco em reformulação: os jogadores são cadastrados pelo painel /admin.
+  players: [],
   matches: [
     {
       id: "m5",
@@ -146,4 +86,5 @@ export const defaultSite: SiteData = {
   ],
   // Soma com as 5 partidas acima e dá os números que o site mostrava antes (42 jogos, 31 V, 128 gols, saldo +74).
   baseline: { played: 37, won: 28, drawn: 4, lost: 5, gf: 112, ga: 46 },
+  lineup: presetLineup("3-4-1-2"),
 };

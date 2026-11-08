@@ -217,25 +217,35 @@ export function MatchCenter() {
 
             <div
               role="tabpanel"
-              className="border-2 border-foreground bg-[var(--papel)] px-4 py-3 sm:px-6"
+              className="overflow-hidden border-2 border-foreground bg-[var(--papel)] px-4 py-3 sm:px-6"
             >
-              {tab === "resultados" ? (
-                matches.length > 0 ? (
-                  <ul>
-                    {matches.slice(0, 12).map((m) => (
-                      <MatchRow key={m.id} m={m} />
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="py-8 font-mono text-sm text-muted-foreground">
-                    Nenhuma partida lançada ainda.
-                  </p>
-                )
-              ) : tab === "tabela" ? (
-                <Table />
-              ) : (
-                <Leaders />
-              )}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -24 }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {tab === "resultados" ? (
+                    matches.length > 0 ? (
+                      <ul>
+                        {matches.slice(0, 12).map((m) => (
+                          <MatchRow key={m.id} m={m} />
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="py-8 font-mono text-sm text-muted-foreground">
+                        Nenhuma partida lançada ainda.
+                      </p>
+                    )
+                  ) : tab === "tabela" ? (
+                    <Table />
+                  ) : (
+                    <Leaders />
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 

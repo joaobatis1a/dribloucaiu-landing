@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FORMATION_IDS, formations } from "@/lib/formations";
 
 export const POSITIONS = ["GOL", "ZAG", "LE", "LD", "VOL", "MC", "MEI", "PE", "PD", "ATA"] as const;
 export const COMPETITIONS = ["Liga", "Amistoso", "Copa"] as const;
@@ -62,6 +63,29 @@ export const baselineSchema = z.object({
   ga: z.number().int().min(0).max(9999),
 });
 
+export const lineupSlotSchema = z.object({
+  number: z.number().int().min(0).max(99),
+  x: z.number().min(0).max(100),
+  y: z.number().min(0).max(100),
+  /** Jogador escalado nesse slot (opcional: sem jogador o slot mostra só o número). */
+  playerId: z.string().max(60).optional(),
+});
+
+export const lineupSchema = z.object({
+  formation: z.enum(FORMATION_IDS),
+  slots: z.array(lineupSlotSchema).length(11),
+});
+
+/** Escalação inicial de um esquema: slots numerados de 1 a 11 nas posições padrão. */
+export function presetLineup(
+  formation: (typeof FORMATION_IDS)[number],
+): z.infer<typeof lineupSchema> {
+  return {
+    formation,
+    slots: formations[formation].slots.map((s, i) => ({ number: i + 1, x: s.x, y: s.y })),
+  };
+}
+
 export const siteSchema = z.object({
   updatedAt: z.string(),
   nextMatch: nextMatchSchema.nullable(),
@@ -70,6 +94,7 @@ export const siteSchema = z.object({
   table: z.array(tableRowSchema).max(40),
   /** Histórico anterior ao site (jogos que não estão cadastrados como partida). */
   baseline: baselineSchema,
+  lineup: lineupSchema.default(presetLineup("3-4-1-2")),
 });
 
 export type Player = z.infer<typeof playerSchema>;
@@ -78,3 +103,5 @@ export type NextMatch = z.infer<typeof nextMatchSchema>;
 export type TableRow = z.infer<typeof tableRowSchema>;
 export type Baseline = z.infer<typeof baselineSchema>;
 export type SiteData = z.infer<typeof siteSchema>;
+export type Lineup = z.infer<typeof lineupSchema>;
+export type LineupSlot = z.infer<typeof lineupSlotSchema>;

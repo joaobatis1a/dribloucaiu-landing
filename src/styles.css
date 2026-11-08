@@ -116,8 +116,17 @@
     border-color: var(--color-border);
   }
 
-  html {
-    scroll-behavior: smooth;
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: clip;
   }
 
   section[id],
@@ -128,6 +137,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    overflow-x: clip;
   }
 
   [class*="font-display"],
@@ -141,10 +151,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-
     *,
     *::before,
     *::after {
@@ -253,4 +259,11 @@
   box-shadow:
     inset 0 -3px 0 oklch(0 0 0 / 0.12),
     0 3px 0 oklch(0 0 0 / 0.35);
+}
+
+/* Contorno de estêncil vazado (números gigantes do elenco e do rodapé). */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: var(--stroke, var(--piche));
 }

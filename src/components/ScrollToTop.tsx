@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { ChevronUp } from "lucide-react";
+import { scrollToTarget } from "@/components/motion/SmoothScroll";
 import { useState } from "react";
 
 export function ScrollToTop() {
@@ -15,7 +16,7 @@ export function ScrollToTop() {
       {visible ? (
         <motion.button
           type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => scrollToTarget(0)}
           initial={{ opacity: 0, scale: 0.6, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 16 }}
