@@ -28,6 +28,11 @@ export function useCountUp(target: number, run: boolean, duration = 1200) {
 
   useEffect(() => {
     if (!run) return;
+    // Quem pediu menos movimento vê o número final direto, sem contagem.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setValue(target);
+      return;
+    }
     let frame = 0;
     const start = performance.now();
     const tick = (now: number) => {
