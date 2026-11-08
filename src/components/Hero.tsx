@@ -86,7 +86,7 @@ export function Hero() {
               <span className="absolute inset-0 origin-left scale-x-0 bg-[var(--tinta)] transition-transform duration-500 ease-[cubic-bezier(.76,0,.24,1)] group-hover:scale-x-100" />
             </a>
             <a
-              href={club.discord}
+              href={club.social.instagram.url}
               target="_blank"
               rel="noreferrer noopener"
               className="bg-[length:100%_3px] bg-[position:0_100%] bg-no-repeat pb-1 font-display text-xl font-black uppercase transition-[background-size] duration-500 [background-image:linear-gradient(var(--tinta),var(--tinta))] hover:bg-[length:0%_3px] hover:bg-[position:100%_100%]"

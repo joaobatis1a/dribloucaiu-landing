@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowUp, Instagram, MessageCircle } from "lucide-react";
+import { ArrowUp, Instagram } from "lucide-react";
 import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
@@ -42,15 +42,15 @@ export function SiteFooter() {
             </h2>
           </div>
           <a
-            href={club.discord}
+            href={club.social.instagram.url}
             target="_blank"
             rel="noreferrer noopener"
             className="group relative inline-flex items-center gap-3 self-start overflow-hidden bg-[var(--tinta)] px-7 py-5 font-display text-2xl font-black uppercase text-white md:self-auto"
           >
             <span className="absolute inset-0 translate-y-full bg-[var(--cartao)] transition-transform duration-500 ease-[cubic-bezier(.76,0,.24,1)] group-hover:translate-y-0" />
-            <MessageCircle className="relative h-6 w-6 transition-colors group-hover:text-[var(--piche)]" />
+            <Instagram className="relative h-6 w-6 transition-colors group-hover:text-[var(--piche)]" />
             <span className="relative transition-colors group-hover:text-[var(--piche)]">
-              Entrar no Discord
+              Chamar no Instagram
             </span>
           </a>
         </div>

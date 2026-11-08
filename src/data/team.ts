@@ -7,7 +7,6 @@ export const club = {
   founded: 2026,
   platform: "PS5 · Cross-play",
   formation: "3-4-1-2",
-  discord: "https://discord.gg/",
   social: {
     tiktok: { handle: "@dribloucaiufc", url: "https://www.tiktok.com/@dribloucaiufc" },
     instagram: { handle: "@dribloucaiufc", url: "https://www.instagram.com/dribloucaiufc/" },

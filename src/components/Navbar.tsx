@@ -6,7 +6,7 @@ import {
   useReducedMotion,
   useScroll,
 } from "framer-motion";
-import { Instagram, MessageCircle } from "lucide-react";
+import { Instagram } from "lucide-react";
 import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
@@ -176,15 +176,6 @@ function FullMenu({ onClose }: { onClose: () => void }) {
           >
             <TikTokIcon className="h-7 w-7" />
           </a>
-          <a
-            href={club.discord}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="inline-flex items-center gap-2 bg-[var(--piche)] px-5 py-3 font-display text-lg font-black uppercase"
-          >
-            <MessageCircle className="h-5 w-5" />
-            Discord
-          </a>
         </div>
       </motion.div>
     </motion.div>
@@ -277,13 +268,13 @@ export function Navbar() {
 
           <div className="flex items-center gap-1">
             <a
-              href={club.discord}
+              href={club.social.instagram.url}
               target="_blank"
               rel="noreferrer noopener"
               className="hidden items-center gap-2 bg-[var(--tinta)] px-4 py-2 font-display text-lg font-black uppercase text-white transition-transform hover:-rotate-2 md:inline-flex"
             >
-              <MessageCircle className="h-4 w-4" />
-              Discord
+              <Instagram className="h-4 w-4" />
+              Quero jogar
             </a>
             <span className="lg:hidden">
               <MenuButton open={open} onClick={() => setOpen((v) => !v)} dark={dark} />
