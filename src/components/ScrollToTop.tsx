@@ -23,10 +23,9 @@ export function ScrollToTop() {
           whileTap={{ scale: 0.94 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           aria-label="Voltar ao topo"
-          className="group fixed bottom-6 right-5 z-40 flex h-11 w-11 flex-col items-center justify-center gap-0.5 rounded-xl border border-border bg-card/90 shadow-xl backdrop-blur-md transition-colors hover:border-accent/50 sm:bottom-8 sm:right-8"
+          className="group fixed bottom-6 right-5 z-40 flex h-11 w-11 items-center justify-center bg-[var(--piche)] text-[var(--cal)] shadow-[3px_3px_0_var(--tinta)] sm:bottom-8 sm:right-8"
         >
-          <ChevronUp className="h-4 w-4 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5" />
-          <span className="h-[3px] w-4 rounded-full bg-primary" />
+          <ChevronUp className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
         </motion.button>
       ) : null}
     </AnimatePresence>

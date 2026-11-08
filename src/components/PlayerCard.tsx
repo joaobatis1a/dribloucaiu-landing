@@ -1,203 +1,129 @@
-import { lazy, Suspense, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { RotateCw } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import crest from "@/assets/crest.webp";
 import type { SitePlayer } from "@/components/site-context";
 import type { Player } from "@/lib/site-schema";
-import { positionNames, ratingTier, ratingTierStyles } from "@/lib/match";
-
-// Recharts is a hefty dependency; only fetch it once someone actually flips a card.
-const PlayerRadar = lazy(() => import("@/components/PlayerRadar"));
+import { positionNames } from "@/lib/match";
 
 const statLabels: Array<[keyof Player["stats"], string]> = [
-  ["pac", "RIT"],
-  ["sho", "FIN"],
-  ["pas", "PAS"],
-  ["dri", "DRI"],
-  ["def", "DEF"],
-  ["phy", "FÍS"],
+  ["pac", "Ritmo"],
+  ["sho", "Finalização"],
+  ["pas", "Passe"],
+  ["dri", "Drible"],
+  ["def", "Defesa"],
+  ["phy", "Físico"],
 ];
 
-export function PlayerCard({ player }: { player: SitePlayer }) {
-  const [flipped, setFlipped] = useState(false);
-  // 3D perspective + preserve-3d create a GPU compositing layer per card; with a full grid of
-  // cards mounted at once this is a known Safari/iOS jank source, so only pay that cost once a
-  // card is actually flipped instead of for every card up front.
-  const [everFlipped, setEverFlipped] = useState(false);
-  const tier = ratingTier(player.overall);
-  const style = ratingTierStyles[tier];
-  const radarData = statLabels.map(([key, label]) => ({ stat: label, value: player.stats[key] }));
-
-  const flipTarget = useMotionValue(0);
-  const flipSpring = useSpring(flipTarget, { stiffness: 260, damping: 28 });
-  const rotateY = useTransform(flipSpring, (v) => v);
-
-  function toggleFlip() {
-    const next = !flipped;
-    setFlipped(next);
-    if (next) setEverFlipped(true);
-    flipTarget.set(next ? 180 : 0);
-  }
+/** Figurinha do álbum: foto, faixa com o nome e, no verso, a ficha do jogador. */
+export function PlayerCard({ player, code }: { player: SitePlayer; code: string }) {
+  const [back, setBack] = useState(false);
+  const scale = player.photoScale ?? 1;
 
   return (
-    <div className="relative h-[23rem]" style={everFlipped ? { perspective: 1200 } : undefined}>
-      <motion.div
-        style={{ rotateY, ...(everFlipped ? { transformStyle: "preserve-3d" as const } : {}) }}
-        className="group relative h-full w-full transition-transform duration-300 hover:-translate-y-1"
+    <div className="group">
+      <button
+        type="button"
+        onClick={() => setBack((v) => !v)}
+        aria-pressed={back}
+        aria-label={`${player.name}: ${back ? "ver figurinha" : "ver ficha"}`}
+        className="block w-full text-left transition-transform duration-200 hover:-translate-y-1 group-odd:rotate-[-0.8deg] group-even:rotate-[0.7deg]"
       >
-        {/* FRONT */}
-        <article
-          style={{ backfaceVisibility: "hidden" }}
-          className="absolute inset-0 overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
-        >
-          <button
-            type="button"
-            onClick={toggleFlip}
-            aria-label="Ver estatísticas em radar"
-            className="absolute bottom-3 right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/60 text-muted-foreground opacity-0 backdrop-blur-sm transition-opacity hover:text-accent group-hover:opacity-100"
-          >
-            <RotateCw className="h-3 w-3" />
-          </button>
-
-          <div
-            className="relative h-[60%] w-full overflow-hidden"
-            style={{ background: `color-mix(in oklab, ${style.ring} 14%, var(--secondary))` }}
-          >
-            {player.photo ? (
-              <img
-                src={player.photo}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover"
-                style={{
-                  objectPosition: "50% 14%",
-                  transform: `scale(${player.photoScale ?? 1})`,
-                  transformOrigin: "50% 0%",
-                }}
-              />
-            ) : (
-              <svg
-                viewBox="0 0 100 100"
-                className="absolute inset-x-0 bottom-0 h-full w-full text-foreground/[0.14]"
-                fill="currentColor"
-                aria-hidden
+        <div className="relative aspect-[5/7] bg-[var(--papel)] p-2 shadow-[0_1px_0_rgba(0,0,0,0.15),0_14px_22px_-14px_rgba(0,0,0,0.55)]">
+          <AnimatePresence mode="wait" initial={false}>
+            {!back ? (
+              <motion.div
+                key="front"
+                initial={{ rotateY: 90 }}
+                animate={{ rotateY: 0 }}
+                exit={{ rotateY: 90 }}
+                transition={{ duration: 0.16 }}
+                className="flex h-full flex-col"
               >
-                <circle cx="50" cy="35" r="19" />
-                <path d="M8 102c0-25 18.5-38 42-38s42 13 42 38" />
-              </svg>
-            )}
-
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-14"
-              style={{ background: "linear-gradient(to bottom, transparent, var(--card))" }}
-              aria-hidden
-            />
-
-            <header className="relative flex items-start justify-between p-3">
-              <div className="rounded-lg bg-background/70 px-2 py-1.5 leading-none backdrop-blur-sm">
-                <div className={`font-display text-2xl ${style.rating}`}>{player.overall}</div>
-                <span
-                  className="mt-1.5 inline-block rounded px-1.5 py-0.5 text-[9px] font-bold tracking-[0.1em] text-accent-foreground"
-                  style={{ background: "var(--accent)" }}
-                >
-                  {player.position}
-                </span>
-              </div>
-              <div className="flex flex-col items-end gap-1.5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background/70 font-display text-xs text-foreground backdrop-blur-sm">
-                  {player.number}
-                </span>
-                {player.captain ? (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full border border-accent/50 bg-accent/85 text-[8px] font-bold text-accent-foreground backdrop-blur-sm">
-                    C
+                <div className="relative flex-1 overflow-hidden bg-[var(--secondary)]">
+                  {player.photo ? (
+                    <img
+                      src={player.photo}
+                      alt=""
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{
+                        objectPosition: "50% 0%",
+                        transform: `scale(${scale})`,
+                        transformOrigin: "50% 0%",
+                      }}
+                    />
+                  ) : (
+                    <svg
+                      viewBox="0 0 100 100"
+                      className="absolute inset-0 h-full w-full text-foreground/15"
+                      fill="currentColor"
+                      aria-hidden
+                    >
+                      <circle cx="50" cy="38" r="18" />
+                      <path d="M10 104c0-26 18-40 40-40s40 14 40 40" />
+                    </svg>
+                  )}
+                  <span className="absolute left-0 top-0 bg-[var(--cartao)] px-2 pb-1 pt-1.5 text-center leading-none text-[var(--piche)]">
+                    <span className="block font-display text-3xl font-black">{player.overall}</span>
+                    <span className="block font-display text-sm font-black">{player.position}</span>
                   </span>
-                ) : null}
-              </div>
-            </header>
-          </div>
-
-          <h3 className="relative mt-1.5 text-center font-display text-lg uppercase leading-none tracking-wide text-foreground">
-            {player.name}
-          </h3>
-          <p className="relative mt-1 text-center text-[9px] uppercase tracking-widest text-muted-foreground">
-            {positionNames[player.position] ?? player.position}
-          </p>
-
-          {player.totals.goals + player.totals.assists > 0 ? (
-            <p className="relative mt-1.5 flex justify-center gap-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-              <span>
-                <b className="font-display text-sm text-foreground">{player.totals.goals}</b> gols
-              </span>
-              <span>
-                <b className="font-display text-sm text-foreground">{player.totals.assists}</b>{" "}
-                assist.
-              </span>
-            </p>
-          ) : null}
-
-          <dl className="relative mt-2 grid grid-cols-3 gap-x-3 gap-y-1.5 px-3.5 pb-3">
-            {statLabels.map(([key, label]) => (
-              <div key={key}>
-                <div className="flex items-baseline justify-between text-[9px] font-semibold tracking-widest text-muted-foreground">
-                  <dt>{label}</dt>
-                  <dd className="tabular-nums text-foreground">{player.stats[key]}</dd>
+                  <img src={crest} alt="" className="absolute right-1.5 top-1.5 h-9 w-9" />
+                  {player.captain ? (
+                    <span className="absolute bottom-1.5 right-1.5 bg-[var(--piche)] px-1.5 py-0.5 font-display text-sm font-black text-[var(--cal)]">
+                      C
+                    </span>
+                  ) : null}
                 </div>
-                <div className="mt-1 h-1 overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${player.stats[key]}%`, background: style.ring }}
-                  />
+                <div className="flex items-baseline justify-between gap-2 bg-[var(--tinta)] px-2 pb-1 pt-1.5 text-white">
+                  <span className="truncate font-display text-xl font-black uppercase leading-none">
+                    {player.name}
+                  </span>
+                  <span className="font-stencil text-2xl font-black leading-none">
+                    {player.number}
+                  </span>
                 </div>
-              </div>
-            ))}
-          </dl>
-        </article>
-
-        {/* BACK */}
-        {everFlipped ? (
-          <article
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-            className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)]"
-          >
-            <span
-              className="absolute inset-x-0 top-0 h-[3px]"
-              style={{ background: style.ring }}
-              aria-hidden
-            />
-
-            <button
-              type="button"
-              onClick={toggleFlip}
-              aria-label="Ver carta do jogador"
-              className="absolute bottom-3 right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/50 text-muted-foreground transition-opacity hover:text-accent"
-            >
-              <RotateCw className="h-3 w-3" />
-            </button>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-display text-lg uppercase leading-none tracking-wide text-foreground">
+              </motion.div>
+            ) : (
+              <motion.div
+                key="back"
+                initial={{ rotateY: -90 }}
+                animate={{ rotateY: 0 }}
+                exit={{ rotateY: -90 }}
+                transition={{ duration: 0.16 }}
+                className="flex h-full flex-col border-2 border-[var(--piche)] p-3"
+              >
+                <p className="font-display text-xl font-black uppercase leading-none">
                   {player.name}
-                </h3>
-                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+                </p>
+                <p className="mt-1 font-mono text-xs uppercase text-muted-foreground">
                   #{player.number} · {positionNames[player.position] ?? player.position}
                 </p>
-              </div>
-              <div className={`font-display text-xl ${style.rating}`}>{player.overall}</div>
-            </div>
-
-            <div className="mt-1 flex-1">
-              <Suspense fallback={null}>
-                <PlayerRadar data={radarData} />
-              </Suspense>
-            </div>
-
-            {player.captain ? (
-              <p className="text-center text-[9px] font-bold uppercase tracking-[0.25em] text-accent">
-                Capitão de equipe
-              </p>
-            ) : null}
-          </article>
-        ) : null}
-      </motion.div>
+                <dl className="mt-3 flex-1 space-y-1.5">
+                  {statLabels.map(([key, label]) => (
+                    <div key={key}>
+                      <div className="flex justify-between font-mono text-xs uppercase">
+                        <dt>{label}</dt>
+                        <dd className="font-bold">{player.stats[key]}</dd>
+                      </div>
+                      <div className="mt-0.5 h-1.5 bg-[var(--secondary)]">
+                        <div
+                          className="h-full bg-[var(--piche)]"
+                          style={{ width: `${player.stats[key]}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-2 border-t-2 border-[var(--piche)] pt-2 font-mono text-xs uppercase">
+                  {player.totals.goals} gols · {player.totals.assists} assist.
+                  {player.totals.motm ? ` · ${player.totals.motm}× craque` : ""}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </button>
+      <p className="mt-2 text-center font-mono text-xs text-muted-foreground">{code}</p>
     </div>
   );
 }

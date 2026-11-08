@@ -1,29 +1,36 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
-export function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
+/** Título pintado em estêncil sobre uma linha grossa, com uma anotação datilografada ao lado. */
+export function SectionTitle({
+  kicker,
+  title,
+  invert = false,
+}: {
+  kicker: string;
+  title: string;
+  invert?: boolean;
+}) {
+  const reduce = useReducedMotion();
   return (
-    <div className="flex items-end gap-4">
-      <div>
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-[11px] font-semibold uppercase tracking-[0.35em] text-accent"
-        >
-          {kicker}
-        </motion.p>
-        <h2 className="mt-2 font-display text-4xl uppercase tracking-tight text-foreground md:text-6xl">
-          {title}
-        </h2>
-      </div>
-      <motion.div
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="mb-3 h-px flex-1 origin-left bg-gradient-to-r from-primary to-transparent"
-      />
+    <div
+      className={`flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b-[3px] pb-3 ${
+        invert ? "border-[var(--cal)]" : "border-foreground"
+      }`}
+    >
+      <motion.h2
+        initial={reduce ? false : { clipPath: "inset(0 100% 0 0)" }}
+        whileInView={{ clipPath: "inset(0 0% 0 0)" }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+        className="font-stencil text-[clamp(3.25rem,9vw,6.5rem)] font-black uppercase leading-[0.82]"
+      >
+        {title}
+      </motion.h2>
+      <p
+        className={`pb-1 font-mono text-sm uppercase ${invert ? "text-[var(--cal)]/70" : "text-muted-foreground"}`}
+      >
+        {kicker}
+      </p>
     </div>
   );
 }

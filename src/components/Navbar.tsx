@@ -1,16 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Instagram, Menu, MessageCircle } from "lucide-react";
 import crest from "@/assets/crest.webp";
 import { club } from "@/data/team";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const LINKS = [
   { href: "#sobre", label: "Clube", id: "sobre" },
@@ -45,66 +39,46 @@ function useActiveSection() {
 }
 
 export function Navbar() {
-  const [solid, setSolid] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
   const active = useActiveSection();
-  const navRef = useRef<HTMLUListElement>(null);
-
-  useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        solid
-          ? "border-b border-border bg-background/85 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
-      }`}
-    >
-      <motion.div
-        className="h-[2px] origin-left bg-gradient-to-r from-primary via-accent to-primary"
-        style={{ scaleX: progress }}
-      />
-
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <a href="#top" className="group flex items-center gap-3">
+    <header className="fixed inset-x-0 top-0 z-50 bg-[var(--piche)] text-[var(--cal)]">
+      <nav className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-2 sm:px-6">
+        <a href="#top" className="group flex items-center gap-2.5">
           <img
             src={crest}
             alt=""
             width={800}
             height={800}
-            className="h-11 w-11 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 sm:h-12 sm:w-12"
+            className="h-10 w-10 transition-transform duration-300 group-hover:-rotate-12"
           />
-          <span className="font-display text-xl uppercase tracking-wide text-foreground sm:text-2xl">
-            {club.name}
+          <span className="font-stencil text-2xl uppercase leading-none tracking-tight">
+            Driblou<span className="text-[var(--tinta)]"> Caiu</span>
           </span>
         </a>
 
-        <ul ref={navRef} className="relative hidden items-center gap-1 md:flex">
+        <ul className="hidden items-center md:flex">
           {LINKS.map((link) => (
-            <li key={link.href} className="relative">
+            <li key={link.href}>
               <a
                 href={link.href}
-                className={`relative z-10 block px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-colors ${
+                className={`relative block px-3.5 py-2 font-display text-base uppercase tracking-wide transition-colors ${
                   active === link.id
-                    ? "text-accent"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "text-[var(--cartao)]"
+                    : "text-[var(--cal)]/75 hover:text-[var(--cal)]"
                 }`}
               >
                 {link.label}
+                {active === link.id ? (
+                  <motion.span
+                    layoutId="nav-active"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    className="absolute inset-x-3.5 bottom-0.5 h-[3px] bg-[var(--cartao)]"
+                  />
+                ) : null}
               </a>
-              {active === link.id ? (
-                <motion.span
-                  layoutId="nav-active-tick"
-                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  className="absolute inset-x-2 -bottom-0.5 h-[3px] -skew-x-12 bg-accent"
-                />
-              ) : null}
             </li>
           ))}
         </ul>
@@ -113,15 +87,10 @@ export function Navbar() {
           href={club.discord}
           target="_blank"
           rel="noreferrer noopener"
-          className="relative hidden items-center gap-2 overflow-hidden rounded-full bg-primary px-5 py-2.5 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)] md:inline-flex"
+          className="hidden items-center gap-2 bg-[var(--tinta)] px-4 py-2 font-display text-base uppercase tracking-wide text-white transition-transform hover:-translate-y-0.5 md:inline-flex"
         >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-40"
-            style={{ background: "linear-gradient(115deg, transparent 35%, color-mix(in oklab, white 55%, transparent) 50%, transparent 65%)" }}
-          />
-          <MessageCircle className="relative h-4 w-4" />
-          <span className="relative">Discord</span>
+          <MessageCircle className="h-4 w-4" />
+          Discord
         </a>
 
         <Sheet>
@@ -129,23 +98,23 @@ export function Navbar() {
             <button
               type="button"
               aria-label="Abrir menu"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-foreground md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center text-[var(--cal)] md:hidden"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-6 w-6" />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="flex flex-col border-border bg-background">
+          <SheetContent side="right" className="wall flex flex-col border-0">
             <div className="flex items-center gap-2.5">
               <img src={crest} alt="" width={800} height={800} className="h-11 w-11" />
-              <SheetTitle className="font-display uppercase tracking-wide">{club.name}</SheetTitle>
+              <SheetTitle className="font-stencil text-2xl uppercase">{club.name}</SheetTitle>
             </div>
-            <ul className="mt-6 flex flex-col gap-1">
+            <ul className="mt-8 flex flex-col">
               {LINKS.map((link) => (
-                <li key={link.href}>
+                <li key={link.href} className="border-b-2 border-foreground/80">
                   <SheetClose asChild>
                     <a
                       href={link.href}
-                      className="block rounded-md px-3 py-3 font-display text-2xl uppercase tracking-wide text-foreground transition-colors hover:bg-secondary hover:text-accent"
+                      className="block py-3 font-stencil text-4xl uppercase leading-none text-foreground transition-colors hover:text-primary"
                     >
                       {link.label}
                     </a>
@@ -157,34 +126,35 @@ export function Navbar() {
               href={club.discord}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 bg-primary px-5 py-3 font-display text-lg uppercase text-primary-foreground"
             >
               <MessageCircle className="h-4 w-4" />
               Entrar no Discord
             </a>
-            <div className="mt-auto flex items-center justify-center gap-6 border-t border-border pt-6">
+            <div className="mt-auto flex items-center gap-6 pt-6">
               <a
                 href={club.social.instagram.url}
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label="Instagram"
-                className="text-muted-foreground transition-colors hover:text-accent"
+                className="text-foreground hover:text-primary"
               >
-                <Instagram className="h-5 w-5" />
+                <Instagram className="h-6 w-6" />
               </a>
               <a
                 href={club.social.tiktok.url}
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label="TikTok"
-                className="text-muted-foreground transition-colors hover:text-accent"
+                className="text-foreground hover:text-primary"
               >
-                <TikTokIcon className="h-5 w-5" />
+                <TikTokIcon className="h-6 w-6" />
               </a>
             </div>
           </SheetContent>
         </Sheet>
       </nav>
+      <motion.div className="h-[3px] origin-left bg-[var(--tinta)]" style={{ scaleX: progress }} />
     </header>
   );
 }

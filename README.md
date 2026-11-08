@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-19-DC2626?style=flat-square&logo=react&logoColor=white)](https://react.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-DC2626?style=flat-square)](LICENSE)
 
-Site oficial do **Driblou Caiu**, clube de Pro Clubs no **EA FC 26**: elenco, esquema tático interativo, amistosos e redes sociais do time, com identidade visual inspirada nos cards do próprio jogo.
+Site oficial do **Driblou Caiu**, clube de Pro Clubs no **EA FC 26**: elenco, esquema tático interativo, jogos e redes sociais do time, com identidade visual de **futebol de várzea**: muro caiado com estêncil, placar de chapa, álbum de figurinhas, lambe-lambe e súmula datilografada.
 
 🔗 **Site no ar:** [dribloucaiu-landing.vercel.app](https://dribloucaiu-landing.vercel.app)
 
@@ -14,16 +14,18 @@ Site oficial do **Driblou Caiu**, clube de Pro Clubs no **EA FC 26**: elenco, es
 
 ## Sobre o projeto
 
-Landing page em single-page, construída com React 19 + TanStack Start (SSR), com animações em cada seção via Framer Motion. O visual segue a estética de cards estilo Ultimate Team, tons de vermelho e preto do escudo do clube, cards com efeito de rating/raridade e um campo tático arrastável.
+A identidade parte do escudo e do lugar de onde o futebol do time vem: a várzea. O site é o muro do campo, com o nome pintado em estêncil (Big Shoulders Stencil), o último resultado num placar de chapinhas penduradas no prego, o elenco como página de álbum de figurinhas, o próximo jogo como cartaz lambe-lambe amarelo e os resultados numa súmula em máquina de escrever (Courier Prime). A paleta usa só as cores do jogo: cal, vermelho do escudo, preto piche, amarelo cartão e verde gramado.
 
 ## Seções
 
-- **Início**, hero com escudo do clube, estatísticas rápidas e CTA
-- **Sobre**, manifesto do clube, regras e lema
-- **Esquema**, campo tático interativo: escolha entre 8 formações, arraste os jogadores pra reorganizar o time e veja vagas em aberto quando não há jogador pra posição
-- **Elenco**, cards dos jogadores estilo Ultimate Team, com stats, raridade e foto de cada um
-- **Amistosos**, último resultado, histórico de jogos e convite pra marcar partida
-- **Redes**, links pro Instagram, TikTok e Discord do clube
+- **Início**: nome pintado no muro, escudo e placar de chapa com o último jogo e a forma recente
+- **Números**: jogos, vitórias, gols, saldo e aproveitamento, calculados a partir das partidas
+- **Clube**: manifesto, regras da casa e lema
+- **Esquema**: campo tático interativo, com 8 formações e jogadores arrastáveis
+- **Elenco**: álbum de figurinhas; toque na figurinha para ver a ficha do jogador
+- **Próximo jogo**: lambe-lambe com data, adversário e contagem regressiva
+- **Jogos**: súmula com resultados (gols, assistências e craque do jogo), tabela da liga e artilharia
+- **Redes**: Instagram e TikTok do clube
 
 ## Painel admin (atualizar o site sem mexer no código)
 
@@ -37,6 +39,16 @@ Os dados ficam num Redis (Upstash) acessado por REST. Configuração na Vercel:
 
 Sem Redis o site continua funcionando com os dados iniciais (`src/data/team.ts`), só não dá pra salvar. Em desenvolvimento (`bun run dev`) os dados vão para `.data/db.json` e a senha padrão é `driblou`.
 
+## Fotos do elenco
+
+As fotos embutidas vêm de prints da carta de cada jogador no jogo. `scripts/crop-stickers.mjs` recorta cabeça e tronco no formato de figurinha, a partir dos prints em `scripts/player-sources/`:
+
+```bash
+node scripts/crop-stickers.mjs scripts/player-sources src/assets/players
+```
+
+Uma foto enviada pelo painel admin substitui a embutida.
+
 ## Stack
 
 - **[TanStack Start](https://tanstack.com/start)**, React 19 + SSR
@@ -44,7 +56,6 @@ Sem Redis o site continua funcionando com os dados iniciais (`src/data/team.ts`)
 - **[Tailwind CSS 4](https://tailwindcss.com/)**, estilização utilitária
 - **[Framer Motion](https://www.framer.com/motion/)**, animações e drag-and-drop do esquema tático
 - **[Radix UI](https://www.radix-ui.com/)**, componentes acessíveis
-- **[Recharts](https://recharts.org/)**, gráfico de radar nos cards dos jogadores
 - **[Vite 8](https://vite.dev/)** + **[Nitro](https://nitro.build/)**, build e servidor
 - **[Bun](https://bun.sh/)**, runtime e gerenciador de pacotes
 

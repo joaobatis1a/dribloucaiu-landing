@@ -80,15 +80,14 @@ export const defaultSite: SiteData = {
     P("dioginho", "Dioginho9222", 4, "ZAG", 95, 70, 46, 65, 58, 93, 92),
     P("chatuba", "Chatuba", 9, "VOL", 93, 74, 65, 92, 80, 78, 80, {
       captain: true,
-      photoScale: 0.87,
     }),
-    P("rankthread", "RankThread7162", 8, "MC", 91, 76, 80, 91, 86, 58, 70, { photoScale: 0.95 }),
+    P("rankthread", "RankThread7162", 8, "MC", 91, 76, 80, 91, 86, 58, 70),
     P("peu-xrc", "PEU XRC", 69, "MEI", 89, 80, 82, 93, 90, 42, 62),
-    P("ratingoat", "Ratingoat", 10, "MEI", 91, 82, 84, 90, 89, 40, 64, { photoScale: 0.96 }),
+    P("ratingoat", "Ratingoat", 10, "MEI", 91, 82, 84, 90, 89, 40, 64),
     P("osmo", "Osmo", 72, "PE", 93, 95, 90, 76, 92, 35, 66),
-    P("paix2007", "Paix2007", 7, "PD", 93, 92, 87, 74, 90, 33, 63, { photoScale: 0.94 }),
-    P("gommes07", "Gommes07.", 7, "ATA", 96, 84, 93, 68, 85, 38, 88, { photoScale: 0.96 }),
-    P("elmamaria", "Elmamaria pika", 2, "ATA", 98, 86, 96, 70, 88, 36, 90, { photoScale: 0.92 }),
+    P("paix2007", "Paix2007", 7, "PD", 93, 92, 87, 74, 90, 33, 63),
+    P("gommes07", "Gommes07.", 7, "ATA", 96, 84, 93, 68, 85, 38, 88),
+    P("elmamaria", "Elmamaria pika", 2, "ATA", 98, 86, 96, 70, 88, 36, 90),
   ],
   matches: [
     {

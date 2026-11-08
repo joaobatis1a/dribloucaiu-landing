@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Instagram, Swords } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
 import { useSite } from "@/components/site-context";
 import { dateParts, playerTotals, topBy } from "@/lib/site-derive";
-import { matchOutcome, outcomeStyles } from "@/lib/match";
+import { matchOutcome, type Outcome } from "@/lib/match";
 import type { Match } from "@/lib/site-schema";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
 const TABS = [
   { id: "resultados", label: "Resultados" },
   { id: "tabela", label: "Tabela" },
@@ -16,86 +15,83 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-function MatchRow({ m, i }: { m: Match; i: number }) {
+const outcomeMark: Record<Outcome, { label: string; className: string }> = {
+  V: { label: "Vitória", className: "bg-[var(--piche)] text-[var(--cal)]" },
+  E: { label: "Empate", className: "bg-[var(--cartao)] text-[var(--piche)]" },
+  D: { label: "Derrota", className: "bg-[var(--tinta)] text-white" },
+};
+
+function MatchRow({ m }: { m: Match }) {
   const { site } = useSite();
   const [open, setOpen] = useState(false);
   const d = dateParts(m.date);
-  const o = outcomeStyles[matchOutcome(m.goalsFor, m.goalsAgainst)];
+  const o = matchOutcome(m.goalsFor, m.goalsAgainst);
   const name = (id: string) => site.players.find((p) => p.id === id)?.name ?? "—";
   const hasDetail = m.scorers.length > 0 || !!m.motm || !!m.note;
 
   return (
-    <motion.li
-      initial={{ opacity: 0, x: -16 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.4, delay: Math.min(i, 6) * 0.05, ease: EASE }}
-      className={i > 0 ? "border-t border-border/60" : ""}
-    >
+    <li className="border-b border-dashed border-foreground/40 last:border-b-0">
       <button
         type="button"
         disabled={!hasDetail}
-        aria-expanded={open}
+        aria-expanded={hasDetail ? open : undefined}
         onClick={() => setOpen((v) => !v)}
-        className="grid w-full grid-cols-[3rem_1fr_auto] items-center gap-3 px-4 py-3 text-left enabled:hover:bg-secondary/40 sm:grid-cols-[3.5rem_1fr_auto_auto]"
+        className="grid w-full grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-3 py-3 text-left enabled:hover:bg-foreground/[0.04] sm:grid-cols-[5.5rem_minmax(0,1fr)_7rem_auto]"
       >
-        <span className="leading-none">
-          <span className="block font-display text-2xl text-foreground">{d.day}</span>
-          <span className="text-[10px] font-semibold tracking-[0.2em] text-muted-foreground">
-            {d.month}
-          </span>
+        <span className="font-mono text-sm uppercase">
+          {d.day} {d.month}
         </span>
         <span className="min-w-0">
-          <span className="block truncate font-display text-lg uppercase tracking-wide text-foreground">
+          <span className="block truncate font-display text-2xl font-black uppercase leading-none">
             {m.opponent}
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <span className="font-mono text-xs uppercase text-muted-foreground">
             {m.competition}
-            {hasDetail ? <span className="text-accent"> · súmula {open ? "−" : "+"}</span> : null}
+            {hasDetail ? (open ? " · fechar súmula" : " · ver súmula") : ""}
           </span>
         </span>
-        <span className="font-display text-2xl tabular-nums text-foreground">
+        <span
+          className={`hidden justify-self-start px-2 py-0.5 font-mono text-xs font-bold uppercase sm:inline ${outcomeMark[o].className}`}
+        >
+          {outcomeMark[o].label}
+        </span>
+        <span className="font-stencil text-4xl font-black tabular-nums leading-none">
           {m.goalsFor}
           <span className="mx-1 text-muted-foreground">×</span>
           {m.goalsAgainst}
-        </span>
-        <span
-          className={`hidden h-7 w-7 items-center justify-center rounded-md text-xs font-bold sm:flex ${o.className}`}
-        >
-          {o.label}
         </span>
       </button>
       <AnimatePresence initial={false}>
         {open ? (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: EASE }}
+            initial={{ height: 0 }}
+            animate={{ height: "auto" }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="space-y-1.5 bg-background/40 px-4 py-3 text-sm text-muted-foreground">
+            <dl className="mb-3 ml-[4.5rem] space-y-1 border-l-2 border-primary pl-4 font-mono text-sm sm:ml-[5.5rem]">
               {m.scorers.map((s) => (
-                <p key={s.playerId}>
-                  <span className="text-foreground">{name(s.playerId)}</span>
-                  {s.goals > 0 ? ` · ${s.goals} ${s.goals > 1 ? "gols" : "gol"}` : ""}
-                  {s.assists > 0 ? ` · ${s.assists} assist.` : ""}
-                </p>
+                <div key={s.playerId}>
+                  <dt className="inline font-bold">{name(s.playerId)}</dt>
+                  <dd className="inline">
+                    {s.goals > 0 ? ` · ${s.goals} ${s.goals > 1 ? "gols" : "gol"}` : ""}
+                    {s.assists > 0 ? ` · ${s.assists} assist.` : ""}
+                  </dd>
+                </div>
               ))}
               {m.motm ? (
-                <p>
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">
-                    Craque do jogo
-                  </span>{" "}
-                  <span className="text-foreground">{name(m.motm)}</span>
-                </p>
+                <div>
+                  <dt className="inline">Craque do jogo: </dt>
+                  <dd className="inline font-bold">{name(m.motm)}</dd>
+                </div>
               ) : null}
               {m.note ? <p className="italic">{m.note}</p> : null}
-            </div>
+            </dl>
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </motion.li>
+    </li>
   );
 }
 
@@ -103,39 +99,38 @@ function Table() {
   const { site } = useSite();
   const rows = [...site.table].sort((a, b) => b.points - a.points || b.gd - a.gd);
   return (
-    <div className="overflow-x-auto rounded-xl border border-border bg-card">
-      <table className="w-full min-w-[26rem] text-sm">
+    <div className="-mx-1 overflow-x-auto px-1">
+      <table className="w-full min-w-[30rem] font-mono text-sm">
         <thead>
-          <tr className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <th className="w-10 py-2.5 pl-4 text-left font-semibold">#</th>
-            <th className="py-2.5 text-left font-semibold">Clube</th>
+          <tr className="border-b-2 border-foreground text-xs uppercase">
+            <th className="w-8 py-2 text-left font-bold">#</th>
+            <th className="py-2 text-left font-bold">Clube</th>
             {["J", "V", "E", "D", "SG"].map((h) => (
-              <th key={h} className="w-10 py-2.5 text-center font-semibold">
+              <th key={h} className="w-10 py-2 text-center font-bold">
                 {h}
               </th>
             ))}
-            <th className="w-14 py-2.5 pr-4 text-right font-semibold">Pts</th>
+            <th className="w-14 py-2 text-right font-bold">Pts</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((r, i) => {
             const us = r.team === club.name;
             return (
-              <tr key={r.team} className={`border-t border-border/60 ${us ? "bg-primary/15" : ""}`}>
-                <td className="py-2.5 pl-4 font-display text-lg text-muted-foreground">{i + 1}</td>
-                <td className="py-2.5 font-display text-base uppercase tracking-wide text-foreground">
+              <tr
+                key={r.team}
+                className={`border-b border-dashed border-foreground/40 ${us ? "bg-[var(--cartao)]" : ""}`}
+              >
+                <td className="py-2.5 pl-1">{i + 1}</td>
+                <td className="py-2.5 font-display text-xl font-black uppercase leading-none">
                   {r.team}
                 </td>
-                <td className="text-center tabular-nums text-muted-foreground">{r.played}</td>
-                <td className="text-center tabular-nums text-muted-foreground">{r.won}</td>
-                <td className="text-center tabular-nums text-muted-foreground">{r.drawn}</td>
-                <td className="text-center tabular-nums text-muted-foreground">{r.lost}</td>
-                <td className="text-center tabular-nums text-muted-foreground">
-                  {r.gd > 0 ? `+${r.gd}` : r.gd}
-                </td>
-                <td className="pr-4 text-right font-display text-xl tabular-nums text-foreground">
-                  {r.points}
-                </td>
+                <td className="text-center">{r.played}</td>
+                <td className="text-center">{r.won}</td>
+                <td className="text-center">{r.drawn}</td>
+                <td className="text-center">{r.lost}</td>
+                <td className="text-center">{r.gd > 0 ? `+${r.gd}` : r.gd}</td>
+                <td className="pr-1 text-right font-stencil text-2xl font-black">{r.points}</td>
               </tr>
             );
           })}
@@ -146,45 +141,38 @@ function Table() {
 }
 
 function Leaders() {
-  const { site, players } = useSite();
+  const { site } = useSite();
   const totals = playerTotals(site);
-  const photo = (id: string) => players.find((p) => p.id === id)?.photo;
   const lists = [
     { title: "Artilheiros", rows: topBy(site.players, totals, "goals"), unit: "gols" },
     { title: "Garçons", rows: topBy(site.players, totals, "assists"), unit: "assist." },
   ];
   if (lists.every((l) => l.rows.length === 0)) {
     return (
-      <p className="rounded-xl border border-dashed border-border px-5 py-8 text-sm text-muted-foreground">
-        A artilharia aparece aqui assim que os gols de uma partida forem registrados.
+      <p className="py-8 font-mono text-sm text-muted-foreground">
+        A artilharia aparece aqui assim que os gols de uma partida forem lançados na súmula.
       </p>
     );
   }
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-8 sm:grid-cols-2">
       {lists.map((l) => (
-        <div key={l.title} className="rounded-xl border border-border bg-card p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-accent">
+        <div key={l.title}>
+          <p className="border-b-2 border-foreground pb-1 font-display text-xl font-black uppercase">
             {l.title}
           </p>
-          <ol className="mt-3 space-y-2">
+          <ol>
             {l.rows.map((r, i) => (
-              <li key={r.player.id} className="flex items-center gap-3">
-                <span className="w-4 font-display text-lg text-muted-foreground">{i + 1}</span>
-                <span className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-secondary">
-                  {photo(r.player.id) ? (
-                    <img
-                      src={photo(r.player.id)}
-                      alt=""
-                      className="h-full w-full object-cover object-top"
-                    />
-                  ) : null}
-                </span>
-                <span className="min-w-0 flex-1 truncate font-display uppercase tracking-wide">
+              <li
+                key={r.player.id}
+                className="flex items-baseline gap-3 border-b border-dashed border-foreground/40 py-2"
+              >
+                <span className="w-5 font-mono text-sm">{i + 1}.</span>
+                <span className="min-w-0 flex-1 truncate font-display text-xl font-black uppercase">
                   {r.player.name}
                 </span>
-                <span className="font-display text-xl tabular-nums">{r.value}</span>
-                <span className="w-12 text-[10px] uppercase tracking-widest text-muted-foreground">
+                <span className="font-stencil text-3xl font-black">{r.value}</span>
+                <span className="w-12 font-mono text-xs uppercase text-muted-foreground">
                   {l.unit}
                 </span>
               </li>
@@ -196,26 +184,19 @@ function Leaders() {
   );
 }
 
+/** Resultados, tabela e artilharia numa súmula datilografada. */
 export function MatchCenter() {
   const { matches } = useSite();
   const [tab, setTab] = useState<TabId>("resultados");
 
   return (
-    <section id="jogos" className="relative overflow-hidden border-y border-border bg-card/30">
-      <div
-        className="pointer-events-none absolute -left-24 top-0 h-80 w-80 rounded-full bg-primary/15 blur-[130px]"
-        aria-hidden
-      />
-      <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-24">
-        <SectionTitle kicker="Central de jogos" title="Placar & tabela" />
+    <section id="jogos" className="wall">
+      <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 md:py-28">
+        <SectionTitle kicker="Súmula oficial" title="Jogos" />
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_20rem]">
+        <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
           <div>
-            <div
-              role="tablist"
-              aria-label="Central de jogos"
-              className="flex gap-1 rounded-lg border border-border bg-background/60 p-1"
-            >
+            <div role="tablist" aria-label="Jogos" className="flex gap-1">
               {TABS.map((t) => (
                 <button
                   key={t.id}
@@ -223,10 +204,10 @@ export function MatchCenter() {
                   role="tab"
                   aria-selected={tab === t.id}
                   onClick={() => setTab(t.id)}
-                  className={`flex-1 rounded-md px-3 py-2 font-display text-sm uppercase tracking-wider transition-colors ${
+                  className={`border-2 border-b-0 border-foreground px-4 pb-1.5 pt-2 font-display text-lg font-black uppercase leading-none transition-colors ${
                     tab === t.id
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-[var(--papel)]"
+                      : "bg-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {t.label}
@@ -234,17 +215,20 @@ export function MatchCenter() {
               ))}
             </div>
 
-            <div className="mt-4" role="tabpanel">
+            <div
+              role="tabpanel"
+              className="border-2 border-foreground bg-[var(--papel)] px-4 py-3 sm:px-6"
+            >
               {tab === "resultados" ? (
                 matches.length > 0 ? (
-                  <ul className="overflow-hidden rounded-xl border border-border bg-card">
-                    {matches.slice(0, 12).map((m, i) => (
-                      <MatchRow key={m.id} m={m} i={i} />
+                  <ul>
+                    {matches.slice(0, 12).map((m) => (
+                      <MatchRow key={m.id} m={m} />
                     ))}
                   </ul>
                 ) : (
-                  <p className="rounded-xl border border-dashed border-border px-5 py-8 text-sm text-muted-foreground">
-                    Nenhuma partida registrada ainda.
+                  <p className="py-8 font-mono text-sm text-muted-foreground">
+                    Nenhuma partida lançada ainda.
                   </p>
                 )
               ) : tab === "tabela" ? (
@@ -255,27 +239,24 @@ export function MatchCenter() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-xl border border-dashed border-border bg-card/40 p-6">
-            <div>
-              <Swords className="h-6 w-6 text-primary" aria-hidden />
-              <p className="mt-3 font-display text-xl uppercase leading-tight tracking-wide text-foreground">
-                Topa uma bola?
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                O Driblou Caiu topa amistoso com qualquer clube. Manda mensagem pro Instagram e
-                combina data e horário.
-              </p>
-            </div>
+          <aside className="self-start bg-[var(--piche)] p-6 text-[var(--cal)] shadow-[6px_6px_0_var(--tinta)]">
+            <p className="font-stencil text-5xl font-black uppercase leading-[0.85]">
+              Topa uma bola?
+            </p>
+            <p className="mt-4 text-base leading-snug text-[var(--cal)]/80">
+              O Driblou Caiu topa amistoso com qualquer clube. Chama no Instagram e combina dia e
+              horário.
+            </p>
             <a
               href={club.social.instagram.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 [box-shadow:var(--shadow-red)]"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[var(--tinta)] px-5 py-3 font-display text-lg font-black uppercase text-white transition-transform hover:-translate-y-0.5"
             >
-              <Instagram className="h-4 w-4" />
-              Chamar no Instagram
+              <Instagram className="h-5 w-5" />
+              Marcar amistoso
             </a>
-          </div>
+          </aside>
         </div>
       </div>
     </section>

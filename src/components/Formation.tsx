@@ -48,56 +48,46 @@ function PlayerPopover({ player, pos }: { player: Player; pos: Position }) {
       animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.12 } }}
       transition={{ type: "spring", stiffness: 420, damping: 24 }}
-      style={{ left: `${pos.x}%`, top: `${pos.y}%`, boxShadow: `${style.glow}, 0 20px 45px -20px rgba(0,0,0,0.8)` }}
-      className={`pointer-events-none absolute z-20 w-56 overflow-hidden rounded-2xl border border-border/60 bg-card/95 p-4 backdrop-blur-md ${
-        anchorX === "right" ? "-translate-x-[calc(100%+14px)]" : anchorX === "left" ? "translate-x-[14px]" : "-translate-x-1/2"
+      style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+      className={`pointer-events-none absolute z-20 w-56 overflow-hidden border-2 border-[var(--piche)] bg-[var(--papel)] p-4 shadow-[4px_4px_0_var(--piche)] ${
+        anchorX === "right"
+          ? "-translate-x-[calc(100%+14px)]"
+          : anchorX === "left"
+            ? "translate-x-[14px]"
+            : "-translate-x-1/2"
       } ${anchorY === "below" ? "translate-y-[14px]" : "-translate-y-[calc(100%+14px)]"}`}
     >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[3px]"
-        style={{ background: style.ring }}
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-25 blur-2xl"
-        style={{ background: style.ring }}
-      />
       <div className="relative flex items-center gap-3">
         <div className="relative shrink-0">
-          <PlayerAvatar photo={player.photo} ring={style.ring} size="sm" scale={player.photoScale ?? 1} />
-          <span
-            className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border-2 border-card bg-gradient-to-b font-display text-[9px] leading-none ${style.card} ${style.rating}`}
-          >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-60"
-              style={{ background: "linear-gradient(115deg, transparent 30%, color-mix(in oklab, white 55%, transparent) 48%, transparent 62%)" }}
-            />
-            <span className="relative">{player.overall}</span>
+          <PlayerAvatar
+            photo={player.photo}
+            ring="var(--piche)"
+            size="md"
+            scale={player.photoScale ?? 1}
+          />
+          <span className="absolute -bottom-1 -right-1 bg-[var(--cartao)] px-1 font-display text-xs font-black leading-tight text-[var(--piche)]">
+            {player.overall}
           </span>
         </div>
         <div className="min-w-0">
-          <p className="truncate font-display text-lg uppercase leading-none tracking-wide text-foreground">
+          <p className="truncate font-display text-xl font-black uppercase leading-none">
             {player.name}
           </p>
-          <p className="mt-1 text-[9px] uppercase tracking-widest text-muted-foreground">
-            {style.label} · {positionNames[player.position] ?? player.position}
+          <p className="mt-1 font-mono text-xs uppercase text-muted-foreground">
+            #{player.number} · {positionNames[player.position] ?? player.position}
           </p>
         </div>
       </div>
       {player.captain ? (
-        <p className="relative mt-2 text-[9px] font-bold uppercase tracking-[0.2em] text-accent">
-          · Capitão ·
-        </p>
+        <p className="relative mt-2 font-mono text-xs font-bold uppercase text-primary">Capitão</p>
       ) : null}
-      <dl className="relative mt-3 grid grid-cols-3 gap-x-2 gap-y-1.5 border-t border-border/60 pt-2.5">
+      <dl className="relative mt-3 grid grid-cols-3 gap-x-2 gap-y-1.5 border-t-2 border-[var(--piche)] pt-2.5">
         {statLabels.map(([key, label]) => (
           <div key={key} className="text-center">
-            <dt className="text-[8px] font-semibold uppercase tracking-widest text-muted-foreground">
-              {label}
-            </dt>
-            <dd className="font-display text-sm tabular-nums text-foreground">{player.stats[key]}</dd>
+            <dt className="font-mono text-[10px] uppercase text-muted-foreground">{label}</dt>
+            <dd className="font-display text-lg font-black tabular-nums leading-none">
+              {player.stats[key]}
+            </dd>
           </div>
         ))}
       </dl>
@@ -165,18 +155,15 @@ function PlayerDot({
         className="block cursor-grab touch-none outline-none active:cursor-grabbing"
       >
         <span
-          className={`relative flex h-9 w-9 items-center justify-center rounded-full border font-display text-xs shadow-lg transition-colors sm:h-11 sm:w-11 sm:text-sm ${
+          className={`relative flex h-9 w-9 items-center justify-center rounded-full border-2 font-display text-sm font-black shadow-[0_2px_0_rgba(0,0,0,0.4)] transition-colors sm:h-11 sm:w-11 sm:text-base ${
             isActive
-              ? "border-accent bg-accent text-accent-foreground"
-              : "border-white/30 bg-primary text-primary-foreground"
+              ? "border-[var(--piche)] bg-[var(--cartao)] text-[var(--piche)]"
+              : "border-white bg-[var(--tinta)] text-white"
           }`}
         >
-          {isActive ? (
-            <span className="animate-pulse-dot absolute inset-0 rounded-full" aria-hidden />
-          ) : null}
           {player.number}
           {player.captain ? (
-            <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background bg-accent text-[8px] font-bold text-accent-foreground">
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--piche)] text-[9px] font-bold text-white">
               C
             </span>
           ) : null}
@@ -203,10 +190,10 @@ function EmptySlotDot({ pos, index }: { pos: Position; index: number }) {
         className="group/empty relative block outline-none"
         aria-label="Vaga aberta nessa posição — chamar no Instagram"
       >
-        <span className="relative flex h-9 w-9 items-center justify-center rounded-full border border-dashed border-muted-foreground/50 bg-background/40 text-muted-foreground shadow-lg transition-colors group-hover/empty:border-accent group-hover/empty:text-accent sm:h-11 sm:w-11">
+        <span className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-dashed border-white/80 text-white transition-colors group-hover/empty:bg-white/15 sm:h-11 sm:w-11">
           <Plus className="h-4 w-4" />
         </span>
-        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-card/95 px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground opacity-0 shadow-lg backdrop-blur-sm transition-opacity group-hover/empty:opacity-100">
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap bg-[var(--piche)] px-2 py-1 font-mono text-[10px] uppercase text-white opacity-0 transition-opacity group-hover/empty:opacity-100">
           Vaga aberta
         </span>
       </motion.a>
@@ -267,16 +254,14 @@ export function Formation() {
     resetXY();
   }
 
-  const active = activeName ? squad.find((p) => p.name === activeName) ?? null : null;
+  const active = activeName ? (squad.find((p) => p.name === activeName) ?? null) : null;
   const activePos = activeName ? positions[activeName] : undefined;
 
   return (
-    <section id="esquema" className="border-y border-border bg-card/30">
-      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-        <SectionTitle kicker="Como jogamos" title={`Esquema ${formations[formationId].label}`} />
-        <p className="mt-4 max-w-2xl text-sm text-muted-foreground md:text-base">
-          {formations[formationId].blurb}
-        </p>
+    <section id="esquema" className="wall">
+      <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 md:py-28">
+        <SectionTitle kicker="Como jogamos" title={formations[formationId].label} />
+        <p className="mt-4 max-w-2xl text-lg leading-snug">{formations[formationId].blurb}</p>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
           {formationIds.map((id) => (
@@ -284,10 +269,8 @@ export function Formation() {
               key={id}
               type="button"
               onClick={() => selectFormation(id)}
-              className={`rounded-full border px-4 py-1.5 font-display text-sm uppercase tracking-wide transition-colors ${
-                formationId === id
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border text-muted-foreground hover:border-accent hover:text-accent"
+              className={`border-2 border-foreground px-3 py-1 font-display text-lg font-black leading-none transition-colors ${
+                formationId === id ? "bg-foreground text-background" : "hover:bg-foreground/10"
               }`}
             >
               {formations[id].label}
@@ -296,7 +279,7 @@ export function Formation() {
           <button
             type="button"
             onClick={resetLayout}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-dashed border-border px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:border-accent hover:text-accent"
+            className="ml-auto inline-flex items-center gap-1.5 px-2 py-1.5 font-mono text-xs uppercase underline underline-offset-4 hover:text-primary"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Resetar posições
@@ -310,54 +293,40 @@ export function Formation() {
               onClick={(e) => {
                 if (!(e.target as HTMLElement).closest("button, a")) deactivate();
               }}
-              className="pitch-stripes relative aspect-[4/5] w-full touch-pan-y overflow-hidden rounded-2xl border border-border shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] sm:aspect-[3/4]"
+              className="pitch-stripes relative aspect-[4/5] w-full touch-pan-y overflow-hidden shadow-[6px_6px_0_var(--piche)] sm:aspect-[3/4]"
             >
-              <div
-                className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-primary/25 blur-3xl"
-                aria-hidden
-              />
-              <div
-                className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-accent/15 blur-3xl"
-                aria-hidden
-              />
-              <motion.div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-1/3"
-                style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--primary) 22%, transparent), transparent)" }}
-                animate={{ opacity: [0.5, 0.9, 0.5] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              />
-              <div
-                className="animate-float-y absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl opacity-80"
-                style={{ animationDuration: "8s" }}
-              >
-                ⚽
-              </div>
-
-              <div className="absolute inset-3 rounded-lg" style={{ border: "1px solid var(--pitch-line)" }}>
+              <div className="absolute inset-3" style={{ border: "2px solid var(--pitch-line)" }}>
                 <div
                   className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                  style={{ border: "1px solid var(--pitch-line)" }}
+                  style={{ border: "2px solid var(--pitch-line)" }}
                 >
                   <img
                     src={crest}
                     alt=""
                     aria-hidden
-                    className="absolute inset-0 h-full w-full scale-90 object-contain opacity-[0.14]"
+                    className="absolute inset-0 h-full w-full scale-90 object-contain opacity-25"
                   />
                 </div>
                 <div
-                  className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
+                  className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2"
                   style={{ background: "var(--pitch-line)" }}
                 />
-                <div className="absolute inset-x-[22%] bottom-0 h-[14%]" style={{ border: "1px solid var(--pitch-line)" }} />
-                <div className="absolute inset-x-[22%] top-0 h-[14%]" style={{ border: "1px solid var(--pitch-line)" }} />
+                <div
+                  className="absolute inset-x-[22%] bottom-0 h-[14%]"
+                  style={{ border: "2px solid var(--pitch-line)" }}
+                />
+                <div
+                  className="absolute inset-x-[22%] top-0 h-[14%]"
+                  style={{ border: "2px solid var(--pitch-line)" }}
+                />
               </div>
 
               <div key={formationId} className="contents">
                 {formations[formationId].slots.map((slot, i) => {
                   if (!slot.name) {
-                    return <EmptySlotDot key={`empty-${i}`} pos={{ x: slot.x, y: slot.y }} index={i} />;
+                    return (
+                      <EmptySlotDot key={`empty-${i}`} pos={{ x: slot.x, y: slot.y }} index={i} />
+                    );
                   }
                   const player = squad.find((sp) => sp.name === slot.name);
                   if (!player) return null;
@@ -384,7 +353,9 @@ export function Formation() {
               </div>
 
               <AnimatePresence>
-                {active && activePos && !draggingName ? <PlayerPopover player={active} pos={activePos} /> : null}
+                {active && activePos && !draggingName ? (
+                  <PlayerPopover player={active} pos={activePos} />
+                ) : null}
               </AnimatePresence>
             </div>
             <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -397,12 +368,13 @@ export function Formation() {
             {roleOrder.map(({ role, label }) => {
               const linePlayers = squad.filter((p) => roles[p.name] === role);
               const emptySlot = formations[formationId].slots.find(
-                (s): s is { name: null; role: LineRole; x: number; y: number } => !s.name && s.role === role,
+                (s): s is { name: null; role: LineRole; x: number; y: number } =>
+                  !s.name && s.role === role,
               );
               if (linePlayers.length === 0 && !emptySlot) return null;
               return (
                 <div key={label}>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
+                  <p className="border-b-2 border-foreground pb-1 font-display text-xl font-black uppercase">
                     {label}
                   </p>
                   <ul className="mt-2 space-y-1.5">
@@ -415,12 +387,14 @@ export function Formation() {
                           onMouseLeave={() => setActiveName(null)}
                           onBlur={() => setActiveName(null)}
                           onClick={() => toggle(p.name)}
-                          className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-secondary/60"
+                          className="flex w-full items-center gap-3 px-1 py-1.5 text-left transition-colors hover:bg-foreground/10"
                         >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary font-display text-[11px] text-foreground">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-foreground font-display text-sm font-black text-background">
                             {p.number}
                           </span>
-                          <span className="truncate text-sm text-foreground">{p.name}</span>
+                          <span className="truncate font-display text-lg font-bold uppercase leading-none">
+                            {p.name}
+                          </span>
                           {p.captain ? (
                             <span className="ml-auto text-[10px] font-bold uppercase tracking-wide text-accent">
                               C
@@ -449,7 +423,7 @@ export function Formation() {
               );
             })}
 
-            <div className="mt-2 rounded-lg border border-dashed border-border p-4">
+            <div className="mt-2 border-2 border-dashed border-foreground p-4">
               <UserPlus className="h-5 w-5 text-primary" aria-hidden />
               <p className="mt-2 font-display text-sm uppercase tracking-wide text-foreground">
                 Quer fazer parte do time?

@@ -1,98 +1,72 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useSite } from "@/components/site-context";
 import { useCountdown } from "@/hooks/use-countdown";
 
-function pad(n: number) {
-  return n.toString().padStart(2, "0");
-}
+const TZ = "America/Sao_Paulo";
+const pad = (n: number) => n.toString().padStart(2, "0");
 
-function TimeBlock({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-16 overflow-hidden rounded-md border border-border bg-background/60 py-2 text-center sm:w-20">
-        <span
-          key={value}
-          className="block font-display text-3xl tabular-nums text-foreground sm:text-4xl"
-          style={{ animation: "count-flicker 0.4s ease-out" }}
-        >
-          {pad(value)}
-        </span>
-      </div>
-      <span className="mt-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-        {label}
-      </span>
-    </div>
-  );
-}
-
+/** Próximo jogo como um lambe-lambe amarelo colado no muro. */
 export function NextMatch() {
   const { site } = useSite();
   const next = site.nextMatch;
   const t = useCountdown(next?.date ?? "2000-01-01T00:00:00Z");
+  const reduce = useReducedMotion();
   if (!next) return null;
-  const matchDate = new Date(next.date);
-  const formatted = matchDate.toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "America/Sao_Paulo",
-  });
+
+  const date = new Date(next.date);
+  const weekday = date
+    .toLocaleDateString("pt-BR", { weekday: "long", timeZone: TZ })
+    .replace("-feira", "");
+  const day = date
+    .toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", timeZone: TZ })
+    .replace("/", ".");
+  const time = date
+    .toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: TZ })
+    .replace(":", "H");
 
   return (
     <section
       id="proximo-jogo"
-      className="relative isolate overflow-hidden border-y border-border bg-card"
+      className="overflow-hidden bg-[var(--piche)] px-4 py-20 text-[var(--piche)] sm:px-6 md:py-28"
     >
-      <div className="grain absolute inset-0 -z-10 opacity-[0.04]" aria-hidden />
-      <div
-        className="absolute -left-16 top-1/2 -z-10 h-72 w-72 -translate-y-1/2 rounded-full bg-primary/15 blur-[120px]"
-        aria-hidden
-      />
-      <div
-        className="absolute -right-16 top-1/2 -z-10 h-72 w-72 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px]"
-        aria-hidden
-      />
-      <div
-        className="absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
-        aria-hidden
-      />
-
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-16 text-center md:flex-row md:justify-between md:text-left"
+        initial={reduce ? false : { opacity: 0, y: 40, rotate: -4 }}
+        whileInView={{ opacity: 1, y: 0, rotate: -1.2 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ type: "spring", stiffness: 90, damping: 14 }}
+        className="relative mx-auto max-w-3xl"
       >
-        <div>
-          <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-accent">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-accent" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-            </span>
-            Próximo jogo
-          </p>
-          <h2 className="mt-3 font-display text-4xl uppercase leading-[0.9] tracking-tight text-foreground sm:text-5xl">
-            Driblou Caiu <span className="text-muted-foreground">vs</span> {next.opponent}
-          </h2>
-          <p className="mt-2 text-sm uppercase tracking-[0.2em] text-muted-foreground">
-            {next.competition} · {next.venue} · {formatted}
-          </p>
-        </div>
+        <span className="tape absolute -top-3 left-8 z-10 h-7 w-28 -rotate-6" aria-hidden />
+        <span className="tape absolute -top-3 right-10 z-10 h-7 w-24 rotate-[8deg]" aria-hidden />
 
-        <div className="flex items-center gap-3">
-          {t.done ? (
-            <p className="font-display text-2xl uppercase text-accent">Bola rolando!</p>
-          ) : (
-            <>
-              <TimeBlock value={t.days} label="Dias" />
-              <TimeBlock value={t.hours} label="Horas" />
-              <TimeBlock value={t.minutes} label="Min" />
-              <TimeBlock value={t.seconds} label="Seg" />
-            </>
-          )}
-        </div>
+        <article className="torn bg-[var(--cartao)] px-6 pb-10 pt-12 text-center sm:px-12">
+          <p className="font-mono text-sm uppercase sm:text-base">
+            Próximo jogo · {next.competition} · {next.venue}
+          </p>
+          <p className="mt-4 font-display text-4xl font-black uppercase leading-none sm:text-5xl">
+            {weekday}
+          </p>
+          <p className="font-stencil text-[clamp(5rem,18vw,10rem)] font-black leading-[0.82]">
+            {day}
+          </p>
+          <p className="font-stencil text-[clamp(3rem,10vw,5.5rem)] font-black leading-[0.9]">
+            {time}
+          </p>
+          <div className="mx-auto my-6 h-[3px] w-24 bg-[var(--piche)]" />
+          <p className="font-stencil text-[clamp(2.6rem,8vw,5rem)] font-black uppercase leading-[0.85]">
+            Driblou Caiu
+          </p>
+          <p className="my-1 font-display text-3xl font-black">×</p>
+          <p className="font-stencil text-[clamp(2.6rem,8vw,5rem)] font-black uppercase leading-[0.85] text-[var(--tinta)]">
+            {next.opponent}
+          </p>
+
+          <p className="mt-8 font-mono text-base uppercase sm:text-lg" aria-live="polite">
+            {t.done
+              ? "Jogo começou. Placar em breve."
+              : `Faltam ${t.days}d ${pad(t.hours)}h ${pad(t.minutes)}m ${pad(t.seconds)}s`}
+          </p>
+        </article>
       </motion.div>
     </section>
   );
