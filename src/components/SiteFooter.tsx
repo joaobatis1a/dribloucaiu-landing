@@ -18,8 +18,8 @@ const NAV_LINKS = [
 ];
 
 /**
- * Rodapé que sobe por baixo do conteúdo (parallax), com um muro pichável
- * e o nome do clube em estêncil vazado de ponta a ponta.
+ * Rodapé com um muro pichável e o nome do clube em estêncil vazado, que desliza
+ * de lado conforme a rolagem. O conteúdo em si fica parado: nada é recortado.
  */
 export function SiteFooter() {
   const { site } = useSite();
@@ -27,11 +27,11 @@ export function SiteFooter() {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
-  const y = useTransform(scrollYProgress, [0, 1], [reduce ? 0 : -260, 0]);
+  const x = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["12%", "-6%"]);
 
   return (
     <footer ref={ref} className="relative overflow-hidden bg-[var(--piche)] text-[var(--cal)]">
-      <motion.div style={{ y }} className="mx-auto max-w-[1400px] px-4 pb-6 pt-16 sm:px-6 md:pt-20">
+      <div className="mx-auto max-w-[1400px] px-4 pb-6 pt-16 sm:px-6 md:pt-20">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div>
             <p className="font-mono text-sm uppercase text-[var(--cal)]/60">Fim de jogo. Ou não.</p>
@@ -57,12 +57,13 @@ export function SiteFooter() {
 
         <div className="mt-12">
           <SprayWall>
-            <p
+            <motion.p
               aria-hidden
-              className="text-outline pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-stencil text-[17vw] font-black uppercase leading-none [--stroke:color-mix(in_oklab,var(--piche)_22%,transparent)] min-[1400px]:text-[15rem]"
+              style={{ x }}
+              className="text-outline pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none whitespace-nowrap text-center font-stencil text-[17vw] font-black uppercase leading-none [--stroke:color-mix(in_oklab,var(--piche)_22%,transparent)] min-[1400px]:text-[15rem]"
             >
               Driblou Caiu
-            </p>
+            </motion.p>
           </SprayWall>
         </div>
 
@@ -169,7 +170,7 @@ export function SiteFooter() {
           </span>
           <span>Feito na várzea, jogado no Pro Clubs</span>
         </p>
-      </motion.div>
+      </div>
     </footer>
   );
 }
