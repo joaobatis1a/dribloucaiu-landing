@@ -26,12 +26,14 @@ const EASE = [0.76, 0, 0.24, 1] as const;
 function useActiveSection() {
   const [active, setActive] = useState("");
   useEffect(() => {
-    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
-      (el): el is HTMLElement => el !== null,
-    );
+    // "top" (o início) também é observado: lá nenhum link fica marcado.
+    const sections = ["top", ...LINKS.map((l) => l.id)]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+        for (const e of entries)
+          if (e.isIntersecting) setActive(e.target.id === "top" ? "" : e.target.id);
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
@@ -248,10 +250,11 @@ export function Navbar() {
 
           <ul className="hidden items-center lg:flex">
             {LINKS.map((l) => (
-              <li key={l.href} className="relative">
+              <li key={l.href}>
                 <a
                   href={l.href}
-                  className={`relative z-10 block px-4 py-2 font-display text-lg font-black uppercase transition-colors ${
+                  aria-current={active === l.id ? "true" : undefined}
+                  className={`relative block overflow-hidden px-4 py-2 font-display text-lg font-black uppercase transition-colors duration-300 ${
                     active === l.id
                       ? "text-[var(--piche)]"
                       : dark
@@ -259,15 +262,15 @@ export function Navbar() {
                         : "text-foreground/70 hover:text-foreground"
                   }`}
                 >
-                  {l.label}
-                </a>
-                {active === l.id ? (
-                  <motion.span
-                    layoutId="nav-card"
-                    className="absolute inset-0 -rotate-2 bg-[var(--cartao)]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  {/* Preenchimento amarelo que sobe no link ativo (CSS puro, sem medir posição). */}
+                  <span
+                    aria-hidden
+                    className={`absolute inset-0 origin-bottom bg-[var(--cartao)] transition-transform duration-300 ease-[cubic-bezier(.76,0,.24,1)] ${
+                      active === l.id ? "scale-y-100" : "scale-y-0"
+                    }`}
                   />
-                ) : null}
+                  <span className="relative">{l.label}</span>
+                </a>
               </li>
             ))}
           </ul>
