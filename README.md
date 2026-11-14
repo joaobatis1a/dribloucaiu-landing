@@ -112,7 +112,7 @@ src/
 
 ## Autor
 
-**João Batista da Silva Neto**
+**João Batista Neto**
 Desenvolvedor Front-End
 
 - GitHub: [@joaobatis1a](https://github.com/joaobatis1a)
