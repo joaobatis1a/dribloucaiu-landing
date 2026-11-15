@@ -157,3 +157,130 @@ export function duplicateNumbers(lineup: Lineup, players: Player[]): number[] {
   }
   return [...seen].filter(([, c]) => c > 1).map(([n]) => n);
 }
+
+/* ───────────── Estatísticas avançadas (só das partidas lançadas) ───────────── */
+
+const outcomeOf = (m: Match) => matchOutcome(m.goalsFor, m.goalsAgainst);
+const pointsOf = (m: Match) => ({ V: 3, E: 1, D: 0 })[outcomeOf(m)];
+
+/** Partidas em ordem cronológica (a mais antiga primeiro). */
+export function chronological(site: SiteData): Match[] {
+  return [...site.matches].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** Últimos `n` resultados, do mais antigo pro mais recente. */
+export function recentForm(site: SiteData, n = 10): Match[] {
+  return chronological(site).slice(-n);
+}
+
+/** Jogos sem sofrer gol e jogos sem marcar. */
+export function cleanSheets(site: SiteData) {
+  return {
+    cleanSheets: site.matches.filter((m) => m.goalsAgainst === 0).length,
+    failedToScore: site.matches.filter((m) => m.goalsFor === 0).length,
+    mostGoals:
+      [...site.matches].sort(
+        (a, b) => b.goalsFor + b.goalsAgainst - (a.goalsFor + a.goalsAgainst),
+      )[0] ?? null,
+  };
+}
+
+/** Pontos e aproveitamento acumulados a cada partida. */
+export function evolution(site: SiteData) {
+  let points = 0;
+  let gd = 0;
+  return chronological(site).map((match, i) => {
+    points += pointsOf(match);
+    gd += match.goalsFor - match.goalsAgainst;
+    return { match, n: i + 1, points, gd, rate: Math.round((points / ((i + 1) * 3)) * 100) };
+  });
+}
+
+const MONTHS_SHORT = [
+  "JAN",
+  "FEV",
+  "MAR",
+  "ABR",
+  "MAI",
+  "JUN",
+  "JUL",
+  "AGO",
+  "SET",
+  "OUT",
+  "NOV",
+  "DEZ",
+];
+
+/** Resultados agrupados por mês. */
+export function byMonth(site: SiteData) {
+  const map = new Map<
+    string,
+    { key: string; label: string; won: number; drawn: number; lost: number }
+  >();
+  for (const m of chronological(site)) {
+    const key = m.date.slice(0, 7);
+    const [y, mo] = key.split("-");
+    const row = map.get(key) ?? {
+      key,
+      label: `${MONTHS_SHORT[Number(mo) - 1] ?? ""} ${String(y).slice(2)}`,
+      won: 0,
+      drawn: 0,
+      lost: 0,
+    };
+    const o = outcomeOf(m);
+    if (o === "V") row.won++;
+    else if (o === "E") row.drawn++;
+    else row.lost++;
+    map.set(key, row);
+  }
+  return [...map.values()];
+}
+
+/** Histórico contra cada adversário (nome comparado sem diferenciar maiúsculas). */
+export function opponents(site: SiteData) {
+  const map = new Map<
+    string,
+    {
+      name: string;
+      played: number;
+      won: number;
+      drawn: number;
+      lost: number;
+      gf: number;
+      ga: number;
+      last: string;
+    }
+  >();
+  for (const m of site.matches) {
+    const key = m.opponent.trim().toLowerCase();
+    const row = map.get(key) ?? {
+      name: m.opponent.trim(),
+      played: 0,
+      won: 0,
+      drawn: 0,
+      lost: 0,
+      gf: 0,
+      ga: 0,
+      last: m.date,
+    };
+    row.played++;
+    row.gf += m.goalsFor;
+    row.ga += m.goalsAgainst;
+    const o = outcomeOf(m);
+    if (o === "V") row.won++;
+    else if (o === "E") row.drawn++;
+    else row.lost++;
+    if (m.date > row.last) row.last = m.date;
+    map.set(key, row);
+  }
+  return [...map.values()].sort((a, b) => b.played - a.played || a.name.localeCompare(b.name));
+}
+
+/** Sigla de 3 letras do adversário, pros rótulos dos gráficos. */
+export function shortName(name: string): string {
+  const clean = name
+    .replace(/\b(FC|SC|United|Futebol Clube)\b/gi, "")
+    .replace(/[^\p{L}\p{N} ]/gu, "")
+    .trim();
+  return (clean || name).slice(0, 3).toUpperCase();
+}

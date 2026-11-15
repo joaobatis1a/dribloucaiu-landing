@@ -5,7 +5,7 @@ import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
 import { useSite } from "@/components/site-context";
 import { dateParts } from "@/lib/site-derive";
-import { ClubStats } from "@/components/ClubStats";
+import { StatsPanel } from "@/components/stats/StatsPanel";
 import { matchOutcome, type Outcome } from "@/lib/match";
 import type { Match } from "@/lib/site-schema";
 
@@ -105,8 +105,8 @@ export function MatchCenter() {
       <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 md:py-28">
         <SectionTitle kicker="Súmula oficial" title="Jogos" />
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
-          <div>
+        <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
+          <div className="min-w-0">
             <div role="tablist" aria-label="Jogos" className="flex gap-1">
               {TABS.map((t) => (
                 <button
@@ -151,7 +151,7 @@ export function MatchCenter() {
                       </p>
                     )
                   ) : (
-                    <ClubStats />
+                    <StatsPanel />
                   )}
                 </motion.div>
               </AnimatePresence>

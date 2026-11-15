@@ -26,7 +26,7 @@ O movimento é parte da identidade: rolagem suave com inércia ([Lenis](https://
 - **Esquema**: os 11 slots no campo com a camisa e o nome de quem estiver escalado, o selo de capitania e o banco de reservas
 - **Elenco**: lista de chamada por setor, com a foto seguindo o cursor e a ficha de atributos. Sem jogadores, mostra "elenco em reformulação"
 - **Próximo jogo**: lambe-lambe com data, adversário e contagem regressiva
-- **Jogos**: súmula com resultados (quem jogou, gols, assistências e craque do jogo) e estatísticas do clube e de cada jogador (jogos, gols, assistências, recordes, sequência)
+- **Jogos**: súmula com resultados (quem jogou, gols, assistências e craque do jogo) e **estatísticas** divididas em subtópicos: Clube (campanha, forma recente, recordes), Jogadores (tabela ordenável com ficha), Líderes (rankings), Evolução (gráficos por partida, aproveitamento acumulado e por mês) e Confrontos (histórico por adversário)
 - **Redes**: Instagram e TikTok do clube
 - **Rodapé**: muro pichável, links e próximo jogo
 
@@ -97,6 +97,7 @@ src/
 │   ├── Formation.tsx, Pitch.tsx     # escalação (o Pitch também é o editor do painel)
 │   ├── Squad.tsx                    # lista de chamada do elenco
 │   ├── NextMatch.tsx, MatchCenter.tsx
+│   ├── stats/                       # subtópicos das Estatísticas
 │   ├── SiteFooter.tsx, SprayWall.tsx # rodapé com o muro pichável
 │   ├── motion/                      # Lenis e revelações no scroll
 │   └── admin/                       # abas do painel (Vestiário)
