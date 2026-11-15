@@ -7,11 +7,16 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { Pitch } from "@/components/Pitch";
 import { useSite } from "@/components/site-context";
 import { EASE_OUT, RevealWords } from "@/components/motion/Reveal";
+import { CAPTAIN_BADGES } from "@/lib/site-schema";
+import { slotNumber } from "@/lib/site-derive";
 
 /** Escalação oficial: os 11 slots numerados definidos no painel. */
 export function Formation() {
   const { site } = useSite();
   const { lineup, players } = site;
+  const bench = lineup.bench
+    .map((id) => players.find((p) => p.id === id))
+    .filter((p): p is NonNullable<typeof p> => !!p);
   const preset = formations[lineup.formation];
   const [selected, setSelected] = useState<number | null>(null);
   const reduce = useReducedMotion();
@@ -61,7 +66,7 @@ export function Formation() {
                       }`}
                     >
                       <span className="grid h-8 w-8 shrink-0 place-items-center bg-foreground font-display text-base font-black text-background">
-                        {slot.number}
+                        {slotNumber(slot, players)}
                       </span>
                       <span
                         className={`min-w-0 flex-1 truncate font-display text-xl font-black uppercase leading-none ${
@@ -69,6 +74,11 @@ export function Formation() {
                         }`}
                       >
                         {player?.name ?? "A definir"}
+                        {player?.captainRank ? (
+                          <span className="ml-2 align-middle font-mono text-xs text-[var(--tinta)]">
+                            {CAPTAIN_BADGES[player.captainRank as 1 | 2 | 3]}
+                          </span>
+                        ) : null}
                       </span>
                       <span className="font-mono text-xs uppercase text-muted-foreground">
                         {role ? roleNames[role] : ""}
@@ -78,6 +88,30 @@ export function Formation() {
                 );
               })}
             </ol>
+
+            {bench.length > 0 ? (
+              <div className="mt-8">
+                <p className="font-display text-2xl font-black uppercase leading-none">Banco</p>
+                <ul className="mt-3 border-t-2 border-dashed border-foreground">
+                  {bench.map((p) => (
+                    <li
+                      key={p.id}
+                      className="flex items-center gap-3 border-b-2 border-dashed border-foreground px-1 py-2"
+                    >
+                      <span className="grid h-8 w-8 shrink-0 place-items-center border-2 border-foreground font-display text-base font-black">
+                        {p.number}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate font-display text-xl font-black uppercase leading-none">
+                        {p.name}
+                      </span>
+                      <span className="font-mono text-xs uppercase text-muted-foreground">
+                        {[p.position, ...p.altPositions].join(" · ")}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
             <a
               href={club.social.instagram.url}

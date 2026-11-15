@@ -13,7 +13,7 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { useSite, type SitePlayer } from "@/components/site-context";
 import { EASE_OUT } from "@/components/motion/Reveal";
 import { positionBucket, positionNames, type PositionBucket } from "@/lib/match";
-import type { Player } from "@/lib/site-schema";
+import { CAPTAIN_BADGES, CAPTAIN_LABELS, type Player } from "@/lib/site-schema";
 
 const GROUPS: Array<{ bucket: PositionBucket; label: string }> = [
   { bucket: "GOL", label: "Goleiros" },
@@ -121,13 +121,21 @@ function PlayerRow({
         <span className="relative min-w-0 transition-transform duration-500 group-hover:translate-x-3">
           <span className="block truncate font-display text-3xl font-black uppercase leading-none transition-colors group-hover:text-[var(--cal)] sm:text-5xl">
             {player.name}
-            {player.captain ? (
-              <span className="ml-2 align-middle text-base text-[var(--tinta)]">(C)</span>
+            {player.captainRank ? (
+              <span
+                title={CAPTAIN_LABELS[player.captainRank as 1 | 2 | 3]}
+                className="ml-2 align-middle font-mono text-base text-[var(--tinta)] group-hover:text-[var(--cartao)]"
+              >
+                ({CAPTAIN_BADGES[player.captainRank as 1 | 2 | 3]})
+              </span>
             ) : null}
           </span>
           <span className="mt-1 block font-mono text-xs uppercase text-muted-foreground transition-colors group-hover:text-[var(--cal)]/60">
-            {positionNames[player.position] ?? player.position} · {player.totals.goals} gols ·{" "}
-            {player.totals.assists} assist.
+            {[player.position, ...player.altPositions]
+              .map((p) => positionNames[p] ?? p)
+              .join(" / ")}{" "}
+            · {player.totals.games} jogos · {player.totals.goals} gols · {player.totals.assists}{" "}
+            assist.
           </span>
         </span>
         <span className="relative hidden font-mono text-xs uppercase text-muted-foreground transition-colors group-hover:text-[var(--cal)]/70 sm:block">

@@ -4,14 +4,14 @@ import { Instagram } from "lucide-react";
 import { club } from "@/data/team";
 import { SectionTitle } from "@/components/SectionTitle";
 import { useSite } from "@/components/site-context";
-import { dateParts, playerTotals, topBy } from "@/lib/site-derive";
+import { dateParts } from "@/lib/site-derive";
+import { ClubStats } from "@/components/ClubStats";
 import { matchOutcome, type Outcome } from "@/lib/match";
 import type { Match } from "@/lib/site-schema";
 
 const TABS = [
   { id: "resultados", label: "Resultados" },
-  { id: "tabela", label: "Tabela" },
-  { id: "artilharia", label: "Artilharia" },
+  { id: "estatisticas", label: "Estatísticas" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
@@ -95,96 +95,7 @@ function MatchRow({ m }: { m: Match }) {
   );
 }
 
-function Table() {
-  const { site } = useSite();
-  const rows = [...site.table].sort((a, b) => b.points - a.points || b.gd - a.gd);
-  return (
-    <div className="-mx-1 overflow-x-auto px-1">
-      <table className="w-full min-w-[30rem] font-mono text-sm">
-        <thead>
-          <tr className="border-b-2 border-foreground text-xs uppercase">
-            <th className="w-8 py-2 text-left font-bold">#</th>
-            <th className="py-2 text-left font-bold">Clube</th>
-            {["J", "V", "E", "D", "SG"].map((h) => (
-              <th key={h} className="w-10 py-2 text-center font-bold">
-                {h}
-              </th>
-            ))}
-            <th className="w-14 py-2 text-right font-bold">Pts</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => {
-            const us = r.team === club.name;
-            return (
-              <tr
-                key={r.team}
-                className={`border-b border-dashed border-foreground/40 ${us ? "bg-[var(--cartao)]" : ""}`}
-              >
-                <td className="py-2.5 pl-1">{i + 1}</td>
-                <td className="py-2.5 font-display text-xl font-black uppercase leading-none">
-                  {r.team}
-                </td>
-                <td className="text-center">{r.played}</td>
-                <td className="text-center">{r.won}</td>
-                <td className="text-center">{r.drawn}</td>
-                <td className="text-center">{r.lost}</td>
-                <td className="text-center">{r.gd > 0 ? `+${r.gd}` : r.gd}</td>
-                <td className="pr-1 text-right font-stencil text-2xl font-black">{r.points}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function Leaders() {
-  const { site } = useSite();
-  const totals = playerTotals(site);
-  const lists = [
-    { title: "Artilheiros", rows: topBy(site.players, totals, "goals"), unit: "gols" },
-    { title: "Garçons", rows: topBy(site.players, totals, "assists"), unit: "assist." },
-  ];
-  if (lists.every((l) => l.rows.length === 0)) {
-    return (
-      <p className="py-8 font-mono text-sm text-muted-foreground">
-        A artilharia aparece aqui assim que os gols de uma partida forem lançados na súmula.
-      </p>
-    );
-  }
-  return (
-    <div className="grid gap-8 sm:grid-cols-2">
-      {lists.map((l) => (
-        <div key={l.title}>
-          <p className="border-b-2 border-foreground pb-1 font-display text-xl font-black uppercase">
-            {l.title}
-          </p>
-          <ol>
-            {l.rows.map((r, i) => (
-              <li
-                key={r.player.id}
-                className="flex items-baseline gap-3 border-b border-dashed border-foreground/40 py-2"
-              >
-                <span className="w-5 font-mono text-sm">{i + 1}.</span>
-                <span className="min-w-0 flex-1 truncate font-display text-xl font-black uppercase">
-                  {r.player.name}
-                </span>
-                <span className="font-stencil text-3xl font-black">{r.value}</span>
-                <span className="w-12 font-mono text-xs uppercase text-muted-foreground">
-                  {l.unit}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/** Resultados, tabela e artilharia numa súmula datilografada. */
+/** Resultados e estatísticas numa súmula datilografada. */
 export function MatchCenter() {
   const { matches } = useSite();
   const [tab, setTab] = useState<TabId>("resultados");
@@ -239,10 +150,8 @@ export function MatchCenter() {
                         Nenhuma partida lançada ainda.
                       </p>
                     )
-                  ) : tab === "tabela" ? (
-                    <Table />
                   ) : (
-                    <Leaders />
+                    <ClubStats />
                   )}
                 </motion.div>
               </AnimatePresence>

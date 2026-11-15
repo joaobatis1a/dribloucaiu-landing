@@ -37,6 +37,7 @@ export const defaultSite: SiteData = {
       competition: "Liga",
       date: "2026-08-14",
       scorers: [],
+      played: [],
     },
     {
       id: "m4",
@@ -46,6 +47,7 @@ export const defaultSite: SiteData = {
       competition: "Amistoso",
       date: "2026-08-12",
       scorers: [],
+      played: [],
     },
     {
       id: "m3",
@@ -55,6 +57,7 @@ export const defaultSite: SiteData = {
       competition: "Liga",
       date: "2026-08-09",
       scorers: [],
+      played: [],
     },
     {
       id: "m2",
@@ -64,6 +67,7 @@ export const defaultSite: SiteData = {
       competition: "Liga",
       date: "2026-08-05",
       scorers: [],
+      played: [],
     },
     {
       id: "m1",
@@ -73,15 +77,8 @@ export const defaultSite: SiteData = {
       competition: "Amistoso",
       date: "2026-08-02",
       scorers: [],
+      played: [],
     },
-  ],
-  table: [
-    { team: "Meta Squad", played: 18, won: 14, drawn: 2, lost: 2, gd: 38, points: 44 },
-    { team: "Driblou Caiu", played: 18, won: 13, drawn: 3, lost: 2, gd: 35, points: 42 },
-    { team: "Tira o Pé SC", played: 18, won: 11, drawn: 3, lost: 4, gd: 21, points: 36 },
-    { team: "Ala Fantasma FC", played: 18, won: 8, drawn: 4, lost: 6, gd: 7, points: 28 },
-    { team: "Rebaixados United", played: 18, won: 5, drawn: 5, lost: 8, gd: -9, points: 20 },
-    { team: "Canela Seca FC", played: 18, won: 2, drawn: 3, lost: 13, gd: -31, points: 9 },
   ],
   // Soma com as 5 partidas acima e dá os números que o site mostrava antes (42 jogos, 31 V, 128 gols, saldo +74).
   baseline: { played: 37, won: 28, drawn: 4, lost: 5, gf: 112, ga: 46 },

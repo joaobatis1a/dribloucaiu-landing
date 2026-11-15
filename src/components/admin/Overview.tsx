@@ -6,7 +6,7 @@ import { Scoreboard } from "@/components/Scoreboard";
 import { panel } from "@/components/admin/kit";
 
 export type TabId =
-  "visao" | "partidas" | "proximo" | "escalacao" | "elenco" | "tabela" | "historico";
+  "visao" | "partidas" | "proximo" | "escalacao" | "elenco" | "estatisticas";
 
 const ACTIONS: Array<{ tab: TabId; label: string; note: string; Icon: typeof Goal }> = [
   { tab: "partidas", label: "Lançar resultado", note: "Placar, gols e assistências", Icon: Goal },

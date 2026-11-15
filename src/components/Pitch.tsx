@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { motion, useInView, useMotionValue, useReducedMotion, type PanInfo } from "framer-motion";
 import crest from "@/assets/crest.webp";
-import type { Lineup, Player } from "@/lib/site-schema";
+import { CAPTAIN_BADGES, type Lineup, type Player } from "@/lib/site-schema";
+import { slotNumber } from "@/lib/site-derive";
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
@@ -11,6 +12,7 @@ function Slot({
   y,
   number,
   name,
+  rank,
   shown,
   selected,
   editable,
@@ -23,6 +25,7 @@ function Slot({
   y: number;
   number: number;
   name: string | undefined;
+  rank: number | undefined;
   shown: boolean;
   selected: boolean;
   editable: boolean;
@@ -69,18 +72,23 @@ function Slot({
         onClick={() => !dragged.current && onSelect?.(index)}
         whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.95 }}
-        aria-label={`Camisa ${number}${name ? `, ${name}` : ""}`}
+        aria-label={`Camisa ${number}${name ? `, ${name}` : ""}${rank ? `, ${CAPTAIN_BADGES[rank as 1 | 2 | 3]}` : ""}`}
         aria-pressed={selected}
         className={`relative flex flex-col items-center ${editable ? "cursor-grab touch-none active:cursor-grabbing" : "cursor-pointer"}`}
       >
         <span
-          className={`grid h-10 w-10 place-items-center rounded-full border-[3px] font-display text-lg font-black shadow-[0_3px_0_rgba(0,0,0,0.35)] transition-colors sm:h-12 sm:w-12 sm:text-xl ${
+          className={`relative grid h-10 w-10 place-items-center rounded-full border-[3px] font-display text-lg font-black shadow-[0_3px_0_rgba(0,0,0,0.35)] transition-colors sm:h-12 sm:w-12 sm:text-xl ${
             selected
               ? "border-[var(--piche)] bg-[var(--cartao)] text-[var(--piche)]"
               : "border-white bg-[var(--tinta)] text-white"
           }`}
         >
           {number}
+          {rank ? (
+            <span className="absolute -right-2 -top-2 rounded-full border-2 border-white bg-[var(--piche)] px-1 font-display text-[10px] font-black leading-[1.35] text-white">
+              {CAPTAIN_BADGES[rank as 1 | 2 | 3]}
+            </span>
+          ) : null}
         </span>
         {name ? (
           <span className="pointer-events-none mt-1 max-w-[6.5rem] truncate bg-[var(--piche)] px-1.5 py-0.5 font-display text-xs font-black uppercase leading-none text-white sm:text-sm">
@@ -131,22 +139,26 @@ export function Pitch({
         <div className="absolute inset-x-[36%] bottom-0 h-[5.5%] border-2 border-b-0 border-[var(--pitch-line)]" />
       </div>
 
-      {lineup.slots.map((slot, i) => (
-        <Slot
-          key={i}
-          index={i}
-          x={slot.x}
-          y={slot.y}
-          number={slot.number}
-          name={slot.playerId ? players.find((p) => p.id === slot.playerId)?.name : undefined}
-          shown={shown}
-          selected={selected === i}
-          editable={editable}
-          pitchRef={pitchRef}
-          onSelect={onSelect}
-          onMove={onMove}
-        />
-      ))}
+      {lineup.slots.map((slot, i) => {
+        const player = slot.playerId ? players.find((p) => p.id === slot.playerId) : undefined;
+        return (
+          <Slot
+            key={i}
+            index={i}
+            x={slot.x}
+            y={slot.y}
+            number={slotNumber(slot, players)}
+            name={player?.name}
+            rank={player?.captainRank}
+            shown={shown}
+            selected={selected === i}
+            editable={editable}
+            pitchRef={pitchRef}
+            onSelect={onSelect}
+            onMove={onMove}
+          />
+        );
+      })}
     </div>
   );
 }

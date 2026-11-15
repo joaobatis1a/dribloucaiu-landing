@@ -22,7 +22,7 @@ export function SiteProvider({ site, children }: { site: SiteData; children: Rea
       team: teamTotals(site),
       players: site.players.map((p) => ({
         ...p,
-        totals: totals[p.id] ?? { games: 0, goals: 0, assists: 0, motm: 0 },
+        totals: totals[p.id]!,
       })),
     };
   }, [site]);

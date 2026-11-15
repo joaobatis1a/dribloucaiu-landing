@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Camera, Plus, X } from "lucide-react";
 import { toast } from "sonner";
-import { POSITIONS, type Player, type SiteData } from "@/lib/site-schema";
+import { CAPTAIN_LABELS, POSITIONS, type Player, type SiteData } from "@/lib/site-schema";
 import { positionNames } from "@/lib/match";
 import { playerTotals } from "@/lib/site-derive";
 import {
@@ -47,17 +47,21 @@ const emptyPlayer = (): Player => ({
   name: "",
   number: 10,
   position: "ATA",
+  altPositions: [],
   overall: 80,
   stats: { pac: 70, sho: 70, pas: 70, dri: 70, def: 40, phy: 70 },
+  history: { games: 0, goals: 0, assists: 0 },
 });
 
 /** Painel lateral com o formulário do jogador. */
 function PlayerDrawer({
+  siteForRank,
   initial,
   exists,
   onClose,
   save,
 }: {
+  siteForRank: Player[];
   initial: Player;
   exists: boolean;
   onClose: () => void;
@@ -74,7 +78,6 @@ function PlayerDrawer({
     e.preventDefault();
     setBusy(true);
     const player = { ...draft, id: exists ? draft.id : slug(draft.name) };
-    if (!player.captain) delete player.captain;
     const ok = await save(
       {
         type: "savePlayer",
@@ -201,10 +204,15 @@ function PlayerDrawer({
                 className={input}
               />
             </Field>
-            <Field label="Posição" className="col-span-2">
+            <Field label="Posição principal" className="col-span-2">
               <select
                 value={draft.position}
-                onChange={(e) => set({ position: e.target.value as Player["position"] })}
+                onChange={(e) =>
+                  set({
+                    position: e.target.value as Player["position"],
+                    altPositions: draft.altPositions.filter((p) => p !== e.target.value),
+                  })
+                }
                 className={input}
               >
                 {POSITIONS.map((p) => (
@@ -216,15 +224,69 @@ function PlayerDrawer({
             </Field>
           </div>
 
-          <label className="flex cursor-pointer items-center gap-3 font-display text-xl font-black uppercase">
-            <input
-              type="checkbox"
-              checked={!!draft.captain}
-              onChange={(e) => set({ captain: e.target.checked })}
-              className="h-5 w-5 accent-[var(--tinta)]"
-            />
-            Capitão do time
-          </label>
+          <fieldset>
+            <legend className="mb-2 font-mono text-xs font-bold uppercase text-muted-foreground">
+              Também joga de (até 3)
+            </legend>
+            <div className="flex flex-wrap gap-1.5">
+              {POSITIONS.filter((p) => p !== draft.position).map((p) => {
+                const on = draft.altPositions.includes(p);
+                const full = !on && draft.altPositions.length >= 3;
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    disabled={full}
+                    aria-pressed={on}
+                    title={positionNames[p]}
+                    onClick={() =>
+                      set({
+                        altPositions: on
+                          ? draft.altPositions.filter((x) => x !== p)
+                          : [...draft.altPositions, p],
+                      })
+                    }
+                    className={`border-2 border-[var(--piche)] px-2.5 py-1 font-display text-base font-black leading-none transition-colors disabled:opacity-30 ${
+                      on ? "bg-[var(--piche)] text-[var(--cal)]" : "hover:bg-[var(--piche)]/10"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          <Field label="Capitania">
+            <select
+              value={draft.captainRank ?? ""}
+              onChange={(e) => {
+                const v = e.target.value;
+                const next = { ...draft };
+                if (v) next.captainRank = Number(v);
+                else delete next.captainRank;
+                setDraft(next);
+              }}
+              className={input}
+            >
+              <option value="">Não é capitão</option>
+              {([1, 2, 3] as const).map((r) => {
+                const holder = siteForRank.find((p) => p.captainRank === r && p.id !== draft.id);
+                return (
+                  <option key={r} value={r}>
+                    {CAPTAIN_LABELS[r]}
+                    {holder ? ` (hoje: ${holder.name})` : ""}
+                  </option>
+                );
+              })}
+            </select>
+            {draft.captainRank &&
+            siteForRank.some((p) => p.captainRank === draft.captainRank && p.id !== draft.id) ? (
+              <span className="mt-1 block text-xs text-[var(--tinta)]">
+                Quem já tem esse degrau perde a capitania ao salvar.
+              </span>
+            ) : null}
+          </Field>
 
           <fieldset>
             <legend className="mb-3 font-mono text-xs font-bold uppercase text-muted-foreground">
@@ -324,11 +386,14 @@ export function SquadTab({ site, save }: { site: SiteData; save: Save }) {
                     </span>
                   </div>
                   <p className="mt-1 font-mono text-xs uppercase text-muted-foreground">
-                    #{p.number} · {positionNames[p.position]}
-                    {p.captain ? " · capitão" : ""}
+                    #{p.number} · {[p.position, ...p.altPositions].join(" / ")}
+                    {p.captainRank
+                      ? ` · ${CAPTAIN_LABELS[p.captainRank as 1 | 2 | 3].toLowerCase()}`
+                      : ""}
                   </p>
                   <p className="font-mono text-xs uppercase text-muted-foreground">
-                    {totals[p.id]?.goals ?? 0} gols · {totals[p.id]?.assists ?? 0} assist.
+                    {totals[p.id]?.games ?? 0} jogos · {totals[p.id]?.goals ?? 0} gols ·{" "}
+                    {totals[p.id]?.assists ?? 0} assist.
                   </p>
                   <div className="mt-auto flex gap-4 pt-2">
                     <button
@@ -364,6 +429,7 @@ export function SquadTab({ site, save }: { site: SiteData; save: Save }) {
         {editing ? (
           <PlayerDrawer
             key={editing.id}
+            siteForRank={site.players}
             initial={editing}
             exists={exists}
             onClose={() => setEditing(null)}

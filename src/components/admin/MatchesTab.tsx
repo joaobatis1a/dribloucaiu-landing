@@ -13,8 +13,10 @@ import {
   type Save,
 } from "@/components/admin/kit";
 
-const emptyMatch = (): Match => ({
+/** Partida nova já vem com os titulares da escalação atual marcados como "jogou". */
+const emptyMatch = (starters: string[] = []): Match => ({
   id: uid(),
+  played: starters,
   opponent: "",
   goalsFor: 0,
   goalsAgainst: 0,
@@ -24,7 +26,8 @@ const emptyMatch = (): Match => ({
 });
 
 export function MatchesTab({ site, save }: { site: SiteData; save: Save }) {
-  const [draft, setDraft] = useState<Match>(emptyMatch);
+  const starters = site.lineup.slots.map((s) => s.playerId).filter((id): id is string => !!id);
+  const [draft, setDraft] = useState<Match>(() => emptyMatch(starters));
   const [armed, setArmed] = useState<string | null>(null);
   const editing = site.matches.some((m) => m.id === draft.id);
   const set = (patch: Partial<Match>) => setDraft((d) => ({ ...d, ...patch }));
@@ -36,6 +39,7 @@ export function MatchesTab({ site, save }: { site: SiteData; save: Save }) {
     const match: Match = {
       ...draft,
       scorers: draft.scorers.filter((s) => s.playerId && (s.goals > 0 || s.assists > 0)),
+      played: draft.played.filter((id) => site.players.some((p) => p.id === id)),
     };
     if (!match.motm) delete match.motm;
     if (!match.note) delete match.note;
@@ -45,7 +49,7 @@ export function MatchesTab({ site, save }: { site: SiteData; save: Save }) {
         editing ? "Partida atualizada." : "Partida registrada.",
       )
     ) {
-      setDraft(emptyMatch());
+      setDraft(emptyMatch(starters));
     }
   }
 
@@ -106,6 +110,42 @@ export function MatchesTab({ site, save }: { site: SiteData; save: Save }) {
             />
           </Field>
         </div>
+
+        {site.players.length > 0 ? (
+          <fieldset>
+            <legend className="mb-2 font-mono text-xs font-bold uppercase text-muted-foreground">
+              Quem jogou ({draft.played.length})
+            </legend>
+            <div className="flex flex-wrap gap-1.5">
+              {site.players.map((p) => {
+                const on = draft.played.includes(p.id);
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() =>
+                      set({
+                        played: on
+                          ? draft.played.filter((id) => id !== p.id)
+                          : [...draft.played, p.id],
+                      })
+                    }
+                    className={`border-2 border-[var(--piche)] px-2 py-1 font-display text-base font-black uppercase leading-none transition-colors ${
+                      on ? "bg-[var(--piche)] text-[var(--cal)]" : "hover:bg-[var(--piche)]/10"
+                    }`}
+                  >
+                    <span className="mr-1.5 font-mono text-xs opacity-70">{p.number}</span>
+                    {p.name}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Marque quem entrou em campo. Quem marcou ou deu passe conta como tendo jogado.
+            </p>
+          </fieldset>
+        ) : null}
 
         <fieldset className="space-y-2">
           <legend className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">

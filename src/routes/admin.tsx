@@ -5,10 +5,9 @@ import {
   CalendarClock,
   ExternalLink,
   Goal,
-  History,
+  BarChart3,
   Home,
   LayoutGrid,
-  ListOrdered,
   LogOut,
   Users,
 } from "lucide-react";
@@ -24,8 +23,7 @@ import { MatchesTab } from "@/components/admin/MatchesTab";
 import { NextMatchTab } from "@/components/admin/NextMatchTab";
 import { LineupTab } from "@/components/admin/LineupTab";
 import { SquadTab } from "@/components/admin/SquadTab";
-import { TableTab } from "@/components/admin/TableTab";
-import { BaselineTab } from "@/components/admin/BaselineTab";
+import { StatsTab } from "@/components/admin/StatsTab";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -72,18 +70,11 @@ const TABS: Array<{ id: TabId; label: string; title: string; note?: string; Icon
     Icon: Users,
   },
   {
-    id: "tabela",
-    label: "Tabela",
-    title: "Tabela da liga",
-    note: "Editada à mão porque tem jogos de outros clubes. A linha “Driblou Caiu” fica destacada.",
-    Icon: ListOrdered,
-  },
-  {
-    id: "historico",
-    label: "Histórico",
-    title: "Histórico",
-    note: "Números de antes do site, somados às partidas lançadas.",
-    Icon: History,
+    id: "estatisticas",
+    label: "Estatísticas",
+    title: "Estatísticas",
+    note: "Histórico do clube e dos jogadores: o que existia antes do site, somado às partidas lançadas.",
+    Icon: BarChart3,
   },
 ];
 
@@ -311,8 +302,7 @@ function AdminPage() {
               {tab === "proximo" ? <NextMatchTab site={site} save={save} /> : null}
               {tab === "escalacao" ? <LineupTab site={site} save={save} /> : null}
               {tab === "elenco" ? <SquadTab site={site} save={save} /> : null}
-              {tab === "tabela" ? <TableTab site={site} save={save} /> : null}
-              {tab === "historico" ? <BaselineTab site={site} save={save} /> : null}
+              {tab === "estatisticas" ? <StatsTab site={site} save={save} /> : null}
             </motion.div>
           </AnimatePresence>
         </main>

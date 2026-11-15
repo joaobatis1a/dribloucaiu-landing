@@ -6,7 +6,6 @@ import {
   matchSchema,
   nextMatchSchema,
   playerSchema,
-  tableRowSchema,
 } from "@/lib/site-schema";
 
 export const getSite = createServerFn({ method: "GET" }).handler(async () => {
@@ -69,8 +68,22 @@ const actionSchema = z.discriminatedUnion("type", [
     removePhoto: z.boolean().optional(),
   }),
   z.object({ type: z.literal("deletePlayer"), id: z.string() }),
-  z.object({ type: z.literal("saveTable"), table: z.array(tableRowSchema) }),
   z.object({ type: z.literal("saveBaseline"), baseline: baselineSchema }),
+  z.object({
+    type: z.literal("savePlayerHistories"),
+    histories: z
+      .array(
+        z.object({
+          id: z.string(),
+          history: z.object({
+            games: z.number().int().min(0).max(9999),
+            goals: z.number().int().min(0).max(9999),
+            assists: z.number().int().min(0).max(9999),
+          }),
+        }),
+      )
+      .max(60),
+  }),
   z.object({ type: z.literal("saveLineup"), lineup: lineupSchema }),
 ]);
 
@@ -113,6 +126,14 @@ export const adminSave = createServerFn({ method: "POST" })
           const prev = site.players.find((p) => p.id === player.id);
           if (prev?.photo) player.photo = prev.photo;
         }
+        // Cada degrau da capitania tem um dono só: quem tinha esse degrau perde.
+        if (player.captainRank) {
+          for (const other of site.players) {
+            if (other.id !== player.id && other.captainRank === player.captainRank) {
+              delete other.captainRank;
+            }
+          }
+        }
         const i = site.players.findIndex((p) => p.id === player.id);
         if (i >= 0) site.players[i] = player;
         else site.players.push(player);
@@ -124,15 +145,31 @@ export const adminSave = createServerFn({ method: "POST" })
         site.lineup.slots = site.lineup.slots.map(({ playerId, ...slot }) =>
           playerId === data.id ? slot : { ...slot, ...(playerId ? { playerId } : {}) },
         );
-        break;
-      case "saveTable":
-        site.table = data.table;
+        site.lineup.bench = site.lineup.bench.filter((id) => id !== data.id);
         break;
       case "saveBaseline":
         site.baseline = data.baseline;
         break;
-      case "saveLineup":
-        site.lineup = data.lineup;
+      case "saveLineup": {
+        // Ninguém pode estar em dois lugares: o campo manda, depois o banco (sem repetir nem ids inexistentes).
+        const known = new Set(site.players.map((p) => p.id));
+        const used = new Set<string>();
+        const slots = data.lineup.slots.map(({ playerId, ...slot }) => {
+          if (!playerId || !known.has(playerId) || used.has(playerId)) return slot;
+          used.add(playerId);
+          return { ...slot, playerId };
+        });
+        const bench = data.lineup.bench.filter(
+          (id) => known.has(id) && !used.has(id) && used.add(id),
+        );
+        site.lineup = { ...data.lineup, slots, bench };
+        break;
+      }
+      case "savePlayerHistories":
+        for (const { id, history } of data.histories) {
+          const p = site.players.find((x) => x.id === id);
+          if (p) p.history = history;
+        }
         break;
     }
     return saveSite(site);

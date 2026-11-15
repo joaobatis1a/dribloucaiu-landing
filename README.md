@@ -23,16 +23,16 @@ O movimento é parte da identidade: rolagem suave com inércia ([Lenis](https://
 - **Início**: nome carimbado no muro, escudo e placar de chapa com o último jogo e a forma recente
 - **Números**: jogos, vitórias, gols, saldo e aproveitamento, calculados a partir das partidas
 - **Clube**: manifesto, selo giratório, regras da casa em placas e o lema pintado numa faixa vermelha
-- **Esquema**: os 11 slots numerados no campo, com o nome de quem estiver escalado
+- **Esquema**: os 11 slots no campo com a camisa e o nome de quem estiver escalado, o selo de capitania e o banco de reservas
 - **Elenco**: lista de chamada por setor, com a foto seguindo o cursor e a ficha de atributos. Sem jogadores, mostra "elenco em reformulação"
 - **Próximo jogo**: lambe-lambe com data, adversário e contagem regressiva
-- **Jogos**: súmula com resultados (gols, assistências e craque do jogo), tabela da liga e artilharia
+- **Jogos**: súmula com resultados (quem jogou, gols, assistências e craque do jogo) e estatísticas do clube e de cada jogador (jogos, gols, assistências, recordes, sequência)
 - **Redes**: Instagram e TikTok do clube
 - **Rodapé**: muro pichável, links e próximo jogo
 
 ## Painel admin (atualizar o site sem mexer no código)
 
-Em `/admin` (o "Vestiário", protegido por senha) dá pra registrar partidas com placar, gols e assistências por jogador, definir o próximo jogo, montar a **escalação** (escolher o esquema, arrastar os 11 slots no campo e definir camisa e jogador de cada um), adicionar, editar e remover jogadores do **elenco** (foto, atributos, capitão), editar a tabela da liga e o histórico. Artilharia, aproveitamento e contadores do site são calculados sozinhos a partir das partidas.
+Em `/admin` (o "Vestiário", protegido por senha) dá pra registrar partidas com placar, gols e assistências por jogador, definir o próximo jogo, montar a **escalação** (escolher o esquema, arrastar os 11 slots no campo, escalar jogadores e montar o **banco** de reservas), adicionar, editar e remover jogadores do **elenco** (foto, atributos, mais de uma posição, hierarquia de capitania: capitão, vice e 3º) e manter o **histórico** do clube e de cada jogador. A camisa de cada slot vem do cadastro do jogador. Artilharia, aproveitamento e contadores do site são calculados sozinhos a partir das partidas.
 
 Os dados ficam num Redis (Upstash) acessado por REST. Configuração na Vercel:
 
